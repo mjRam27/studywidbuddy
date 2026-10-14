@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E6E8EC;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1320;-webkit-font-smoothing:antialiased}
+a{color:#4B4FE0;text-decoration:none}a:hover{color:#3D40C9;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:64px;display:flex;flex-direction:column;gap:48px;width:1440px">
+
+<section data-screen-label="00 Cover" style="background:#0A0C12;border-radius:16px;padding:56px 64px;color:#E6E9F0;display:grid;grid-template-columns:1.1fr 1fr;gap:56px">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative;width:30px;height:20px"><div style="position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:#6E72FF"></div><div style="position:absolute;left:10px;top:0;width:20px;height:20px;border-radius:50%;border:2.5px solid #4CC9E6;box-sizing:border-box"></div></div>
+      <span style="font-size:19px;font-weight:600;letter-spacing:-0.01em">Studywid<span style="color:#8186FF">Buddy</span></span>
+    </div>
+    <h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:68px;line-height:1;font-weight:600;letter-spacing:-0.035em">Product system<br><span style="color:#7C8497">v1.0 — foundations</span></h1>
+    <p style="margin:0;font-size:17px;line-height:1.55;color:#A3AABB;max-width:520px;text-wrap:pretty">Information architecture, design language, AI language, app shell and mobile strategy for a platform where people learn together, build together and grow together.</p>
+    <div style="display:flex;gap:24px;font-family:'JetBrains Mono';font-size:12px;color:#7C8497">
+      <span>OCT 2026</span><span>LIGHT + DARK</span><span>DESKTOP-FIRST</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:#7C8497">THREE CONNECTED LOOPS</span>
+    <div style="border:1px solid #232838;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;background:#10131B">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:#8186FF"></span><span style="font-weight:600">Learn</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#7C8497">● CIRCLE</span></div>
+      <div style="font-size:13px;color:#A3AABB;line-height:1.6">Choose skill → level → Study Buddy → learn together → practice → AI help → certificate</div>
+    </div>
+    <div style="border:1px solid #232838;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;background:#10131B">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:2px;background:#4CC9E6"></span><span style="font-weight:600">Build</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#7C8497">■ SQUARE</span></div>
+      <div style="font-size:13px;color:#A3AABB;line-height:1.6">Discover project → apply → AI interview → team → build with AI PM → review → experience</div>
+    </div>
+    <div style="border:1px solid #232838;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;background:#10131B">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid #FBBF24"></span><span style="font-weight:600">Grow</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#7C8497">▲ TRIANGLE</span></div>
+      <div style="font-size:13px;color:#A3AABB;line-height:1.6">Skills → proof on profile → connections → jobs that match what you've shown</div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="01 Information architecture" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">01</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Information architecture</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">90 screens → 10 areas, 3 navigation layers</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px">
+    <sc-for list="{{ areas }}" as="a" hint-placeholder-count="10">
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;background:#FBFBFC">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:8px;height:8px;border-radius:{{ a.shape }};background:{{ a.color }}"></span>
+          <span style="font-weight:600;font-size:14px">{{ a.name }}</span>
+          <span style="margin-left:auto;font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">{{ a.where }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ a.pages }}" as="p" hint-placeholder-count="4">
+            <div style="font-size:12.5px;color:#4A5266;line-height:1.45">{{ p }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+    <div style="border:1px solid #E2E5EB;border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4B4FE0">LAYER 1 · GLOBAL</span>
+      <div style="font-weight:600">Sidebar: 6 destinations + AI Buddy</div>
+      <div style="font-size:13px;color:#4A5266;line-height:1.55">Home, Learn, Projects, People, Messages, Jobs. Learn and Projects expand to list your live workspaces (max 4 courses), so the sidebar works as your study desk, not a sitemap.</div>
+    </div>
+    <div style="border:1px solid #E2E5EB;border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4B4FE0">LAYER 2 · CONTEXTUAL</span>
+      <div style="font-weight:600">Workspace tabs</div>
+      <div style="font-size:13px;color:#4A5266;line-height:1.55">Study Workspace, Project Workspace and Profile each own a tab bar. When you're inside a workspace, the global sidebar collapses to a 56px rail to free space for dense tools.</div>
+    </div>
+    <div style="border:1px solid #E2E5EB;border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4B4FE0">LAYER 3 · OVERLAYS</span>
+      <div style="font-weight:600">⌘K search · ⌘J AI · drawers</div>
+      <div style="font-size:13px;color:#4A5266;line-height:1.55">Search, notifications, task detail, AI Buddy and Create Post open over the current page, so you never lose your place mid-session.</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#6B7386">PRIMARY JOURNEY — ONE CONTINUOUS PATH</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <sc-for list="{{ journey }}" as="j" hint-placeholder-count="20">
+        <span style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:6px;font-size:12px;font-weight:500;background:{{ j.bg }};color:{{ j.fg }}">{{ j.t }}</span>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="02 Color, type, space" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:36px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">02</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Color, type, space</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">Light for social &amp; discovery · dark for long workspace sessions</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Light</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <sc-for list="{{ light }}" as="c" hint-placeholder-count="12">
+          <div style="border:1px solid #E2E5EB;border-radius:8px;overflow:hidden">
+            <div style="height:52px;background:{{ c.hex }}"></div>
+            <div style="padding:8px 10px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600">{{ c.n }}</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">{{ c.hex }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Dark — designed, not inverted</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#0A0C12;padding:8px;border-radius:10px">
+        <sc-for list="{{ dark }}" as="c" hint-placeholder-count="12">
+          <div style="border:1px solid #232838;border-radius:8px;overflow:hidden;background:#10131B">
+            <div style="height:44px;background:{{ c.hex }}"></div>
+            <div style="padding:8px 10px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;color:#E6E9F0">{{ c.n }}</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">{{ c.hex }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12.5px;color:#4A5266;line-height:1.55">Dark uses 4 stepped surfaces instead of shadows, lifts accent lightness by about 15% so text stays readable, and avoids pure black so long sessions are easier on the eyes.</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:32px">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-weight:600">Typography</div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:14px 20px;align-items:baseline">
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">DISPLAY 64/1.0</span><span style="font-family:'Bricolage Grotesque';font-size:56px;font-weight:600;letter-spacing:-0.035em;line-height:1">Don't learn alone.</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">H1 32/1.15</span><span style="font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Find your Study Buddy</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">H2 20/1.3</span><span style="font-size:20px;font-weight:600;letter-spacing:-0.01em">Dependency Injection in Angular</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">BODY 15/1.55</span><span style="font-size:15px;line-height:1.55;color:#4A5266">Alex finished Module 4 and left two notes for you on providers and injection tokens.</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">UI 13/1.4</span><span style="font-size:13px;color:#4A5266">Dense workspace text · task titles · table cells</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">LABEL MONO 11</span><span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4B4FE0">USING · ANGULAR › MODULE 4 › LESSON 3</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">CODE 13/1.6</span><span style="font-family:'JetBrains Mono';font-size:13px">constructor(private users: UserService) {}</span>
+      </div>
+      <div style="font-size:12.5px;color:#4A5266;line-height:1.55">Bricolage Grotesque only for display and page titles. Instrument Sans for all UI text. JetBrains Mono for code, IDs, timestamps and context labels.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:600">Spacing · 4px base</div>
+        <div style="display:flex;align-items:flex-end;gap:10px">
+          <sc-for list="{{ space }}" as="s" hint-placeholder-count="8">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:{{ s.px }};height:{{ s.px }};background:#D6DAFB;border:1px solid #4B4FE0;box-sizing:border-box"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">{{ s.v }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:600">Radius</div>
+        <div style="display:flex;gap:12px">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:40px;border:1.5px solid #0F1320;border-radius:4px"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">4 tag</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:40px;border:1.5px solid #0F1320;border-radius:6px"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">6 control</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:40px;border:1.5px solid #0F1320;border-radius:10px"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">10 card</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:40px;border:1.5px solid #0F1320;border-radius:14px"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">14 modal</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:40px;height:40px;border:1.5px solid #0F1320;border-radius:50%"></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">full avatar</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:600">Elevation (light only)</div>
+        <div style="display:flex;gap:12px">
+          <div style="flex:1;height:48px;border-radius:10px;border:1px solid #E2E5EB;display:flex;align-items:center;justify-content:center;font-size:12px;color:#4A5266">0 · border</div>
+          <div style="flex:1;height:48px;border-radius:10px;border:1px solid #E2E5EB;box-shadow:0 1px 2px rgba(15,19,32,.06);display:flex;align-items:center;justify-content:center;font-size:12px;color:#4A5266">1 · card</div>
+          <div style="flex:1;height:48px;border-radius:10px;border:1px solid #E2E5EB;box-shadow:0 8px 24px rgba(15,19,32,.10);display:flex;align-items:center;justify-content:center;font-size:12px;color:#4A5266">2 · popover</div>
+          <div style="flex:1;height:48px;border-radius:10px;border:1px solid #E2E5EB;box-shadow:0 24px 64px rgba(15,19,32,.18);display:flex;align-items:center;justify-content:center;font-size:12px;color:#4A5266">3 · modal</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:600">Grid &amp; density</div>
+        <div style="font-size:12.5px;color:#4A5266;line-height:1.6">12 columns with 24px gutters. Social and discovery pages: 16–24px card padding, 14–15px text. Learning workspace: 12–16px. Project and code workspaces: 8–12px, 13px text, 32px rows.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="03 Components" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">03</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Components</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">Icons: Material Symbols Rounded, 18/20px, weight 400</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-weight:600">Buttons · states</div>
+    <div style="display:grid;grid-template-columns:110px repeat(6,1fr);gap:10px 12px;align-items:center">
+      <span></span>
+      <span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">DEFAULT</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">HOVER</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">FOCUS</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">ACTIVE</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">DISABLED</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">LOADING</span>
+      <span style="font-size:12.5px;color:#4A5266">Primary</span>
+      <button style="height:34px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600">Study Together</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#3D40C9;color:#fff;font-size:13.5px;font-weight:600">Study Together</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600;box-shadow:0 0 0 2px #fff,0 0 0 4px #4B4FE0">Study Together</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#3236B3;color:#fff;font-size:13.5px;font-weight:600">Study Together</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#E2E5EB;color:#8B93A5;font-size:13.5px;font-weight:600">Study Together</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;box-sizing:border-box"></span>Sending…</button>
+      <span style="font-size:12.5px;color:#4A5266">Secondary</span>
+      <button style="height:34px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;color:#0F1320;font-size:13.5px;font-weight:500">View Profile</button>
+      <button style="height:34px;border:1px solid #CDD2DB;border-radius:6px;background:#F0F2F5;color:#0F1320;font-size:13.5px;font-weight:500">View Profile</button>
+      <button style="height:34px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;color:#0F1320;font-size:13.5px;font-weight:500;box-shadow:0 0 0 2px #fff,0 0 0 4px #4B4FE0">View Profile</button>
+      <button style="height:34px;border:1px solid #B4BAC6;border-radius:6px;background:#E8EAEE;color:#0F1320;font-size:13.5px;font-weight:500">View Profile</button>
+      <button style="height:34px;border:1px solid #E2E5EB;border-radius:6px;background:#F5F6F8;color:#8B93A5;font-size:13.5px;font-weight:500">View Profile</button>
+      <button style="height:34px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;color:#4A5266;font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #E2E5EB;border-top-color:#4A5266;box-sizing:border-box"></span>Loading</button>
+      <span style="font-size:12.5px;color:#4A5266">Ghost / Danger</span>
+      <button style="height:34px;border:0;border-radius:6px;background:transparent;color:#4A5266;font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px"><i>more_horiz</i>More</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#F0F2F5;color:#0F1320;font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px"><i>more_horiz</i>More</button>
+      <button style="height:34px;border:1px solid #C81E1E;border-radius:6px;background:#fff;color:#C81E1E;font-size:13.5px;font-weight:500">Leave course</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#C81E1E;color:#fff;font-size:13.5px;font-weight:600">Block user</button>
+      <button style="height:34px;border:0;border-radius:6px;background:#F0F2F5;color:#8B93A5;font-size:13.5px;font-weight:500">Leave course</button>
+      <span style="font-size:12.5px;color:#6B7386">Sizes 28 · 34 · 40 · 48</span>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Inputs</div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:500">Username<input value="manoj.dev" style="height:36px;border:1px solid #CDD2DB;border-radius:6px;padding:0 12px;font-size:14px;color:#0F1320;outline:none"></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:500">Search skills<div style="height:36px;border:1px solid #4B4FE0;box-shadow:0 0 0 3px #E3E5FC;border-radius:6px;padding:0 10px;display:flex;align-items:center;gap:8px;font-size:14px"><i style="color:#6B7386">search</i>Type|<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#6B7386;border:1px solid #E2E5EB;border-radius:4px;padding:1px 5px">⌘K</span></div></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:500">Email<div style="height:36px;border:1px solid #C81E1E;border-radius:6px;padding:0 12px;display:flex;align-items:center;font-size:14px">manoj@uni</div><span style="display:flex;align-items:center;gap:4px;color:#C81E1E;font-weight:400"><i style="font-size:15px">error</i>Enter a full email address, like name@uni.edu</span></label>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Status &amp; badges · never color alone</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:4px;background:#E8F6EC;color:#15803D;font-size:12px;font-weight:600"><i style="font-size:14px">check_circle</i>On track</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:4px;background:#FDF3E3;color:#B45309;font-size:12px;font-weight:600"><i style="font-size:14px">warning</i>At risk</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:4px;background:#FDECEC;color:#C81E1E;font-size:12px;font-weight:600"><i style="font-size:14px">block</i>Blocked</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:4px;background:#EEF0FD;color:#4B4FE0;font-size:12px;font-weight:600"><i style="font-size:14px">pending</i>In review</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:4px;background:#F0F2F5;color:#4A5266;font-size:12px;font-weight:600"><i style="font-size:14px">radio_button_unchecked</i>To do</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#4A5266"><span style="width:8px;height:8px;border-radius:50%;background:#16A34A"></span>Online</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#4A5266"><span style="width:8px;height:8px;border-radius:50%;border:2px solid #D97706;box-sizing:border-box"></span>Away</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#4A5266"><span style="width:8px;height:8px;border-radius:50%;border:2px solid #9AA1B1;box-sizing:border-box"></span>Offline</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#4A5266"><span style="width:8px;height:8px;border-radius:2px;background:#4B4FE0"></span>In session</span>
+      </div>
+      <div style="font-weight:600;margin-top:4px">Skill tags</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span style="display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;border:1px solid #E2E5EB;font-size:12px;font-weight:500">TypeScript</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:4px;border:1px solid #E2E5EB;font-size:12px;font-weight:500">Angular<span style="display:flex;gap:2px"><span style="width:4px;height:8px;border-radius:1px;background:#4B4FE0"></span><span style="width:4px;height:8px;border-radius:1px;background:#4B4FE0"></span><span style="width:4px;height:8px;border-radius:1px;background:#D6DAFB"></span></span></span>
+        <span style="display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;background:#E8F6EC;color:#15803D;font-size:12px;font-weight:500;gap:4px"><i style="font-size:14px">check</i>PostgreSQL</span>
+        <span style="display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;border:1px dashed #B45309;color:#B45309;font-size:12px;font-weight:500">Kubernetes · gap</span>
+      </div>
+      <div style="font-size:12px;color:#6B7386;line-height:1.5">Level bars: 1 beginner · 2 intermediate · 3 advanced. Matched = check icon. Gap = dashed outline.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Progress</div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;font-size:13px;font-weight:500">Angular<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:12px">62%</span></div><div style="height:6px;border-radius:3px;background:#E8EAF0"><div style="width:62%;height:100%;border-radius:3px;background:#4B4FE0"></div></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;font-size:13px;font-weight:500">Module 4 · 3 of 7 lessons</div><div style="display:flex;gap:3px"><sc-for list="{{ seg }}" as="s" hint-placeholder-count="7"><div style="flex:1;height:6px;border-radius:2px;background:{{ s }}"></div></sc-for></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;font-size:13px;font-weight:500">Active course slots<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:12px">3 / 4</span></div><div style="display:flex;gap:6px"><div style="flex:1;height:28px;border-radius:6px;background:#4B4FE0"></div><div style="flex:1;height:28px;border-radius:6px;background:#4B4FE0"></div><div style="flex:1;height:28px;border-radius:6px;background:#4B4FE0"></div><div style="flex:1;height:28px;border-radius:6px;border:1.5px dashed #CDD2DB;display:flex;align-items:center;justify-content:center;color:#6B7386"><i style="font-size:16px">add</i></div></div></div>
+      <div style="font-weight:600;margin-top:4px">Avatars · Buddy pair</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:24px;height:24px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#D7F1F6;color:#0B6F88;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">EF</div>
+        <div style="position:relative;width:40px;height:40px;border-radius:50%;background:#FDE9D6;color:#9A4A0A;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">AM<span style="position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#16A34A;border:2px solid #fff"></span></div>
+        <div style="display:flex;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;z-index:1">MK</div><div style="width:36px;height:36px;border-radius:50%;background:#FDE9D6;color:#9A4A0A;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #4B4FE0;margin-left:-10px">AM</div></div>
+        <span style="font-size:12px;color:#6B7386;line-height:1.4">Buddy pair: partner<br>ringed in indigo</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Tabs</div>
+      <div style="display:flex;gap:20px;border-bottom:1px solid #E2E5EB;font-size:13.5px">
+        <span style="padding:8px 0;border-bottom:2px solid #0F1320;font-weight:600;margin-bottom:-1px">Overview</span><span style="padding:8px 0;color:#4A5266">Learning</span><span style="padding:8px 0;color:#4A5266">Projects</span><span style="padding:8px 0;color:#4A5266">Posts</span>
+      </div>
+      <div style="display:inline-flex;gap:2px;background:#F0F2F5;padding:3px;border-radius:7px;align-self:flex-start;font-size:13px">
+        <span style="padding:5px 12px;background:#fff;border-radius:5px;font-weight:600;box-shadow:0 1px 2px rgba(15,19,32,.08)">Private</span><span style="padding:5px 12px;color:#4A5266">Shared</span>
+      </div>
+      <div style="font-weight:600;margin-top:6px">Table row</div>
+      <div style="border:1px solid #E2E5EB;border-radius:8px;overflow:hidden;font-size:13px">
+        <div style="display:grid;grid-template-columns:70px 1fr 70px;padding:8px 12px;background:#F7F8FA;color:#6B7386;font-family:'JetBrains Mono';font-size:10.5px">ID<span>TITLE</span><span>PTS</span></div>
+        <div style="display:grid;grid-template-columns:70px 1fr 70px;padding:9px 12px;border-top:1px solid #E2E5EB"><span style="font-family:'JetBrains Mono';font-size:12px;color:#6B7386">TASK-24</span><span>Refresh token rotation</span><span>5</span></div>
+        <div style="display:grid;grid-template-columns:70px 1fr 70px;padding:9px 12px;border-top:1px solid #E2E5EB;background:#EEF0FD"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">TASK-18</span><span>DB migration · selected</span><span>3</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Dropdown · tooltip · toast</div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="width:190px;border:1px solid #E2E5EB;border-radius:10px;box-shadow:0 8px 24px rgba(15,19,32,.10);padding:4px;font-size:13px;background:#fff">
+          <div style="padding:7px 10px;border-radius:6px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">person</i>View profile</div>
+          <div style="padding:7px 10px;border-radius:6px;display:flex;gap:8px;align-items:center;background:#F0F2F5"><i style="font-size:16px;color:#4A5266">chat</i>Message</div>
+          <div style="height:1px;background:#E2E5EB;margin:4px 0"></div>
+          <div style="padding:7px 10px;border-radius:6px;display:flex;gap:8px;align-items:center;color:#4A5266"><i style="font-size:16px">flag</i>Report</div>
+          <div style="padding:7px 10px;border-radius:6px;display:flex;gap:8px;align-items:center;color:#C81E1E"><i style="font-size:16px">block</i>Block</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><span style="background:#0F1320;color:#fff;font-size:12px;padding:5px 8px;border-radius:5px;white-space:nowrap">Follow Alex's cursor <span style="font-family:'JetBrains Mono';color:#A3AABB">F</span></span><span style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #0F1320"></span><i style="color:#4A5266">my_location</i></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#0F1320;color:#E6E9F0;border-radius:10px;padding:10px 12px;font-size:13px;box-shadow:0 8px 24px rgba(15,19,32,.18)"><i style="color:#4ADE80">check_circle</i>Study request sent to Alex<span style="margin-left:auto;color:#8186FF;font-weight:600">Undo</span></div>
+      <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:10px 12px;font-size:13px;box-shadow:0 8px 24px rgba(15,19,32,.10)"><i style="color:#C81E1E">error</i>Message failed to send<span style="margin-left:auto;color:#4B4FE0;font-weight:600">Retry</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Empty · loading · error</div>
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:14px;font-weight:600">No Study Buddy yet</div>
+        <div style="font-size:13px;color:#4A5266">Find someone learning Angular at your level.</div>
+        <button style="align-self:flex-start;height:30px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13px;font-weight:600;padding:0 12px">Find a Study Buddy</button>
+      </div>
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:#EEF0F3"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:10px;width:60%;border-radius:3px;background:#EEF0F3"></div><div style="height:10px;width:85%;border-radius:3px;background:#F3F4F6"></div></div>
+      </div>
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;background:#FFFBFB">
+        <i style="color:#C81E1E">videocam_off</i>
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="font-size:13.5px;font-weight:600">Video couldn't load</div><div style="font-size:12.5px;color:#4A5266">Your connection dropped. Your place is saved at 14:32.</div></div>
+        <button style="height:28px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:12.5px;font-weight:500;padding:0 10px">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Social · post</div>
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:10px;align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:#D7F1F6;color:#0B6F88;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">EF</div><div style="display:flex;flex-direction:column"><span style="font-size:13.5px;font-weight:600">Emma Fischer</span><span style="font-size:12px;color:#6B7386">Completed a course · 2h</span></div></div>
+        <div style="border:1px solid #E2E5EB;border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:#4B4FE0"></span><div style="flex:1"><div style="font-size:13.5px;font-weight:600">System Design · Intermediate</div><div style="font-size:12px;color:#6B7386">with Jonas Weber · 9 weeks</div></div><i style="color:#15803D">verified</i></div>
+        <div style="display:flex;gap:16px;font-size:12.5px;color:#4A5266"><span style="display:flex;gap:4px;align-items:center"><i style="font-size:16px">favorite</i>48</span><span style="display:flex;gap:4px;align-items:center"><i style="font-size:16px">mode_comment</i>6</span><span style="display:flex;gap:4px;align-items:center"><i style="font-size:16px">ios_share</i>Share</span><span style="margin-left:auto"><i style="font-size:16px">bookmark</i></span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Project · task card</div>
+      <div style="border:1px solid #E2E5EB;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:11px;color:#6B7386">TASK-24<span style="margin-left:auto;display:inline-flex;align-items:center;gap:3px;color:#C81E1E;font-family:'Instrument Sans';font-size:11.5px;font-weight:600"><i style="font-size:14px">keyboard_double_arrow_up</i>High</span></div>
+        <div style="font-size:13.5px;font-weight:600;line-height:1.35">Implement refresh token rotation</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#4A5266"><span style="padding:2px 6px;border-radius:4px;background:#F0F2F5">Backend</span><span style="display:inline-flex;align-items:center;gap:2px"><i style="font-size:13px">link</i>TASK-18</span><span style="margin-left:auto;font-family:'JetBrains Mono'">5 pts</span><div style="width:20px;height:20px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div></div>
+      </div>
+      <div style="border:1px solid #E2E5EB;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:11px;color:#6B7386">TASK-33<span style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;color:#0B8FB0"><span style="width:6px;height:6px;background:#0B8FB0;transform:rotate(45deg)"></span>AI SUGGESTED</span></div>
+        <div style="font-size:13.5px;font-weight:600;line-height:1.35">Add idempotency keys to POST /orders</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-weight:600">Code · editor &amp; terminal</div>
+      <div style="background:#0E1118;border-radius:8px;overflow:hidden;font-family:'JetBrains Mono';font-size:12px">
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #232838;color:#A3AABB;font-size:11.5px"><span style="color:#E6E9F0">user.service.ts</span><span style="width:6px;height:6px;border-radius:50%;background:#8186FF"></span><span style="margin-left:auto">TypeScript</span></div>
+        <div style="padding:10px 0;line-height:1.7">
+          <div style="display:flex"><span style="width:32px;text-align:right;padding-right:12px;color:#4A5266">1</span><span style="color:#C792EA">@Injectable</span><span style="color:#E6E9F0">({ providedIn: </span><span style="color:#A5E075">'root'</span><span style="color:#E6E9F0"> })</span></div>
+          <div style="display:flex;background:rgba(251,191,36,.08)"><span style="width:32px;text-align:right;padding-right:12px;color:#4A5266">2</span><span style="color:#82AAFF">export class</span><span style="color:#E6E9F0">&nbsp;UserService {</span><span style="margin-left:6px;width:2px;height:16px;background:#FBBF24"></span><span style="font-size:10px;background:#FBBF24;color:#0A0C12;padding:0 4px;border-radius:2px;height:15px;line-height:15px">Alex</span></div>
+        </div>
+        <div style="border-top:1px solid #232838;padding:8px 10px;color:#A3AABB;line-height:1.6">&gt; npm test<br><span style="color:#4ADE80">✓ 8 tests passed</span> <span style="color:#7C8497">· 1.2s</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="04 AI visual language" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">04</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">AI visual language</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">One system, five roles. No sparkles, no robots, no rainbow gradients.</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;background:#0B8FB0;transform:rotate(45deg)"></span><span style="font-weight:600">The diamond</span></div><div style="font-size:13px;color:#4A5266;line-height:1.55">The diamond marks AI and appears only where AI did the work. It's always followed by a mono role label.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:14px;border:1.5px dashed #0B8FB0;border-radius:3px"></span><span style="font-weight:600">Dashed = generated</span></div><div style="font-size:13px;color:#4A5266;line-height:1.55">AI content sits in a dashed cyan frame, which says "check this." Once a person approves it or an action runs, the frame turns solid.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px"><i style="font-size:16px;color:#0B8FB0">my_location</i><span style="font-weight:600">Always show context</span></div><div style="font-size:13px;color:#4A5266;line-height:1.55">Every AI surface lists what it's "Using" — the lesson, timestamp, file or task. You can remove items from that list.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px"><i style="font-size:16px;color:#0B8FB0">school</i><span style="font-weight:600">Hint before answer</span></div><div style="font-size:13px;color:#4A5266;line-height:1.55">Learning AI starts with a nudge, then a hint, then an example. You have to ask for the full solution.</div></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <sc-for list="{{ aiRoles }}" as="r" hint-placeholder-count="5">
+      <span style="display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 10px;border:1px solid #BCE6F0;background:#F2FAFC;border-radius:6px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.05em;color:#0A6E88"><span style="width:6px;height:6px;background:#0B8FB0;transform:rotate(45deg)"></span>{{ r.n }}<span style="font-family:'Instrument Sans';letter-spacing:0;font-size:12px;color:#4A5266">{{ r.d }}</span></span>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">AI RESPONSE · LEARNING</span>
+      <div style="border:1px dashed #7CCBDD;background:#F7FCFD;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#0A6E88"><span style="width:6px;height:6px;background:#0B8FB0;transform:rotate(45deg)"></span>AI BUDDY<span style="margin-left:auto;color:#6B7386;letter-spacing:0">HINT 1 OF 3</span></div>
+        <div style="font-size:13.5px;line-height:1.55">Look at where <span style="font-family:'JetBrains Mono';font-size:12.5px;background:#E6F6FA;padding:1px 4px;border-radius:3px">UserService</span> is created. Who calls <span style="font-family:'JetBrains Mono';font-size:12.5px">new</span> in your code, and who <em>should</em>?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11.5px;color:#4A5266"><i style="font-size:14px;color:#0B8FB0">my_location</i>Using<span style="padding:2px 6px;border:1px solid #BCE6F0;border-radius:4px;background:#fff">Lesson 4.3</span><span style="padding:2px 6px;border:1px solid #BCE6F0;border-radius:4px;background:#fff">14:32</span><span style="padding:2px 6px;border:1px solid #BCE6F0;border-radius:4px;background:#fff">app.ts</span></div>
+        <div style="display:flex;gap:6px"><button style="height:26px;border:1px solid #CDD2DB;background:#fff;border-radius:5px;font-size:12px;padding:0 8px">Next hint</button><button style="height:26px;border:1px solid #CDD2DB;background:#fff;border-radius:5px;font-size:12px;padding:0 8px">Show example</button></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">AGENT VERBS · AUDIT TRAIL</span>
+      <div style="border:1px solid #E2E5EB;border-radius:10px;padding:6px;display:flex;flex-direction:column">
+        <sc-for list="{{ verbs }}" as="v" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px">
+            <span style="display:inline-flex;align-items:center;gap:5px;width:132px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;font-weight:600;color:{{ v.c }}"><i style="font-size:15px">{{ v.i }}</i>{{ v.n }}</span>
+            <span style="font-size:12.5px;color:#4A5266">{{ v.d }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">APPROVAL · RECOMMENDATION</span>
+      <div style="border:1px dashed #7CCBDD;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;background:#fff">
+        <div style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#4B4FE0;font-weight:600"><i style="font-size:15px">lightbulb</i>RECOMMENDED<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;color:#B45309"><i style="font-size:14px">hourglass_top</i>NEEDS APPROVAL</span></div>
+        <div style="font-size:14px;font-weight:600">Reassign TASK-31 to Sarah</div>
+        <div style="display:grid;grid-template-columns:56px 1fr;gap:4px 10px;font-size:12.5px"><span style="color:#6B7386">Reason</span><span>TASK-28 is done and she has matching backend skills.</span><span style="color:#6B7386">Impact</span><span>Changes the owner. Manoj gets notified.</span><span style="color:#6B7386">Confidence</span><span>Medium. Based on 3 signals.</span></div>
+        <div style="display:flex;gap:6px"><button style="height:28px;border:0;background:#4B4FE0;color:#fff;border-radius:6px;font-size:12.5px;font-weight:600;padding:0 12px">Approve</button><button style="height:28px;border:1px solid #CDD2DB;background:#fff;border-radius:6px;font-size:12.5px;padding:0 10px">Modify</button><button style="height:28px;border:0;background:transparent;color:#4A5266;border-radius:6px;font-size:12.5px;padding:0 10px">Reject</button></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+    <div style="border:1px dashed #E0B26B;background:#FFFBF3;border-radius:10px;padding:12px 14px;display:flex;gap:10px;font-size:12.5px;line-height:1.5"><i style="color:#B45309">help</i><div><b>AI isn't sure.</b> Two readings of this error are possible. Check the stack in <span style="font-family:'JetBrains Mono'">app.ts:14</span> before you change anything.</div></div>
+    <div style="border:1px solid #E2E5EB;background:#F7F8FA;border-radius:10px;padding:12px 14px;display:flex;gap:10px;font-size:12.5px;line-height:1.5;color:#4A5266"><i>cloud_off</i><div><b style="color:#0F1320">AI Buddy is unavailable.</b> Your notes, code and chat still work. We'll retry automatically.</div></div>
+    <div style="border:1px solid #F3C4C4;background:#FFFBFB;border-radius:10px;padding:12px 14px;display:flex;gap:10px;font-size:12.5px;line-height:1.5"><i style="color:#C81E1E">sync_problem</i><div><b>Action failed:</b> the GitHub label couldn't be applied, and nothing else changed. <a href="#">Retry</a> · <a href="#">View log</a></div></div>
+  </div>
+</section>
+
+<section data-screen-label="05 Desktop app shell" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">05</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Desktop app shell</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">Interactive: collapse the sidebar, press search, open notifications</span>
+  </div>
+  <div style="position:relative;height:720px;border:1px solid #CDD2DB;border-radius:12px;overflow:hidden;display:flex;background:#F5F6F8">
+    <aside style="width:{{ sideW }};flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:4px;box-sizing:border-box;transition:width .18s">
+      <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px">
+        <div style="position:relative;width:26px;height:18px;flex-shrink:0"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div>
+        <span style="font-size:15px;font-weight:600;display:{{ labelDisp }}">Studywid<span style="color:#4B4FE0">Buddy</span></span>
+        <button onClick="{{ toggleSide }}" style="margin-left:auto;display:{{ labelDisp }};border:0;background:transparent;color:#6B7386;cursor:pointer;padding:4px;border-radius:5px" title="Collapse sidebar ["><i>left_panel_close</i></button>
+      </div>
+      <div style="height:8px"></div>
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <button onClick="{{ n.go }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:0;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};cursor:pointer;width:100%;text-align:left">
+            <i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1;display:{{ n.ld }}">{{ n.label }}</span>
+            <span style="display:{{ n.bd }};font-size:11px;font-weight:600;min-width:18px;height:18px;border-radius:9px;background:#4B4FE0;color:#fff;align-items:center;justify-content:center;padding:0 5px;box-sizing:border-box">{{ n.badge }}</span>
+          </button>
+          <div style="display:{{ n.subd }};flex-direction:column;gap:1px;padding:2px 0 6px 20px">
+            <sc-for list="{{ n.sub }}" as="s" hint-placeholder-count="0">
+              <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 10px;border-radius:5px;font-size:12.5px;color:#4A5266;border-left:1px solid #E2E5EB"><span style="width:6px;height:6px;border-radius:{{ s.shape }};background:{{ s.c }}"></span><span style="flex:1">{{ s.t }}</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">{{ s.v }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="height:1px;background:#E2E5EB;margin:8px 4px"></div>
+      <button style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:1px dashed #9ED8E6;border-radius:6px;background:#F7FCFD;color:#0A6E88;font-size:13.5px;font-weight:500;cursor:pointer;width:100%;text-align:left"><span style="width:7px;height:7px;background:#0B8FB0;transform:rotate(45deg);margin:0 6px 0 5px;flex-shrink:0"></span><span style="flex:1;display:{{ labelDisp }}">AI Buddy</span><span style="display:{{ labelDisp }};font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">⌘J</span></button>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:2px">
+        <button onClick="{{ expandSide }}" style="display:{{ railDisp }};align-items:center;justify-content:center;height:34px;border:0;background:transparent;color:#6B7386;cursor:pointer;border-radius:6px"><i>left_panel_open</i></button>
+        <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;font-size:13.5px;color:#4A5266"><i style="font-size:19px">settings</i><span style="display:{{ labelDisp }}">Settings</span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 6px;border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">MK</div>
+          <div style="display:{{ labelDispB }};flex-direction:column;line-height:1.25"><span style="font-size:13px;font-weight:600">Manoj Kumar</span><span style="font-size:11.5px;color:#6B7386">@manoj.dev</span></div>
+        </div>
+      </div>
+    </aside>
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+      <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid #E2E5EB;background:#FFFFFF">
+        <span style="font-size:15px;font-weight:600">{{ pageTitle }}</span>
+        <button onClick="{{ openPalette }}" style="margin-left:24px;flex:1;max-width:440px;height:34px;border:1px solid #E2E5EB;border-radius:6px;background:#F7F8FA;display:flex;align-items:center;gap:8px;padding:0 10px;color:#6B7386;font-size:13.5px;cursor:pointer"><i>search</i>Search people, courses, projects…<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;border:1px solid #E2E5EB;border-radius:4px;padding:1px 5px;background:#fff">⌘K</span></button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+          <button style="height:32px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;display:flex;align-items:center;gap:6px;padding:0 10px;font-size:13px;font-weight:500"><i style="font-size:17px">add</i>New</button>
+          <button style="width:34px;height:34px;border:0;border-radius:6px;background:transparent;color:#4A5266;position:relative"><i>chat_bubble</i></button>
+          <button onClick="{{ toggleNotif }}" style="width:34px;height:34px;border:0;border-radius:6px;background:{{ notifBg }};color:#4A5266;position:relative;cursor:pointer"><i>notifications</i><span style="position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:#C81E1E;border:1.5px solid #fff"></span></button>
+          <div style="width:30px;height:30px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:4px">MK</div>
+        </div>
+      </header>
+      <div style="flex:1;padding:24px;display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-content:start">
+        <div style="grid-column:span 8;height:220px;border:1.5px dashed #CDD2DB;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:12px;color:#6B7386">MAIN · 8 COL</div>
+        <div style="grid-column:span 4;height:220px;border:1.5px dashed #CDD2DB;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:12px;color:#6B7386">CONTEXT · 4 COL</div>
+        <div style="grid-column:span 12;font-size:13px;color:#4A5266;line-height:1.6">Social pages cap content at 1180px. Workspace pages run edge to edge, with panels that collapse (<span style="font-family:'JetBrains Mono'">[</span> and <span style="font-family:'JetBrains Mono'">]</span>) and resize. The selected destination: <b>{{ pageTitle }}</b>.</div>
+      </div>
+    </div>
+    <sc-if value="{{ notif }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:56px;right:0;bottom:0;width:380px;background:#fff;border-left:1px solid #E2E5EB;box-shadow:-12px 0 32px rgba(15,19,32,.08);display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #E2E5EB"><span style="font-weight:600">Notifications</span><span style="margin-left:auto;font-size:12.5px;color:#4B4FE0">Mark all read</span></div>
+        <div style="overflow:auto;padding:8px 8px">
+          <sc-for list="{{ notifs }}" as="g" hint-placeholder-count="2">
+            <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386;padding:10px 8px 4px">{{ g.h }}</div>
+            <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;padding:10px 8px;border-radius:8px;background:{{ it.bg }}"><i style="color:{{ it.c }};font-size:18px">{{ it.i }}</i><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;line-height:1.4">{{ it.t }}</span><span style="font-size:11.5px;color:#6B7386">{{ it.w }}</span></div></div>
+            </sc-for>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ palette }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closePalette }}" style="position:absolute;inset:0;background:rgba(15,19,32,.28);display:flex;justify-content:center;padding-top:90px">
+        <div onClick="{{ stop }}" style="width:620px;height:fit-content;background:#fff;border-radius:14px;box-shadow:0 24px 64px rgba(15,19,32,.25);overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #E2E5EB"><i style="color:#6B7386">search</i><span style="font-size:15px">Angular</span><span style="width:1.5px;height:18px;background:#4B4FE0"></span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#6B7386;border:1px solid #E2E5EB;border-radius:4px;padding:1px 5px">esc</span></div>
+          <div style="padding:6px;display:flex;flex-direction:column">
+            <sc-for list="{{ results }}" as="g" hint-placeholder-count="3">
+              <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386;padding:10px 10px 4px">{{ g.h }}</div>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:{{ it.bg }};font-size:13.5px"><i style="font-size:17px;color:#4A5266">{{ it.i }}</i><span style="font-weight:500">{{ it.t }}</span><span style="color:#6B7386;font-size:12.5px">{{ it.s }}</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#6B7386">{{ it.k }}</span></div>
+              </sc-for>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:16px;padding:10px 16px;border-top:1px solid #E2E5EB;background:#F7F8FA;font-size:11.5px;color:#6B7386"><span>↑↓ navigate</span><span>↵ open</span><span>tab filter by type</span><span style="margin-left:auto">&gt; for commands</span></div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<section data-screen-label="06 Mobile navigation" style="background:#FFFFFF;border-radius:16px;padding:48px 56px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #E2E5EB;padding-bottom:16px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">06</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Mobile navigation strategy</h2>
+    <span style="margin-left:auto;font-size:14px;color:#6B7386">Learn and talk fully on mobile; check on projects; build on desktop</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1.1fr;gap:28px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:300px;height:620px;border:8px solid #0F1320;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;background:#F5F6F8">
+        <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;background:#fff">9:41<span style="width:80px;height:20px;border-radius:10px;background:#0F1320"></span><span>5G</span></div>
+        <div style="display:flex;align-items:center;padding:6px 16px 10px;background:#fff;gap:10px"><span style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600">Home</span><i style="margin-left:auto;color:#4A5266">search</i><i style="color:#4A5266">notifications</i></div>
+        <div style="flex:1;padding:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10px;color:#6B7386">CONTINUE</span><div style="display:flex;gap:8px;align-items:center"><span style="font-size:14px;font-weight:600">Angular · DI</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px">62%</span></div><div style="height:5px;border-radius:3px;background:#E8EAF0"><div style="width:62%;height:100%;border-radius:3px;background:#4B4FE0"></div></div></div>
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:12px;height:140px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px;align-items:center"><div style="width:26px;height:26px;border-radius:50%;background:#D7F1F6"></div><div style="height:8px;width:90px;border-radius:3px;background:#E8EAF0"></div></div><div style="height:8px;width:90%;border-radius:3px;background:#EEF0F3"></div><div style="height:8px;width:70%;border-radius:3px;background:#EEF0F3"></div></div>
+        </div>
+        <div style="height:64px;background:#fff;border-top:1px solid #E2E5EB;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding-bottom:8px">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ t.c }};font-size:10.5px;font-weight:600"><i style="font-size:22px">{{ t.i }}</i>{{ t.n }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <span style="font-size:13px;font-weight:600">Bottom tabs · 5 destinations</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:300px;height:620px;border:8px solid #0F1320;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;background:#0A0C12;color:#E6E9F0">
+        <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600">9:41<span style="width:80px;height:20px;border-radius:10px;background:#000"></span><span>5G</span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:4px 14px 10px"><i style="color:#A3AABB">arrow_back</i><div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Angular</span><span style="font-size:11px;color:#A3AABB">with Alex · online</span></div><div style="margin-left:auto;display:flex"><div style="width:26px;height:26px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div><div style="width:26px;height:26px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:-8px;border:1.5px solid #8186FF">AM</div></div></div>
+        <div style="display:flex;gap:16px;padding:0 14px;border-bottom:1px solid #232838;font-size:12.5px;color:#A3AABB"><span style="padding:8px 0;color:#E6E9F0;border-bottom:2px solid #8186FF;font-weight:600">Learn</span><span style="padding:8px 0">Notes</span><span style="padding:8px 0">Chat</span><span style="padding:8px 0">Code</span></div>
+        <div style="height:160px;background:#161A24;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">LESSON VIDEO · 16:9</div>
+        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;font-weight:600">4.3 Providers &amp; injectors</span><span style="font-size:12px;color:#A3AABB">Alex is watching with you</span></div>
+        <div style="margin:auto 12px 14px;border:1px dashed rgba(76,201,230,.45);border-radius:22px;height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;color:#A3AABB"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span>Ask AI about 14:32</div>
+      </div>
+      <span style="font-size:13px;font-weight:600">Workspace: tabs replace side panels</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:300px;height:620px;border:8px solid #0F1320;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;background:#0A0C12;color:#E6E9F0">
+        <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600">9:41<span style="width:80px;height:20px;border-radius:10px;background:#000"></span><span>5G</span></div>
+        <div style="padding:4px 14px 10px;display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Real-Time Delivery Platform</span><span style="font-size:11.5px;color:#A3AABB">Sprint 2 · 42%</span></div>
+        <div style="margin:0 12px;border:1px solid #232838;border-radius:10px;padding:12px;background:#10131B;display:flex;flex-direction:column;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10px;color:#4CC9E6"><span style="width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>AI PM</span><span style="font-size:12.5px;line-height:1.45">2 tasks are blocked and 3 PRs need review.</span></div>
+        <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;background:#10131B;border:1px solid #232838;font-size:12.5px"><i style="font-size:16px;color:#F87171">block</i>TASK-24 · waiting on TASK-18</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;background:#10131B;border:1px solid #232838;font-size:12.5px"><i style="font-size:16px;color:#8186FF">merge</i>PR #42 · review requested</div>
+        </div>
+        <div style="margin:auto 12px 14px;border-radius:10px;background:#161A24;padding:12px;display:flex;gap:10px;font-size:12px;color:#A3AABB;line-height:1.45"><i style="color:#A3AABB">desktop_windows</i>The code editor, board editing and sandbox are on desktop. On mobile you can read, comment and approve.</div>
+      </div>
+      <span style="font-size:13px;font-weight:600">Projects: status + approvals, read-only</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;padding-top:8px">
+      <div style="font-weight:600">Rules</div>
+      <sc-for list="{{ mobileRules }}" as="r" hint-placeholder-count="5">
+        <div style="display:flex;gap:10px;font-size:13px;line-height:1.5;color:#4A5266"><span style="font-family:'JetBrains Mono';font-size:11px;color:#4B4FE0;padding-top:2px">{{ r.n }}</span><span>{{ r.t }}</span></div>
+      </sc-for>
+      <div style="font-weight:600;margin-top:8px">Breakpoints</div>
+      <div style="font-family:'JetBrains Mono';font-size:12px;color:#4A5266;line-height:1.9">≥1440 desktop · full panels<br>1024–1439 laptop · AI panel becomes a drawer<br>768–1023 tablet · sidebar becomes a rail<br>&lt;768 mobile · bottom tabs</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { collapsed: false, active: 'learn', notif: false, palette: false };
+  renderVals() {
+    const s = this.state;
+    const L = '#4B4FE0', C = '#0B8FB0', A = '#D97706';
+    const lt = (t) => ({ t, bg: '#EEF0FD', fg: '#3236B3' }), bt = (t) => ({ t, bg: '#E6F6FA', fg: '#0A6E88' }), gt = (t) => ({ t, bg: '#FDF3E3', fg: '#8A4308' }), nt = (t) => ({ t, bg: '#F0F2F5', fg: '#4A5266' });
+    const navDefs = [
+      { id: 'home', icon: 'home', label: 'Home' },
+      { id: 'learn', icon: 'school', label: 'Learn', sub: [
+        { t: 'Angular', v: '62%', c: L, shape: '50%' }, { t: 'German', v: '41%', c: L, shape: '50%' },
+        { t: 'System Design', v: '78%', c: L, shape: '50%' }, { t: 'AI Engineering', v: '48%', c: L, shape: '50%' }] },
+      { id: 'projects', icon: 'deployed_code', label: 'Projects', sub: [{ t: 'Delivery Platform', v: 'S2', c: C, shape: '1px' }] },
+      { id: 'people', icon: 'group', label: 'People' },
+      { id: 'messages', icon: 'forum', label: 'Messages', badge: 3 },
+      { id: 'jobs', icon: 'work', label: 'Jobs' },
+    ];
+    const titles = { home: 'Home', learn: 'My Learning', projects: 'Projects', people: 'People', messages: 'Messages', jobs: 'Jobs for your skills' };
+    const col = s.collapsed;
+    const nav = navDefs.map(n => {
+      const on = n.id === s.active;
+      return { ...n, bg: on ? '#EEF0FD' : 'transparent', fg: on ? '#2E31A8' : '#4A5266', ic: on ? '#4B4FE0' : '#6B7386', fw: on ? 600 : 500,
+        ld: col ? 'none' : 'block', bd: (!col && n.badge) ? 'inline-flex' : 'none', badge: n.badge || '',
+        sub: n.sub || [], subd: (on && n.sub && !col) ? 'flex' : 'none', go: () => this.setState({ active: n.id }) };
+    });
+    const ni = (i, c, t, w, unread) => ({ i, c, t, w, bg: unread ? '#F5F6FE' : 'transparent' });
+    return {
+      nav, pageTitle: titles[s.active],
+      sideW: col ? '60px' : '248px', labelDisp: col ? 'none' : 'inline', labelDispB: col ? 'none' : 'flex', railDisp: col ? 'flex' : 'none',
+      toggleSide: () => this.setState({ collapsed: true }), expandSide: () => this.setState({ collapsed: false }),
+      notif: s.notif, notifBg: s.notif ? '#F0F2F5' : 'transparent', toggleNotif: () => this.setState({ notif: !s.notif, palette: false }),
+      palette: s.palette, openPalette: () => this.setState({ palette: true, notif: false }), closePalette: () => this.setState({ palette: false }), stop: (e) => e.stopPropagation(),
+      areas: [
+        { name: 'Public', where: 'logged out', color: '#9AA1B1', shape: '50%', pages: ['Landing', 'Login · Register', 'Forgot / reset password', 'Email verification', '404'] },
+        { name: 'Onboarding', where: '7 steps', color: '#9AA1B1', shape: '50%', pages: ['What to learn', 'Current level', 'Goal', 'Existing skills', 'Preferences', 'Profile basics', 'Paths & partners'] },
+        { name: 'Home', where: 'sidebar', color: '#0F1320', shape: '2px', pages: ['Feed + Create post', 'Post detail & comments', 'Notifications · drawer', 'Global search · ⌘K'] },
+        { name: 'Learn', where: 'sidebar', color: L, shape: '50%', pages: ['My Learning · 4 slots', 'Discover courses', 'Course detail', 'Find Study Buddy → request', 'Study Workspace ▸ Overview · Learn · Code · Notes · Chat · AI', 'Video session', 'Completion → certificate'] },
+        { name: 'Projects', where: 'sidebar', color: C, shape: '1px', pages: ['Discover projects', 'Project detail', 'Apply → AI interview', 'Evaluation → team result', 'Project Workspace ▸ Overview · Board · Code · GitHub · Team · Chat · Meetings · AI PM · Activity', 'Completion → certificate'] },
+        { name: 'People', where: 'sidebar', color: '#0F1320', shape: '2px', pages: ['Discover people', 'Profile ▸ Overview · Learning · Projects · Certificates · Posts', 'Connections ▸ All · Requests · Sent · Suggested'] },
+        { name: 'Messages', where: 'sidebar', color: '#0F1320', shape: '2px', pages: ['Inbox split by context: Direct · Study Buddy · Project', 'Each thread shows its context label'] },
+        { name: 'Jobs', where: 'sidebar', color: A, shape: '0', pages: ['Jobs for your skills', 'Job detail + match explanation', 'Learning → Project recommendation', 'Project → Job recommendation'] },
+        { name: 'Settings', where: 'avatar menu', color: '#9AA1B1', shape: '50%', pages: ['Account · Profile', 'Learning preferences', 'Notifications', 'Privacy & visibility', 'Security · Appearance'] },
+        { name: 'System', where: 'everywhere', color: '#9AA1B1', shape: '50%', pages: ['Empty · Loading · Error', 'AI processing · uncertain · failed', 'Agent approval', 'Offline / reconnecting', 'Block · Report · Leave'] },
+      ],
+      journey: [nt('Landing'), nt('Register'), nt('Onboarding'), lt('Angular · Intermediate'), lt('Find Study Buddy'), lt('Request accepted'), lt('Study Workspace'), lt('Watch together'), lt('Notes'), lt('Code'), lt('Ask AI'), lt('Complete course'), lt('Certificate'), bt('Recommended project'), bt('Apply'), bt('AI interview'), bt('Evaluation'), bt('Team'), bt('Workspace'), bt('AI PM'), bt('GitHub · review · tests'), bt('Complete'), gt('Added to profile'), gt('Share'), gt('Relevant jobs')],
+      light: [
+        { n: 'Canvas', hex: '#F5F6F8' }, { n: 'Surface', hex: '#FFFFFF' }, { n: 'Subtle', hex: '#F0F2F5' }, { n: 'Border', hex: '#E2E5EB' },
+        { n: 'Ink', hex: '#0F1320' }, { n: 'Ink 2', hex: '#4A5266' }, { n: 'Ink 3', hex: '#6B7386' }, { n: 'Primary', hex: '#4B4FE0' },
+        { n: 'Cyan · AI', hex: '#0B8FB0' }, { n: 'Success', hex: '#15803D' }, { n: 'Warning', hex: '#B45309' }, { n: 'Danger', hex: '#C81E1E' }],
+      dark: [
+        { n: 'Base', hex: '#0A0C12' }, { n: 'Panel', hex: '#10131B' }, { n: 'Raised', hex: '#161A24' }, { n: 'Border', hex: '#232838' },
+        { n: 'Text', hex: '#E6E9F0' }, { n: 'Text 2', hex: '#A3AABB' }, { n: 'Text 3', hex: '#7C8497' }, { n: 'Primary', hex: '#8186FF' },
+        { n: 'Cyan · AI', hex: '#4CC9E6' }, { n: 'Success', hex: '#4ADE80' }, { n: 'Warning', hex: '#FBBF24' }, { n: 'Danger', hex: '#F87171' }],
+      space: [4, 8, 12, 16, 24, 32, 48, 64].map(v => ({ v, px: v + 'px' })),
+      seg: ['#4B4FE0', '#4B4FE0', '#4B4FE0', '#A5A8F5', '#E8EAF0', '#E8EAF0', '#E8EAF0'],
+      aiRoles: [{ n: 'AI BUDDY', d: 'learning' }, { n: 'AI INTERVIEWER', d: 'applications' }, { n: 'AI PM', d: 'projects' }, { n: 'AI REVIEWER', d: 'pull requests' }, { n: 'AI NOTES', d: 'notes & flashcards' }],
+      verbs: [
+        { n: 'OBSERVED', i: 'visibility', c: '#4A5266', d: 'TASK-18 is 2 days overdue' },
+        { n: 'RECOMMENDED', i: 'lightbulb', c: '#4B4FE0', d: 'Split TASK-18 into migration + seed' },
+        { n: 'REQUESTED', i: 'outgoing_mail', c: '#B45309', d: 'Asked Sarah for a status update' },
+        { n: 'EXECUTED', i: 'check_circle', c: '#15803D', d: 'Labelled PR #42 "needs-review"' },
+        { n: 'REJECTED', i: 'do_not_disturb_on', c: '#6B7386', d: 'Manoj declined reassignment' }],
+      notifs: [
+        { h: 'TODAY', items: [ni('handshake', L, 'Alex accepted your Study Buddy request for Angular.', '12 min ago', 1), ni('event', L, 'Your study session begins in 30 minutes.', '28 min ago', 1), ni('merge', C, 'PR #42 needs your review.', '1 h ago', 0)] },
+        { h: 'EARLIER', items: [ni('verified', '#15803D', 'You were selected for Real-Time Delivery Platform.', 'Yesterday', 0), ni('mode_comment', '#4A5266', 'Sarah commented on your achievement.', 'Mon', 0)] }],
+      results: [
+        { h: 'COURSES', items: [{ i: 'school', t: 'Angular', s: 'Intermediate · in progress', k: '↵', bg: '#F0F2F5' }, { i: 'school', t: 'Angular Advanced', s: '6 weeks', k: '', bg: 'transparent' }] },
+        { h: 'PEOPLE', items: [{ i: 'person', t: 'Alex Morgan', s: 'your Study Buddy', k: '', bg: 'transparent' }, { i: 'person', t: 'Emma Fischer', s: 'Frontend Developer', k: '', bg: 'transparent' }] },
+        { h: 'PROJECTS', items: [{ i: 'deployed_code', t: 'Real-Time Delivery Platform', s: 'Frontend ×2 open', k: '', bg: 'transparent' }] },
+        { h: 'POSTS & SKILLS', items: [{ i: 'article', t: 'Signals vs RxJS: when I switched', s: 'by Jonas Weber', k: '', bg: 'transparent' }, { i: 'tag', t: 'Angular', s: '2,184 learners', k: '', bg: 'transparent' }] }],
+      tabs: [{ i: 'home', n: 'Home', c: '#4B4FE0' }, { i: 'school', n: 'Learn', c: '#6B7386' }, { i: 'deployed_code', n: 'Projects', c: '#6B7386' }, { i: 'group', n: 'People', c: '#6B7386' }, { i: 'forum', n: 'Inbox', c: '#6B7386' }],
+      mobileRules: [
+        { n: '01', t: 'Five tabs: Home, Learn, Projects, People, Inbox. Jobs sits under People › Opportunities, and Settings under the avatar.' },
+        { n: '02', t: 'In a workspace, side panels become top tabs. AI Buddy turns into a pinned "Ask AI" bar that already knows the lesson context.' },
+        { n: '03', t: 'Lessons, notes, chat, voice notes and quizzes work fully on mobile.' },
+        { n: '04', t: "The IDE, board editing and the sandbox stay on desktop. Mobile shows status and diffs, and you can comment and approve there." },
+        { n: '05', t: 'Touch targets are at least 44px, with one primary action per screen.' }],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#1A1D25;font-family:'Instrument Sans',system-ui,sans-serif;color:#E6E9F0;-webkit-font-smoothing:antialiased}
+a{color:#8186FF;text-decoration:none}a:hover{color:#A5A8FF;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:56px;display:flex;flex-direction:column;gap:20px;width:1440px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#8186FF">29 – 37</span><span style="font-size:20px;font-weight:600">Study Workspace</span><span style="font-size:13px;color:#A3AABB">Try it: the tabs, collapse panels with the icons at the edges, Watch Together, "Ask AI about 14:32", AI quick actions, Run in Code, and the quiz in AI Buddy</span></div>
+
+<div data-screen-label="29 Study Workspace" style="width:1440px;height:920px;display:flex;background:#0A0C12;border-radius:12px;overflow:hidden;border:1px solid #2E3446;position:relative">
+  <nav style="width:56px;flex-shrink:0;border-right:1px solid #232838;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;background:#0A0C12">
+    <div style="position:relative;width:24px;height:16px;margin-bottom:14px"><div style="position:absolute;left:0;top:0;width:16px;height:16px;border-radius:50%;background:#6E72FF"></div><div style="position:absolute;left:8px;top:0;width:16px;height:16px;border-radius:50%;border:2.5px solid #4CC9E6;box-sizing:border-box"></div></div>
+    <sc-for list="{{ rail }}" as="r" hint-placeholder-count="6">
+      <a href="{{ r.href }}" title="{{ r.n }}" style="width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ r.bg }};color:{{ r.c }};text-decoration:none"><i style="font-size:20px">{{ r.i }}</i></a>
+    </sc-for>
+    <div style="margin-top:auto;width:30px;height:30px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div>
+  </nav>
+
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:52px;flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid #232838;background:#0A0C12">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:9px;height:9px;border-radius:50%;background:#8186FF"></span>
+        <span style="font-size:14.5px;font-weight:600">Angular</span><span style="font-size:12.5px;color:#A3AABB">Intermediate</span>
+        <div style="width:80px;height:4px;border-radius:2px;background:#232838;margin-left:4px"><div style="width:62%;height:100%;border-radius:2px;background:#8186FF"></div></div><span style="font-family:'JetBrains Mono';font-size:11.5px;color:#A3AABB">62%</span>
+      </div>
+      <div style="display:flex;gap:2px;margin-left:12px;height:52px;align-items:stretch">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+          <button onClick="{{ t.go }}" style="display:flex;align-items:center;gap:6px;padding:0 10px;border:0;border-bottom:2px solid {{ t.bc }};background:transparent;color:{{ t.fg }};font-size:13px;font-weight:{{ t.fw }};cursor:pointer"><span style="display:{{ t.dd }};width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>{{ t.n }}<span style="display:{{ t.badgeD }};font-size:10.5px;font-weight:700;background:#5B5FEF;color:#fff;border-radius:8px;padding:1px 5px">2</span></button>
+        </sc-for>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 4px;border:1px solid #232838;border-radius:16px">
+          <div style="display:flex"><div style="width:24px;height:24px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid #0A0C12">MK</div><div style="position:relative;width:24px;height:24px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid #8186FF;margin-left:-7px">AM<span style="position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:50%;background:#4ADE80;border:1.5px solid #0A0C12"></span></div></div>
+          <span style="font-size:12px;color:#A3AABB"><span style="color:#E6E9F0;font-weight:600">Alex</span> · {{ alexWhere }}</span>
+        </div>
+        <button onClick="{{ toggleWatch }}" style="height:32px;border:1px solid {{ watchB }};border-radius:6px;background:{{ watchBg }};color:{{ watchFg }};font-size:12.5px;font-weight:600;padding:0 10px;display:flex;align-items:center;gap:6px;cursor:pointer"><i style="font-size:17px">connected_tv</i>{{ watchL }}</button>
+        <button onClick="{{ openCall }}" style="height:32px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:12.5px;font-weight:600;padding:0 12px;display:flex;align-items:center;gap:6px;cursor:pointer"><i style="font-size:17px">videocam</i>Start Study Session</button>
+        <button onClick="{{ toggleMore }}" style="width:32px;height:32px;border:1px solid #232838;border-radius:6px;background:transparent;color:#A3AABB;cursor:pointer"><i>more_horiz</i></button>
+      </div>
+    </header>
+    <sc-if value="{{ more }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:50px;right:16px;width:230px;background:#161A24;border:1px solid #2E3446;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);padding:4px;font-size:13px;z-index:6">
+        <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#E6E9F0"><i style="font-size:16px;color:#A3AABB">event</i>Schedule a session</div>
+        <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#E6E9F0"><i style="font-size:16px;color:#A3AABB">flag</i>Shared goals</div>
+        <div style="height:1px;background:#2E3446;margin:4px 0"></div>
+        <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#A3AABB"><i style="font-size:16px">report</i>Report Alex</div>
+        <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#F87171"><i style="font-size:16px">link_off</i>Leave study partnership</div>
+      </div>
+    </sc-if>
+
+    <div style="flex:1;display:flex;min-height:0">
+      <sc-if value="{{ leftOpen }}" hint-placeholder-val="{{ true }}">
+        <aside style="width:252px;flex-shrink:0;border-right:1px solid #232838;background:#10131B;display:flex;flex-direction:column;min-height:0">
+          <div style="display:flex;align-items:center;padding:12px 12px 8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#7C8497">{{ leftTitle }}</span><button onClick="{{ closeLeft }}" title="Collapse  [" style="margin-left:auto;border:0;background:transparent;color:#7C8497;cursor:pointer;padding:2px"><i style="font-size:17px">left_panel_close</i></button></div>
+          <sc-if value="{{ showFiles }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;padding:0 6px;font-family:'JetBrains Mono';font-size:12px">
+              <sc-for list="{{ files }}" as="f" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:6px;height:26px;padding-left:{{ f.pad }};padding-right:8px;border-radius:5px;background:{{ f.bg }};color:{{ f.c }}"><i style="font-size:15px;color:{{ f.ic }}">{{ f.i }}</i>{{ f.n }}<span style="margin-left:auto;display:{{ f.ad }};font-family:'Instrument Sans';font-size:9.5px;font-weight:700;background:#FBBF24;color:#0A0C12;border-radius:3px;padding:0 4px">AM</span></div>
+              </sc-for>
+            </div>
+            <div style="margin:14px 12px 0;padding:10px;border:1px solid #232838;border-radius:8px;display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:600">Exercise 4.E · Cart service</span><span style="font-size:11.5px;color:#A3AABB;line-height:1.45">Turn CartService into an injectable singleton. Then give the checkout page its own instance.</span></div>
+          </sc-if>
+          <sc-if value="{{ showModules }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:1px;padding:0 6px;overflow:auto">
+              <sc-for list="{{ modules }}" as="m" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:8px;height:30px;padding:0 8px;font-size:12.5px;font-weight:600;color:{{ m.c }}"><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497;width:14px">{{ m.n }}</span><span style="flex:1">{{ m.t }}</span><i style="font-size:15px;color:{{ m.ic }}">{{ m.i }}</i></div>
+                <sc-for list="{{ m.lessons }}" as="l" hint-placeholder-count="0">
+                  <div style="display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 30px;border-radius:6px;background:{{ l.bg }};font-size:12.5px;color:{{ l.c }};font-weight:{{ l.fw }}"><i style="font-size:15px;color:{{ l.ic }}">{{ l.i }}</i><span style="flex:1">{{ l.t }}</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">{{ l.d }}</span><span style="display:{{ l.ad }};width:16px;height:16px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:7.5px;font-weight:700;align-items:center;justify-content:center;border:1px solid #8186FF">AM</span></div>
+                </sc-for>
+              </sc-for>
+            </div>
+          </sc-if>
+        </aside>
+      </sc-if>
+      <sc-if value="{{ leftClosed }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openLeft }}" title="Expand  [" style="width:28px;flex-shrink:0;border:0;border-right:1px solid #232838;background:#10131B;color:#7C8497;cursor:pointer;display:flex;align-items:flex-start;justify-content:center;padding-top:12px"><i style="font-size:17px">left_panel_open</i></button>
+      </sc-if>
+
+      <main style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;background:#0A0C12">
+
+        <sc-if value="{{ tabOverview }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px;display:flex;flex-direction:column;gap:16px;overflow:auto">
+            <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px">
+              <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#7C8497">UP NEXT · MODULE 4 · DEPENDENCY INJECTION</span>
+                <span style="font-family:'Bricolage Grotesque';font-size:28px;font-weight:600;letter-spacing:-0.02em">4.4 Injection tokens</span>
+                <span style="font-size:13.5px;color:#A3AABB;line-height:1.55">Provide things that aren't classes, like config objects and feature flags, and see why InjectionToken beats string keys. 18 min, plus a 5-question quick check.</span>
+                <div style="display:flex;gap:4px"><sc-for list="{{ modSeg }}" as="g" hint-placeholder-count="7"><span style="flex:1;height:5px;border-radius:2px;background:{{ g }}"></span></sc-for></div>
+                <div style="display:flex;gap:8px"><button onClick="{{ goLearn }}" style="height:38px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:13.5px;font-weight:600;padding:0 16px;display:flex;align-items:center;gap:6px;cursor:pointer"><i style="font-size:18px">play_arrow</i>Continue Learning</button><button onClick="{{ openCall }}" style="height:38px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:13.5px;font-weight:500;padding:0 14px;display:flex;align-items:center;gap:6px;cursor:pointer"><i style="font-size:18px">videocam</i>Start Study Session</button></div>
+              </div>
+              <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#7C8497">STUDY BUDDY</span>
+                <div style="display:flex;gap:12px;align-items:center"><div style="position:relative;width:44px;height:44px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #8186FF;box-sizing:border-box">AM<span style="position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#4ADE80;border:2px solid #10131B"></span></div><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Alex Morgan</span><span style="font-size:12.5px;color:#A3AABB">Online · 64% through the course</span></div></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:10px;border-radius:8px;background:#161A24;display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;color:#7C8497">Next session</span><span style="font-size:13px;font-weight:600">Today 19:00</span></div><div style="padding:10px;border-radius:8px;background:#161A24;display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;color:#7C8497">Streak together</span><span style="font-size:13px;font-weight:600">21 days</span></div></div>
+                <span style="font-size:12px;color:#A3AABB">Alex is 1 lesson ahead of you. They finished 4.4 this morning.</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+              <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+                <span style="font-size:14px;font-weight:600">Shared goals</span>
+                <sc-for list="{{ goals }}" as="g" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:center;font-size:13px;color:{{ g.c }}"><i style="font-size:17px;color:{{ g.ic }}">{{ g.i }}</i>{{ g.t }}</div></sc-for>
+              </div>
+              <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex"><span style="font-size:14px;font-weight:600">Exercises</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11.5px;color:#A3AABB">7 / 12</span></div>
+                <sc-for list="{{ exercises }}" as="e" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:center;font-size:13px"><i style="font-size:16px;color:{{ e.c }}">{{ e.i }}</i><span style="flex:1">{{ e.t }}</span><span style="font-size:11.5px;color:#7C8497">{{ e.s }}</span></div></sc-for>
+              </div>
+              <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+                <span style="font-size:14px;font-weight:600">Recent activity</span>
+                <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4"><div style="display:flex;gap:8px;font-size:12.5px;line-height:1.4"><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497;width:34px;padding-top:2px">{{ a.w }}</span><span style="flex:1;color:#A3AABB"><span style="color:#E6E9F0;font-weight:600">{{ a.who }}</span> {{ a.t }}</span></div></sc-for>
+              </div>
+            </div>
+            <div style="background:#10131B;border:1px solid #232838;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center"><span style="font-size:14px;font-weight:600">Latest notes</span><button onClick="{{ goNotes }}" style="margin-left:auto;border:0;background:transparent;color:#8186FF;font-size:12.5px;font-weight:600;cursor:pointer">Open notes</button></div>
+              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+                <sc-for list="{{ notePrev }}" as="n" hint-placeholder-count="3"><div style="border:1px solid #232838;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;background:#0E1118"><span style="font-family:'JetBrains Mono';font-size:10px;color:#7C8497">{{ n.k }}</span><span style="font-size:13px;font-weight:600">{{ n.t }}</span><span style="font-size:12px;color:#A3AABB;line-height:1.45">{{ n.b }}</span></div></sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabLearn }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow:auto">
+            <div style="position:relative;aspect-ratio:16/8.2;border-radius:10px;overflow:hidden;background:repeating-linear-gradient(135deg,#121620 0 12px,#151925 12px 24px);border:1px solid #232838;flex-shrink:0">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:12px;color:#7C8497">LESSON VIDEO · 4.3 PROVIDERS &amp; INJECTORS</div>
+              <sc-if value="{{ watching }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:8px;background:rgba(10,12,18,.82);border:1px solid #2E3446;border-radius:18px;padding:4px 12px 4px 4px;font-size:12.5px">
+                  <div style="position:relative;width:24px;height:24px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center">AM<span style="position:absolute;right:-1px;bottom:-1px;width:8px;height:8px;border-radius:50%;background:#4ADE80;border:1.5px solid #0A0C12"></span></div>Alex is watching with you<span style="font-family:'JetBrains Mono';font-size:10.5px;color:#4ADE80">● SYNCED</span>
+                </div>
+                <div style="position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:8px;background:rgba(10,12,18,.82);border:1px solid #2E3446;border-radius:8px;padding:6px 10px;font-size:12px;color:#A3AABB"><i style="font-size:15px;color:#FBC98A">pause</i>{{ syncMsg }}</div>
+                <div style="position:absolute;right:16px;bottom:64px;display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+                  <sc-for list="{{ floatReacts }}" as="r" hint-placeholder-count="0"><span style="background:rgba(10,12,18,.82);border:1px solid #2E3446;border-radius:14px;padding:3px 10px;font-size:12px">{{ r }}</span></sc-for>
+                </div>
+              </sc-if>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:24px 16px 12px;background:linear-gradient(transparent,rgba(10,12,18,.92));display:flex;flex-direction:column;gap:10px">
+                <div style="position:relative;height:4px;border-radius:2px;background:rgba(255,255,255,.16)">
+                  <div style="width:20%;height:100%;border-radius:2px 0 0 2px;background:rgba(255,255,255,.28);position:absolute;left:58%"></div>
+                  <div style="width:58%;height:100%;border-radius:2px;background:#8186FF;position:absolute"></div>
+                  <span style="position:absolute;left:58%;top:-4px;width:12px;height:12px;border-radius:50%;background:#fff;transform:translateX(-50%)"></span>
+                  <span style="position:absolute;left:31%;top:-3px;width:3px;height:10px;border-radius:1px;background:#4CC9E6" title="Note at 07:41"></span>
+                  <span style="position:absolute;left:58%;top:-3px;width:3px;height:10px;border-radius:1px;background:#4CC9E6"></span>
+                  <sc-if value="{{ watching }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;left:58%;top:-22px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#0A0C12;background:#FBC98A;border-radius:3px;padding:1px 4px">AM</span></sc-if>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;font-size:12.5px;color:#A3AABB">
+                  <button onClick="{{ togglePlay }}" style="border:0;background:transparent;color:#E6E9F0;cursor:pointer;padding:0"><i style="font-size:24px">{{ playIcon }}</i></button>
+                  <i style="font-size:20px">replay_10</i><i style="font-size:20px">volume_up</i>
+                  <span style="font-family:'JetBrains Mono'">14:32 / 24:10</span>
+                  <span style="margin-left:auto;font-family:'JetBrains Mono';border:1px solid #2E3446;border-radius:4px;padding:1px 6px">1.25×</span>
+                  <span style="font-family:'JetBrains Mono';border:1px solid #2E3446;border-radius:4px;padding:1px 6px">1080p</span>
+                  <i style="font-size:20px;color:#E6E9F0">closed_caption</i><i style="font-size:20px">fullscreen</i>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">4.3 Providers &amp; injectors</span><span style="font-size:12.5px;color:#A3AABB">Module 4 · Dependency Injection · 24 min</span></div>
+              <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+                <sc-if value="{{ watching }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:4px"><sc-for list="{{ reactions }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.go }}" style="height:32px;padding:0 9px;border:1px solid #232838;border-radius:16px;background:#10131B;color:#E6E9F0;font-size:12.5px;cursor:pointer">{{ r.t }}</button></sc-for></div></sc-if>
+                <button onClick="{{ askMoment }}" style="height:34px;border:1px dashed rgba(76,201,230,.55);border-radius:6px;background:rgba(76,201,230,.07);color:#4CC9E6;font-size:13px;font-weight:600;padding:0 12px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span>Ask AI about 14:32</button>
+                <button style="height:34px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:13px;font-weight:500;padding:0 12px;display:flex;align-items:center;gap:6px"><i style="font-size:17px">bookmark_add</i>Note at 14:32</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:18px;border-bottom:1px solid #232838;font-size:13px">
+              <sc-for list="{{ lessonTabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="padding:8px 0;border:0;border-bottom:2px solid {{ t.bc }};margin-bottom:-1px;background:transparent;color:{{ t.fg }};font-weight:{{ t.fw }};font-size:13px;cursor:pointer">{{ t.n }}</button></sc-for>
+            </div>
+            <sc-if value="{{ ltTranscript }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:2px;font-size:13.5px;line-height:1.55">
+                <sc-for list="{{ transcript }}" as="l" hint-placeholder-count="4"><div style="display:flex;gap:14px;padding:6px 10px;border-radius:6px;background:{{ l.bg }};color:{{ l.c }}"><span style="font-family:'JetBrains Mono';font-size:11.5px;color:#7C8497;width:40px;flex-shrink:0;padding-top:2px">{{ l.t }}</span><span>{{ l.x }}</span></div></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ ltAbout }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;line-height:1.6;color:#A3AABB;max-width:720px">In this lesson you'll see how Angular's hierarchical injectors find a provider. You'll learn the difference between <span style="font-family:'JetBrains Mono';color:#E6E9F0">providedIn: 'root'</span> and component-level providers, and when you'd want more than one instance of a service.</div>
+            </sc-if>
+            <sc-if value="{{ ltResources }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px"><sc-for list="{{ resources }}" as="r" hint-placeholder-count="3"><div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid #232838;border-radius:8px;font-size:13px"><i style="font-size:17px;color:#A3AABB">{{ r.i }}</i>{{ r.t }}<span style="margin-left:auto;font-size:12px;color:#7C8497">{{ r.s }}</span></div></sc-for></div>
+            </sc-if>
+            <sc-if value="{{ ltExercises }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:10px"><div style="flex:1;padding:14px;border:1px solid #232838;border-radius:8px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13.5px;font-weight:600">Exercise 4.E · Cart service</span><span style="font-size:12.5px;color:#A3AABB">TypeScript · ~20 min · pair-friendly</span><button onClick="{{ goCode }}" style="align-self:flex-start;margin-top:4px;height:30px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:12.5px;font-weight:600;padding:0 12px;cursor:pointer">Open in Code</button></div><div style="flex:1;padding:14px;border:1px solid #232838;border-radius:8px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13.5px;font-weight:600">Quick check · 5 questions</span><span style="font-size:12.5px;color:#A3AABB">Generated from this lesson and your notes</span><button onClick="{{ goAI }}" style="align-self:flex-start;margin-top:4px;height:30px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:12.5px;font-weight:500;padding:0 12px;cursor:pointer">Start quiz</button></div></div>
+            </sc-if>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #232838;border-radius:10px;background:#10131B;margin-top:auto"><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">NEXT</span><span style="font-size:13.5px;font-weight:600">4.4 Injection tokens</span><span style="font-size:12px;color:#A3AABB">18 min · Alex finished it this morning</span><i style="margin-left:auto;color:#A3AABB">arrow_forward</i></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabCode }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+            <div style="height:42px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid #232838;background:#0E1118">
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#E6E9F0;padding:5px 10px;border-radius:5px;background:#161A24">cart.service.ts</span><span style="font-family:'JetBrains Mono';font-size:12px;color:#7C8497;padding:5px 10px">checkout.component.ts</span>
+              <span style="margin-left:8px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:#A3AABB;white-space:nowrap;flex-shrink:0"><span style="width:7px;height:7px;border-radius:50%;background:#4ADE80"></span>Shared · Alex</span>
+              <div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-shrink:0">
+                <span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497;margin-right:4px;white-space:nowrap">TS 5.6</span>
+                <button onClick="{{ follow }}" style="height:28px;border:1px solid {{ followB }};border-radius:5px;background:{{ followBg }};color:{{ followFg }};font-size:12px;font-weight:600;padding:0 9px;display:flex;align-items:center;gap:5px;cursor:pointer"><i style="font-size:15px">my_location</i>{{ followL }}</button>
+                <button title="Reset exercise" style="width:28px;height:28px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#A3AABB;display:flex;align-items:center;justify-content:center"><i style="font-size:15px">restart_alt</i></button>
+                <button onClick="{{ runTests }}" style="height:28px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#E6E9F0;font-size:12px;font-weight:500;padding:0 9px;display:flex;align-items:center;gap:5px;cursor:pointer"><i style="font-size:15px">science</i>Test</button>
+                <button onClick="{{ runCode }}" style="height:28px;border:0;border-radius:5px;background:#16A34A;color:#fff;font-size:12px;font-weight:600;padding:0 10px;display:flex;align-items:center;gap:5px;cursor:pointer"><i style="font-size:15px">play_arrow</i>Run</button>
+              </div>
+            </div>
+            <div style="flex:1;min-height:0;padding:12px 0;font-family:'JetBrains Mono';font-size:13px;line-height:1.75;background:#0A0C12;overflow:auto">
+              <sc-for list="{{ code }}" as="l" hint-placeholder-count="12">
+                <div style="display:flex;align-items:center;background:{{ l.bg }};min-height:22px"><span style="width:44px;text-align:right;padding-right:16px;color:#4A5266;flex-shrink:0">{{ l.n }}</span><span style="white-space:pre;color:{{ l.c }}">{{ l.t }}</span><span style="display:{{ l.cd }};width:2px;height:18px;background:#FBBF24;margin-left:1px"></span><span style="display:{{ l.cd }};font-family:'Instrument Sans';font-size:10px;font-weight:700;background:#FBBF24;color:#0A0C12;padding:0 5px;border-radius:2px;margin-left:2px;line-height:15px">Alex</span><span style="display:{{ l.hd }};margin-left:14px;font-family:'Instrument Sans';font-size:11.5px;color:#4CC9E6;border:1px dashed rgba(76,201,230,.45);border-radius:4px;padding:0 6px;line-height:18px">◆ Hint available · why might this be a problem?</span></div>
+              </sc-for>
+            </div>
+            <div style="height:190px;flex-shrink:0;border-top:1px solid #232838;display:flex;flex-direction:column;background:#0E1118">
+              <div style="display:flex;gap:16px;padding:0 14px;height:34px;align-items:center;font-size:12px;border-bottom:1px solid #232838"><span style="color:#E6E9F0;font-weight:600">Terminal</span><span style="color:#7C8497">Output</span><span style="color:#7C8497">Tests</span><span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:{{ execC }};font-family:'JetBrains Mono';font-size:11px"><span style="width:7px;height:7px;border-radius:50%;background:{{ execC }}"></span>{{ execL }}</span></div>
+              <div style="flex:1;padding:10px 14px;font-family:'JetBrains Mono';font-size:12.5px;line-height:1.7;overflow:auto">
+                <sc-for list="{{ term }}" as="t" hint-placeholder-count="4"><div style="color:{{ t.c }};white-space:pre">{{ t.t }}</div></sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabNotes }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+            <div style="height:46px;flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid #232838">
+              <div style="display:inline-flex;gap:2px;background:#161A24;padding:3px;border-radius:7px"><sc-for list="{{ noteModes }}" as="m" hint-placeholder-count="2"><button onClick="{{ m.go }}" style="height:26px;padding:0 10px;border:0;border-radius:5px;background:{{ m.bg }};color:{{ m.fg }};font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px"><i style="font-size:14px">{{ m.i }}</i>{{ m.n }}</button></sc-for></div>
+              <div style="display:flex;gap:2px;margin-left:10px;color:#A3AABB"><sc-for list="{{ fmt }}" as="f" hint-placeholder-count="8"><span title="{{ f.t }}" style="width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center"><i style="font-size:18px">{{ f.i }}</i></span></sc-for></div>
+              <span style="margin-left:auto;font-size:11.5px;color:#7C8497">{{ noteSaved }}</span>
+            </div>
+            <div style="flex:1;overflow:auto;padding:28px 48px;display:flex;flex-direction:column;gap:14px;max-width:760px">
+              <div style="display:flex;flex-wrap:wrap;gap:6px"><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 8px;border:1px solid #2E3446;border-radius:4px;color:#A3AABB"><i style="font-size:13px">school</i>Angular › Module 4</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 8px;border:1px solid #2E3446;border-radius:4px;color:#A3AABB"><i style="font-size:13px">play_circle</i>Lesson 4.3</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 8px;border:1px solid rgba(76,201,230,.4);border-radius:4px;color:#4CC9E6"><i style="font-size:13px">schedule</i>14:32</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 8px;border:1px solid #2E3446;border-radius:4px;color:#A3AABB"><i style="font-size:13px">code</i>cart.service.ts</span></div>
+              <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:30px;font-weight:600;letter-spacing:-0.02em">{{ noteTitle }}</h2>
+              <sc-if value="{{ sharedNote }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:12px;font-size:14.5px;line-height:1.65;color:#D3D7E2">
+                  <p style="margin:0">A provider tells an injector <span style="background:rgba(251,191,36,.18);color:#FDE68A;padding:0 3px;border-radius:2px">how to create a dependency</span>. The injector hierarchy decides <em>which</em> instance a component gets.</p>
+                  <h3 style="margin:6px 0 0;font-size:16px;font-weight:600;color:#E6E9F0">Where to provide</h3>
+                  <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li><span style="font-family:'JetBrains Mono';font-size:13px;color:#4CC9E6">providedIn: 'root'</span> gives one app-wide instance and is tree-shakable</li><li>Component <span style="font-family:'JetBrains Mono';font-size:13px;color:#4CC9E6">providers: []</span> give a new instance per component subtree</li></ul>
+                  <div style="background:#0E1118;border:1px solid #232838;border-radius:8px;padding:12px 14px;font-family:'JetBrains Mono';font-size:12.5px;line-height:1.7"><span style="color:#C792EA">@Component</span>({ providers: [CartService] })<br><span style="color:#7C8497">// checkout gets its own cart, isolated from the header badge</span></div>
+                  <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;gap:8px;align-items:center"><i style="font-size:18px;color:#4ADE80">check_box</i><span style="text-decoration:line-through;color:#7C8497">Rewatch 07:41, the injector tree diagram</span></div><div style="display:flex;gap:8px;align-items:center"><i style="font-size:18px;color:#A3AABB">check_box_outline_blank</i>Ask: what does <span style="font-family:'JetBrains Mono';font-size:13px">@Optional()</span> do if nothing is found?</div></div>
+                  <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:#A3AABB;margin-top:4px"><div style="width:18px;height:18px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:7.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid #8186FF">AM</div>Alex edited the checklist 4 min ago</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ privateNote }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:12px;font-size:14.5px;line-height:1.65;color:#D3D7E2"><p style="margin:0">This is a lot like the DI container in NestJS that I use on the delivery project. The difference is that Angular's tree follows the component tree.</p><p style="margin:0">Need to ask Alex: does a lazy-loaded route get its own root-level injector?</p><span style="font-size:12px;color:#7C8497;display:flex;align-items:center;gap:6px"><i style="font-size:15px">lock</i>Only you can see private notes</span></div>
+              </sc-if>
+            </div>
+            <div style="flex-shrink:0;display:flex;align-items:center;gap:6px;padding:10px 20px;border-top:1px solid #232838">
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#4CC9E6;margin-right:6px"><span style="width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>AI NOTES</span>
+              <sc-for list="{{ noteAI }}" as="a" hint-placeholder-count="5"><button onClick="{{ a.go }}" style="height:28px;padding:0 10px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#E6E9F0;font-size:12px;cursor:pointer">{{ a.t }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabChat }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+            <div style="height:46px;flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid #232838">
+              <span title="Private to this partnership" style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#8186FF;padding:3px 7px;border:1px solid rgba(129,134,255,.35);border-radius:4px;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px"><i style="font-size:12px">lock</i>STUDY BUDDY</span><span style="font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0">Angular · you &amp; Alex</span>
+              <div style="margin-left:auto;display:flex;gap:6px;flex-shrink:0"><button onClick="{{ openCall }}" title="Start Study Session" style="height:28px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#E6E9F0;font-size:12px;padding:0 9px;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:15px">event</i>Session</button><button onClick="{{ openCall }}" title="Video call" style="height:28px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#E6E9F0;font-size:12px;padding:0 9px;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:15px">videocam</i>Call</button><button onClick="{{ watchFromChat }}" title="Watch Together" style="height:28px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#E6E9F0;font-size:12px;padding:0 9px;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:15px">connected_tv</i>Watch</button></div>
+            </div>
+            <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px">
+              <div style="align-self:center;font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">TODAY</div>
+              <div style="display:flex;gap:10px;max-width:72%"><div style="width:30px;height:30px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">AM</div><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#A3AABB"><b style="color:#E6E9F0">Alex</b> · 16:58</span><div style="background:#161A24;border-radius:2px 10px 10px 10px;padding:9px 12px;font-size:13.5px;line-height:1.5">Want to finish Module 4 tonight? 4.4 is short.</div><div style="display:flex;gap:4px"><span style="font-size:11.5px;padding:1px 7px;border:1px solid #2E3446;border-radius:10px">👍 1</span></div></div></div>
+              <div style="display:flex;gap:10px;max-width:72%;align-self:flex-end;flex-direction:row-reverse"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span style="font-size:12px;color:#A3AABB">You · 17:03</span><div style="background:#2A2F6B;border-radius:10px 2px 10px 10px;padding:9px 12px;font-size:13.5px;line-height:1.5">Yes! I got stuck on the cart exercise, though. My checkout and header share the same cart and I can't see why.</div></div></div>
+              <div style="display:flex;gap:10px;max-width:72%"><div style="width:30px;height:30px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">AM</div><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;color:#A3AABB"><b style="color:#E6E9F0">Alex</b> · 17:05</span>
+                <div style="display:flex;align-items:center;gap:10px;background:#161A24;border-radius:2px 10px 10px 10px;padding:8px 12px;width:300px"><button style="width:30px;height:30px;border-radius:50%;border:0;background:#5B5FEF;color:#fff;display:flex;align-items:center;justify-content:center"><i style="font-size:18px">play_arrow</i></button><div style="flex:1;display:flex;align-items:center;gap:2px;height:26px"><sc-for list="{{ wave }}" as="w" hint-placeholder-count="30"><span style="flex:1;height:{{ w.h }};border-radius:1px;background:{{ w.c }}"></span></sc-for></div><span style="font-family:'JetBrains Mono';font-size:11px;color:#A3AABB">0:42</span></div>
+                <div style="background:#0E1118;border:1px solid #232838;border-radius:8px;overflow:hidden;width:380px"><div style="display:flex;padding:6px 10px;border-bottom:1px solid #232838;font-family:'JetBrains Mono';font-size:11px;color:#A3AABB">checkout.component.ts<span style="margin-left:auto">TS</span></div><div style="padding:8px 10px;font-family:'JetBrains Mono';font-size:12px;line-height:1.7"><span style="color:#C792EA">@Component</span>({<br>&nbsp;&nbsp;providers: [CartService] <span style="color:#7C8497">// ← this line</span><br>})</div></div>
+              </div></div>
+              <div style="display:flex;gap:10px;max-width:72%;align-self:flex-end;flex-direction:row-reverse"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span style="font-size:12px;color:#A3AABB">You · 17:06 · replying to the voice note</span><div style="background:#2A2F6B;border-radius:10px 2px 10px 10px;padding:9px 12px;font-size:13.5px;line-height:1.5">Ohhh, so it's a separate instance on purpose. OK, see you at 19:00 🙌</div><span style="font-size:11px;color:#7C8497;display:flex;align-items:center;gap:3px"><i style="font-size:13px">done_all</i>Seen</span></div></div>
+            </div>
+            <div style="flex-shrink:0;padding:12px 20px 16px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;border:1px solid #2E3446;border-radius:10px;padding:8px 10px;background:#10131B"><i style="color:#7C8497">add_circle</i><span style="flex:1;font-size:13.5px;color:#7C8497">Message Alex…</span><i style="color:#7C8497">code</i><i style="color:#7C8497">mood</i><i style="color:#7C8497">attach_file</i><i style="color:#E6E9F0">mic</i></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabAI }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;overflow:auto;padding:28px 40px;display:flex;flex-direction:column;gap:18px;max-width:780px">
+            <div style="display:flex;align-items:center;gap:10px"><span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4CC9E6"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span>AI BUDDY · QUICK CHECK</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11.5px;color:#A3AABB">QUESTION {{ quiz.n }} OF 5</span></div>
+            <div style="display:flex;gap:4px"><sc-for list="{{ quiz.bar }}" as="b" hint-placeholder-count="5"><span style="flex:1;height:4px;border-radius:2px;background:{{ b }}"></span></sc-for></div>
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:26px;font-weight:600;letter-spacing:-0.02em;line-height:1.25">{{ quiz.q }}</h2>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ quiz.opts }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.go }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid {{ o.b }};border-radius:10px;background:{{ o.bg }};color:#E6E9F0;font-size:14px;text-align:left;cursor:pointer"><span style="width:24px;height:24px;border-radius:6px;border:1px solid #2E3446;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:12px;color:#A3AABB;flex-shrink:0">{{ o.k }}</span><span style="flex:1;font-family:{{ o.ff }}">{{ o.t }}</span><i style="color:{{ o.ic }}">{{ o.i }}</i></button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ quiz.answered }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed rgba(76,201,230,.45);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;background:rgba(76,201,230,.04)">
+                <span style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:{{ quiz.rc }}"><i>{{ quiz.ri }}</i>{{ quiz.rt }}</span>
+                <span style="font-size:13.5px;line-height:1.6;color:#D3D7E2">{{ quiz.ex }}</span>
+                <div style="display:flex;gap:6px;margin-top:4px"><button onClick="{{ quizNext }}" style="height:30px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:12.5px;font-weight:600;padding:0 12px;cursor:pointer">Next question</button><button onClick="{{ askQuiz }}" style="height:30px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:12.5px;padding:0 12px;cursor:pointer">Ask AI to explain more</button></div>
+              </div>
+            </sc-if>
+            <span style="font-size:12px;color:#7C8497;display:flex;align-items:center;gap:6px"><i style="font-size:15px">info</i>Generated from lesson 4.3 and your shared notes. Questions can be wrong, so flag any that look off.</span>
+          </div>
+        </sc-if>
+      </main>
+
+      <sc-if value="{{ rightOpen }}" hint-placeholder-val="{{ true }}">
+        <aside style="width:340px;flex-shrink:0;border-left:1px solid #232838;background:#10131B;display:flex;flex-direction:column;min-height:0">
+          <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #232838"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span><span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4CC9E6">AI BUDDY</span><span style="font-size:11.5px;color:#7C8497;margin-left:4px">hint-first</span><button onClick="{{ closeRight }}" title="Collapse  ]" style="margin-left:auto;border:0;background:transparent;color:#7C8497;cursor:pointer;padding:2px"><i style="font-size:17px">right_panel_close</i></button></div>
+          <div style="padding:10px 14px;border-bottom:1px solid #232838;display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12.5px;color:#E6E9F0">{{ aiIntro }}</span>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:11px;color:#A3AABB"><i style="font-size:13px;color:#4CC9E6">my_location</i>Using<sc-for list="{{ ctx }}" as="c" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:3px;padding:2px 4px 2px 7px;border:1px solid #2E3446;border-radius:4px;color:#D3D7E2">{{ c }}<i style="font-size:12px;color:#7C8497">close</i></span></sc-for></div>
+          </div>
+          <div style="flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ chat }}" as="m" hint-placeholder-count="2">
+              <sc-if value="{{ m.me }}" hint-placeholder-val="{{ false }}"><div style="align-self:flex-end;max-width:86%;background:#1C2130;border-radius:10px 10px 2px 10px;padding:8px 11px;font-size:13px;line-height:1.5">{{ m.t }}</div></sc-if>
+              <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
+                <div style="border:1px dashed rgba(76,201,230,.42);border-radius:10px;padding:11px 12px;display:flex;flex-direction:column;gap:7px">
+                  <span style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.05em;color:#7C8497">{{ m.k }}</span>
+                  <span style="font-size:13px;line-height:1.55;color:#E6E9F0;white-space:pre-line">{{ m.t }}</span>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap"><sc-for list="{{ m.f }}" as="f" hint-placeholder-count="0"><span style="font-size:11px;padding:3px 8px;border:1px solid #2E3446;border-radius:4px;color:#A3AABB">{{ f }}</span></sc-for></div>
+                </div>
+              </sc-if>
+            </sc-for>
+            <sc-if value="{{ thinking }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A3AABB"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #2E3446;border-top-color:#4CC9E6;box-sizing:border-box"></span>Reading lesson 4.3 at 14:32 and your note…</div></sc-if>
+          </div>
+          <div style="padding:10px 14px 14px;border-top:1px solid #232838;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;flex-wrap:wrap;gap:5px"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="7"><button onClick="{{ q.go }}" style="height:26px;padding:0 8px;border:1px solid #2E3446;border-radius:5px;background:transparent;color:#D3D7E2;font-size:11.5px;cursor:pointer" style-hover="background:#1C2130">{{ q.t }}</button></sc-for></div>
+            <div style="display:flex;align-items:center;gap:8px;border:1px solid #2E3446;border-radius:8px;padding:8px 10px;background:#0A0C12"><span style="flex:1;font-size:13px;color:#7C8497">Ask about this lesson…</span><i style="color:#7C8497">mic</i><i style="color:#4CC9E6">arrow_upward</i></div>
+          </div>
+        </aside>
+      </sc-if>
+      <sc-if value="{{ rightClosed }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openRight }}" title="AI Buddy  ]" style="width:36px;flex-shrink:0;border:0;border-left:1px solid #232838;background:#10131B;color:#4CC9E6;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding-top:14px;gap:10px"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span><span style="writing-mode:vertical-rl;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.08em">AI BUDDY</span></button>
+      </sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ call }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#07080C;display:flex;flex-direction:column;z-index:8">
+      <div style="height:48px;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid #232838"><span style="width:8px;height:8px;border-radius:50%;background:#F87171"></span><span style="font-size:13.5px;font-weight:600">Study session · Angular</span><span style="font-family:'JetBrains Mono';font-size:12px;color:#A3AABB">00:14:08</span><span style="font-size:12px;color:#A3AABB;margin-left:8px">Agenda: finish 4.4 · cart exercise</span></div>
+      <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;padding:12px;min-height:0">
+        <div style="display:flex;flex-direction:column;gap:12px;min-height:0">
+          <div style="flex:1;border-radius:12px;background:repeating-linear-gradient(135deg,#121620 0 12px,#151925 12px 24px);border:1px solid #232838;position:relative;display:flex;align-items:center;justify-content:center"><span style="font-family:'JetBrains Mono';font-size:12px;color:#7C8497">ALEX · SCREEN SHARE · cart.service.ts</span><span style="position:absolute;left:12px;bottom:12px;font-size:12px;background:rgba(10,12,18,.8);padding:4px 8px;border-radius:5px">Alex is presenting</span></div>
+          <div style="display:flex;gap:12px;height:130px">
+            <div style="width:220px;border-radius:10px;background:#161A24;border:2px solid #4ADE80;position:relative;display:flex;align-items:center;justify-content:center"><div style="width:56px;height:56px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center">AM</div><span style="position:absolute;left:8px;bottom:8px;font-size:11.5px;display:flex;align-items:center;gap:4px"><i style="font-size:14px;color:#4ADE80">graphic_eq</i>Alex</span></div>
+            <div style="width:220px;border-radius:10px;background:#161A24;border:1px solid #232838;position:relative;display:flex;align-items:center;justify-content:center"><div style="width:56px;height:56px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div><span style="position:absolute;left:8px;bottom:8px;font-size:11.5px;display:flex;align-items:center;gap:4px"><i style="font-size:14px;color:#F87171">mic_off</i>You</span></div>
+          </div>
+        </div>
+        <div style="border:1px solid #232838;border-radius:12px;background:#10131B;display:flex;flex-direction:column;min-height:0">
+          <div style="display:flex;gap:14px;padding:0 14px;border-bottom:1px solid #232838;font-size:12.5px;height:40px;align-items:stretch"><span style="display:flex;align-items:center;border-bottom:2px solid #8186FF;font-weight:600">Notes</span><span style="display:flex;align-items:center;color:#A3AABB">Lesson</span><span style="display:flex;align-items:center;color:#A3AABB">Code</span><span style="display:flex;align-items:center;color:#4CC9E6">◆ AI</span></div>
+          <div style="padding:14px;font-size:13px;line-height:1.6;color:#D3D7E2;display:flex;flex-direction:column;gap:8px"><b style="color:#E6E9F0">Session notes · shared</b><span>• InjectionToken for config: use it for the API base URL</span><span>• Checkout gets its own CartService on purpose</span><span style="color:#7C8497">• (typing…) Alex</span></div>
+        </div>
+      </div>
+      <div style="height:72px;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #232838">
+        <sc-for list="{{ callCtl }}" as="c" hint-placeholder-count="5"><button title="{{ c.t }}" style="width:46px;height:46px;border-radius:50%;border:0;background:{{ c.bg }};color:{{ c.fg }};display:flex;align-items:center;justify-content:center"><i style="font-size:21px">{{ c.i }}</i></button></sc-for>
+        <button onClick="{{ endCall }}" style="height:46px;border-radius:23px;border:0;background:#DC2626;color:#fff;font-size:13.5px;font-weight:600;padding:0 20px;display:flex;align-items:center;gap:6px;margin-left:12px;cursor:pointer"><i style="font-size:20px">call_end</i>End session</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'learn', left: true, right: true, watch: true, playing: false, lt: 'transcript', more: false, call: false, follow: false, exec: 'idle', note: 'shared', chat: null, thinking: false, quiz: 0, picked: null, reacts: [] };
+  respond(key) {
+    const R = {
+      moment: { me: 'What is happening at 14:32?', k: 'EXPLAINING 14:32 · LESSON 4.3', t: 'At 14:32 the instructor moves CartService from providedIn: \'root\' into the checkout component\'s providers array.\n\nHere\'s something to try before I explain: what do you think the header badge shows after you add an item on checkout?', f: ['Give a hint', 'Show me', 'Quiz me on this'] },
+      'Explain simply': { me: 'Explain simply', k: 'SIMPLE EXPLANATION', t: 'A provider is a recipe for a service. An injector is the kitchen that cooks from it. Each component can have its own small kitchen. If it doesn\'t, Angular walks up the tree until it finds one.', f: ['Give an example', 'Quiz me'] },
+      'Give an example': { me: 'Give an example', k: 'EXAMPLE · YOUR CODE', t: 'In your cart.service.ts, the header and checkout both inject CartService. With providedIn: \'root\' they share one cart. Add providers: [CartService] to checkout and it gets a fresh, separate cart.', f: ['Why is this useful?'] },
+      'Quiz me': { me: 'Quiz me', k: 'QUICK CHECK READY', t: 'I made 5 questions from lesson 4.3 and your notes. They open in the AI Buddy tab.', f: ['Open quiz'] },
+      'Why is this useful?': { me: 'Why is this useful?', k: 'WHY IT MATTERS', t: 'Scoped instances let you isolate state, like a wizard that resets on every visit, and swap implementations in tests without touching component code.', f: [] },
+      'Compare with React': { me: 'Compare with React', k: 'COMPARISON · YOU KNOW REACT', t: 'This is the closest thing to React Context. A provider high in the tree shares a value, and a nested provider overrides it for its subtree. The difference is that Angular creates class instances for you and handles their lifetime.', f: ['Show side by side'] },
+      'Help with my code': { me: 'Help with my code', k: 'HINT 1 OF 3 · cart.service.ts:14', t: 'Look at line 14. Who calls new CartService()? In DI, your code shouldn\'t be the one creating it. What should you change so Angular does?', f: ['Next hint', 'Show example'] },
+      'Summarize lesson': { me: 'Summarize lesson', k: 'SUMMARY · 4.3', t: '• Providers are recipes, injectors resolve them.\n• Lookup goes from the element injector up to the environment injector.\n• Use root for singletons and component providers for scoped instances.\n• @Optional and @Self change how lookup behaves.', f: ['Save to notes'] },
+      Summarize: { me: 'Summarize this note', k: 'AI NOTES · SUMMARY', t: 'Your note in one line: provide in root for one instance, provide in a component for one per subtree.', f: ['Save to notes'] },
+      'Create Flashcards': { me: 'Create flashcards from this note', k: 'AI NOTES · 4 FLASHCARDS DRAFTED', t: 'Q: What does providedIn: \'root\' create? A: One tree-shakable app-wide instance.\n\nReview all 4 before saving, because drafts can be wrong.', f: ['Review', 'Save'] },
+      quiz: { me: 'Explain question 1 in more depth', k: 'DEEPER · HIERARCHICAL DI', t: 'Think of the injector tree like CSS inheritance. The closest provider wins, so a component-level provider shadows the root one for that subtree only.', f: [] },
+    };
+    const r = R[key]; if (!r) return;
+    this.setState(st => ({ thinking: true, right: true, chat: [...(st.chat || this.baseChat()), { me: true, ai: false, t: r.me, k: '', f: [] }] }));
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState(st => ({ thinking: false, chat: [...st.chat, { me: false, ai: true, t: r.t, k: r.k, f: r.f }] })), 900);
+  }
+  baseChat() {
+    return [{ me: true, ai: false, t: 'Why not just call new UserService() in the component?', k: '', f: [] }, { me: false, ai: true, k: 'HINT 1 OF 3', t: 'Good one to think about. At 07:41 the instructor swaps the service for a fake in a test. If every component called new itself, what would you have to change to do that?', f: ['Next hint', 'Show example'] }];
+  }
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const s = this.state;
+    const tabDefs = [['overview', 'Overview'], ['learn', 'Learn'], ['code', 'Code'], ['notes', 'Notes'], ['chat', 'Chat'], ['ai', 'AI Buddy']];
+    const go = (tab) => () => this.setState({ tab, more: false });
+    const L = (t, d, st, alex) => { const done = st === 'done', cur = st === 'cur'; return { t, d, i: done ? 'check_circle' : cur ? 'play_circle' : st === 'ex' ? 'code' : st === 'quiz' ? 'quiz' : 'radio_button_unchecked', ic: done ? '#4ADE80' : cur ? '#8186FF' : '#7C8497', c: cur ? '#E6E9F0' : done ? '#A3AABB' : '#D3D7E2', fw: cur ? 600 : 400, bg: cur ? '#1C2130' : 'transparent', ad: alex ? 'inline-flex' : 'none' }; };
+    const codeLines = [
+      ['1', "import { Injectable } from '@angular/core';", '#C792EA'], ['2', '', '#E6E9F0'], ['3', '@Injectable({ providedIn: \'root\' })', '#C792EA'],
+      ['4', 'export class CartService {', '#82AAFF'], ['5', '  private items = signal<CartItem[]>([]);', '#E6E9F0'], ['6', '  readonly count = computed(() => this.items().length);', '#E6E9F0'],
+      ['7', '', '#E6E9F0'], ['8', '  add(item: CartItem) {', '#E6E9F0'], ['9', '    this.items.update(list => [...list, item]);', '#A5E075'], ['10', '  }', '#E6E9F0'], ['11', '}', '#82AAFF'], ['12', '', '#E6E9F0'],
+      ['13', '// checkout.component.ts', '#6B7386'], ['14', 'cart = new CartService();', '#E6E9F0'], ['15', '', '#E6E9F0']];
+    const term = { idle: [{ t: '> npm test', c: '#A3AABB' }, { t: '✓ 8 tests passed  · 1.2s', c: '#4ADE80' }, { t: '', c: '#fff' }, { t: '~/angular-4E $', c: '#7C8497' }],
+      running: [{ t: '> npm run start', c: '#A3AABB' }, { t: 'Compiling… (Alex sees this too)', c: '#FBBF24' }],
+      ran: [{ t: '> npm run start', c: '#A3AABB' }, { t: '✓ Compiled in 0.9s', c: '#4ADE80' }, { t: '[header] cart count: 1', c: '#E6E9F0' }, { t: '[checkout] cart count: 0   ← different instance', c: '#E6E9F0' }],
+      tests: [{ t: '> npm test', c: '#A3AABB' }, { t: '✓ 7 passed', c: '#4ADE80' }, { t: '✕ 1 failed  checkout.spec.ts › uses injected CartService', c: '#F87171' }, { t: '  Expected spy to have been called. Ask AI → "Explain Error"', c: '#A3AABB' }] };
+    const ex = s.exec;
+    const quizzes = [
+      { q: 'Which Angular feature lets you provide dependencies to a component and its children only?', opts: ['providedIn: \'root\'', 'The component\'s providers array', '@Input() bindings', 'A route resolver'], ans: 1, code: [1, 1, 0, 0],
+        ex: 'Adding a service to a component\'s providers array creates an element injector, so that component and its children get their own instance. providedIn: \'root\' gives one instance for the whole app.' },
+      { q: 'What happens if no injector up the tree has a provider for a token?', opts: ['Angular creates one automatically', 'It throws NullInjectorError, unless @Optional() is used', 'It returns undefined silently', 'It falls back to a mock'], ans: 1, code: [0, 0, 0, 0],
+        ex: 'Angular throws NullInjectorError: No provider for X. If you mark the dependency @Optional(), you get null instead.' }];
+    const qd = quizzes[s.quiz % 2];
+    const answered = s.picked !== null;
+    const quiz = { n: s.quiz + 1, q: qd.q, answered, bar: [0, 1, 2, 3, 4].map(k => k < s.quiz ? '#4ADE80' : k === s.quiz ? '#8186FF' : '#232838'),
+      opts: qd.opts.map((t, k) => { const right = k === qd.ans, picked = k === s.picked; const showR = answered && right, showW = answered && picked && !right;
+        return { t, k: 'ABCD'[k], ff: qd.code[k] ? "'JetBrains Mono'" : 'inherit', b: showR ? '#4ADE80' : showW ? '#F87171' : '#232838', bg: showR ? 'rgba(74,222,128,.07)' : showW ? 'rgba(248,113,113,.07)' : '#10131B', i: showR ? 'check_circle' : showW ? 'cancel' : '', ic: showR ? '#4ADE80' : '#F87171', go: () => !answered && this.setState({ picked: k }) }; }),
+      rt: s.picked === qd.ans ? 'Correct' : 'Not quite', ri: s.picked === qd.ans ? 'check_circle' : 'lightbulb', rc: s.picked === qd.ans ? '#4ADE80' : '#FBBF24', ex: qd.ex };
+    const ctxMap = { overview: ['Angular › Module 4', 'progress 62%'], learn: ['Module 4 › 4.3', '14:32', 'shared note'], code: ['cart.service.ts', 'line 14', 'Exercise 4.E'], notes: ['Note: Providers', 'Lesson 4.3'], chat: ['Module 4'], ai: ['Lesson 4.3', 'your quiz answers'] };
+    const intro = { overview: "You're in Angular Module 4, Dependency Injection.", learn: "You're learning Angular Dependency Injection.", code: 'You\'re working on Exercise 4.E with Alex.', notes: 'You\'re editing a shared note on providers.', chat: 'I can\'t see your chat unless you share a message with me.', ai: 'Quick check on lesson 4.3.' };
+    const alexWhere = { overview: 'online', learn: s.watch ? 'watching with you' : 'in Learn · 4.4', code: 'editing cart.service.ts', notes: 'in Notes', chat: 'typing…', ai: 'in Learn · 4.4' };
+    const fileRow = (n, pad, i, ic, on, alex) => ({ n, pad: pad + 'px', i, ic, bg: on ? '#1C2130' : 'transparent', c: on ? '#E6E9F0' : '#A3AABB', ad: alex ? 'inline' : 'none' });
+    return {
+      rail: [['home', 'Home', 'Network.dc.html'], ['school', 'Learn', 'Learning.dc.html', 1], ['deployed_code', 'Projects', 'Projects.dc.html'], ['group', 'People', 'Network.dc.html'], ['forum', 'Messages', '#'], ['work', 'Jobs', '#']].map(([i, n, href, on]) => ({ i, n, href, bg: on ? '#1C2130' : 'transparent', c: on ? '#8186FF' : '#7C8497' })),
+      tabs: tabDefs.map(([id, n]) => ({ n, bc: s.tab === id ? '#8186FF' : 'transparent', fg: s.tab === id ? '#E6E9F0' : '#A3AABB', fw: s.tab === id ? 600 : 500, dd: id === 'ai' ? 'inline-block' : 'none', badgeD: id === 'chat' && s.tab !== 'chat' ? 'inline' : 'none', go: go(id) })),
+      tabOverview: s.tab === 'overview', tabLearn: s.tab === 'learn', tabCode: s.tab === 'code', tabNotes: s.tab === 'notes', tabChat: s.tab === 'chat', tabAI: s.tab === 'ai',
+      goLearn: go('learn'), goNotes: go('notes'), goCode: go('code'), goAI: go('ai'),
+      alexWhere: alexWhere[s.tab],
+      watching: s.watch, toggleWatch: () => this.setState({ watch: !s.watch }), watchFromChat: () => this.setState({ watch: true, tab: 'learn' }),
+      watchL: s.watch ? 'Watching together' : 'Watch Together', watchB: s.watch ? 'rgba(74,222,128,.45)' : '#2E3446', watchBg: s.watch ? 'rgba(74,222,128,.08)' : 'transparent', watchFg: s.watch ? '#4ADE80' : '#E6E9F0',
+      syncMsg: s.playing ? 'You resumed playback · synced for both' : 'Alex paused at 14:32',
+      playIcon: s.playing ? 'pause' : 'play_arrow', togglePlay: () => this.setState({ playing: !s.playing }),
+      reactions: ['👍', '🤯', '❓', '⏪ rewind'].map(t => ({ t, go: () => this.setState(st => ({ reacts: [...st.reacts.slice(-2), 'You ' + t] })) })),
+      floatReacts: s.reacts,
+      more: s.more, toggleMore: () => this.setState({ more: !s.more }),
+      call: s.call, openCall: () => this.setState({ call: true, more: false }), endCall: () => this.setState({ call: false }),
+      callCtl: [{ i: 'mic_off', t: 'Microphone', bg: '#DC2626', fg: '#fff' }, { i: 'videocam', t: 'Camera', bg: '#1C2130', fg: '#E6E9F0' }, { i: 'present_to_all', t: 'Share screen', bg: '#1C2130', fg: '#E6E9F0' }, { i: 'chat', t: 'Chat', bg: '#1C2130', fg: '#E6E9F0' }, { i: 'settings', t: 'Settings', bg: '#1C2130', fg: '#E6E9F0' }],
+      leftOpen: s.left, leftClosed: !s.left, closeLeft: () => this.setState({ left: false }), openLeft: () => this.setState({ left: true }),
+      rightOpen: s.right, rightClosed: !s.right, closeRight: () => this.setState({ right: false }), openRight: () => this.setState({ right: true }),
+      leftTitle: s.tab === 'code' ? 'EXERCISE FILES' : 'COURSE · 4 OF 9 MODULES',
+      showFiles: s.tab === 'code', showModules: s.tab !== 'code',
+      files: [fileRow('src', 4, 'folder_open', '#A3AABB'), fileRow('app.ts', 22, 'description', '#82AAFF'), fileRow('cart.service.ts', 22, 'description', '#82AAFF', 1, 1), fileRow('checkout.component.ts', 22, 'description', '#82AAFF'), fileRow('header.component.ts', 22, 'description', '#82AAFF'), fileRow('tests', 4, 'folder', '#A3AABB'), fileRow('package.json', 4, 'data_object', '#FBBF24')],
+      modules: [
+        { n: '1', t: 'Components & templates', i: 'check_circle', ic: '#4ADE80', c: '#A3AABB', lessons: [] },
+        { n: '2', t: 'Routing', i: 'check_circle', ic: '#4ADE80', c: '#A3AABB', lessons: [] },
+        { n: '3', t: 'Forms', i: 'check_circle', ic: '#4ADE80', c: '#A3AABB', lessons: [] },
+        { n: '4', t: 'Dependency Injection', i: 'expand_less', ic: '#7C8497', c: '#E6E9F0', lessons: [L('4.1 Why DI', '12m', 'done'), L('4.2 Services', '16m', 'done'), L('4.3 Providers & injectors', '24m', 'cur'), L('4.4 Injection tokens', '18m', 'todo', 1), L('Exercise: Cart service', '20m', 'ex'), L('Quick check', '5q', 'quiz')] },
+        { n: '5', t: 'RxJS & HTTP', i: 'lock_open', ic: '#7C8497', c: '#D3D7E2', lessons: [] },
+        { n: '6', t: 'Signals', i: 'lock_open', ic: '#7C8497', c: '#D3D7E2', lessons: [] },
+        { n: '7', t: 'Testing', i: 'lock_open', ic: '#7C8497', c: '#D3D7E2', lessons: [] }],
+      modSeg: ['#4ADE80', '#4ADE80', '#8186FF', '#232838', '#232838', '#232838'],
+      goals: [{ t: 'Build a production-style Angular app', i: 'radio_button_unchecked', ic: '#8186FF', c: '#E6E9F0' }, { t: 'Prepare for frontend interviews', i: 'radio_button_unchecked', ic: '#8186FF', c: '#E6E9F0' }, { t: 'Finish Modules 1–3 by September', i: 'check_circle', ic: '#4ADE80', c: '#A3AABB' }],
+      exercises: [{ t: '3.E Reactive signup form', s: 'Done · pair', i: 'check_circle', c: '#4ADE80' }, { t: '4.E Cart service', s: 'In progress', i: 'pending', c: '#FBBF24' }, { t: '5.E HTTP retry with backoff', s: 'Locked', i: 'lock', c: '#7C8497' }],
+      activity: [{ w: '12m', who: 'Alex', t: 'added 2 notes to Providers' }, { w: '1h', who: 'You', t: 'finished 4.3 at 14:32' }, { w: '3h', who: 'Alex', t: 'completed 4.4 Injection tokens' }, { w: '1d', who: 'You', t: 'scored 4/5 on Module 3 quick check' }],
+      notePrev: [{ k: 'SHARED · 14:32', t: 'Angular Dependency Injection', b: 'Root vs component providers, and why checkout gets its own cart…' }, { k: 'SHARED · 07:41', t: 'Injector tree diagram', b: 'Element → environment → platform. Lookup walks upward.' }, { k: 'PRIVATE', t: 'NestJS comparison', b: 'Same idea as Nest\'s container, but follows the component tree.' }],
+      lessonTabs: [['transcript', 'Transcript'], ['about', 'Description'], ['resources', 'Resources'], ['exercises', 'Exercises']].map(([id, n]) => ({ n, bc: s.lt === id ? '#8186FF' : 'transparent', fg: s.lt === id ? '#E6E9F0' : '#A3AABB', fw: s.lt === id ? 600 : 500, go: () => this.setState({ lt: id }) })),
+      ltTranscript: s.lt === 'transcript', ltAbout: s.lt === 'about', ltResources: s.lt === 'resources', ltExercises: s.lt === 'exercises',
+      transcript: [
+        { t: '14:02', x: 'So far every component has used the same CartService, the one from root.', bg: 'transparent', c: '#A3AABB' },
+        { t: '14:18', x: 'But sometimes you want isolation. Checkout should start with a clean slate every time.', bg: 'transparent', c: '#A3AABB' },
+        { t: '14:32', x: 'So we add CartService to this component\'s providers array, and now Angular creates a new instance just for this subtree.', bg: 'rgba(129,134,255,.12)', c: '#E6E9F0' },
+        { t: '14:51', x: 'Watch the header badge. It still shows the root cart, because it sits outside this subtree.', bg: 'transparent', c: '#A3AABB' }],
+      resources: [{ i: 'description', t: 'Angular docs · Hierarchical injectors', s: 'angular.dev' }, { i: 'slideshow', t: 'Slides · Module 4', s: 'PDF · 2.1 MB' }, { i: 'code', t: 'Starter repo · 4.E', s: 'Opens in Code' }],
+      follow: () => this.setState({ follow: !s.follow }), followL: s.follow ? 'Following Alex' : 'Follow Alex', followB: s.follow ? '#FBBF24' : '#2E3446', followBg: s.follow ? 'rgba(251,191,36,.1)' : 'transparent', followFg: s.follow ? '#FBBF24' : '#E6E9F0',
+      code: codeLines.map(([n, t, c]) => ({ n, t, c, bg: n === '14' ? 'rgba(76,201,230,.06)' : n === '9' ? 'rgba(251,191,36,.07)' : 'transparent', cd: n === '9' ? 'inline-block' : 'none', hd: n === '14' ? 'inline' : 'none' })),
+      runCode: () => { this.setState({ exec: 'running' }); clearTimeout(this._r); this._r = setTimeout(() => this.setState({ exec: 'ran' }), 1100); },
+      runTests: () => this.setState({ exec: 'tests' }),
+      term: term[ex], execL: { idle: 'READY', running: 'RUNNING', ran: 'EXITED 0', tests: '1 FAILED' }[ex], execC: { idle: '#A3AABB', running: '#FBBF24', ran: '#4ADE80', tests: '#F87171' }[ex],
+      noteModes: [['shared', 'Shared', 'group'], ['private', 'Private', 'lock']].map(([id, n, i]) => ({ n, i, bg: s.note === id ? '#2E3446' : 'transparent', fg: s.note === id ? '#E6E9F0' : '#A3AABB', go: () => this.setState({ note: id }) })),
+      sharedNote: s.note === 'shared', privateNote: s.note === 'private',
+      noteTitle: s.note === 'shared' ? 'Angular Dependency Injection' : 'My notes: DI vs NestJS', noteSaved: s.note === 'shared' ? 'Saved · Alex is viewing' : 'Saved · private',
+      fmt: [['title', 'Heading'], ['format_bold', 'Bold'], ['format_list_bulleted', 'List'], ['checklist', 'Checklist'], ['code_blocks', 'Code block'], ['link', 'Link'], ['image', 'Image'], ['ink_highlighter', 'Highlight']].map(([i, t]) => ({ i, t })),
+      noteAI: ['Summarize', 'Explain', 'Create Flashcards', 'Create Quiz', 'Ask AI'].map(t => ({ t, go: () => t === 'Create Quiz' ? this.setState({ tab: 'ai' }) : this.respond(t === 'Summarize' || t === 'Create Flashcards' ? t : 'Explain simply') })),
+      wave: Array.from({ length: 30 }, (_, k) => ({ h: (6 + Math.round(Math.abs(Math.sin(k * 1.7)) * 18)) + 'px', c: k < 11 ? '#8186FF' : '#3A4058' })),
+      quiz, quizNext: () => this.setState({ quiz: Math.min(s.quiz + 1, 4), picked: null }), askQuiz: () => this.respond('quiz'),
+      aiIntro: intro[s.tab], ctx: ctxMap[s.tab],
+      chat: s.chat || this.baseChat(), thinking: s.thinking,
+      askMoment: () => this.respond('moment'),
+      quick: ['Explain simply', 'Give an example', 'Quiz me', 'Why is this useful?', 'Compare with React', 'Help with my code', 'Summarize lesson'].map(t => ({ t, go: () => t === 'Quiz me' ? (this.respond(t), this.setState({ tab: 'ai' })) : this.respond(t) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

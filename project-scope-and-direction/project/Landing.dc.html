@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F6F8;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1320;-webkit-font-smoothing:antialiased}
+a{color:#4B4FE0;text-decoration:none}a:hover{color:#3D40C9;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div data-screen-label="01 Landing" style="min-height:100vh;display:flex;flex-direction:column">
+
+<header style="position:sticky;top:0;z-index:5;background:rgba(245,246,248,.88);backdrop-filter:blur(10px);border-bottom:1px solid #E2E5EB">
+  <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:32px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative;width:28px;height:19px"><div style="position:absolute;left:0;top:0;width:19px;height:19px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:9px;top:0;width:19px;height:19px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div>
+      <span style="font-size:17px;font-weight:600;letter-spacing:-0.01em">Studywid<span style="color:#4B4FE0">Buddy</span></span>
+    </div>
+    <nav style="display:flex;gap:24px;font-size:14px;color:#4A5266">
+      <span>How it works</span><span>Learn</span><span>Projects</span><span>For universities</span>
+    </nav>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <a href="#" style="font-size:14px;font-weight:500;color:#0F1320;padding:0 12px">Log in</a>
+      <button style="height:36px;border:0;border-radius:6px;background:#0F1320;color:#fff;font-size:14px;font-weight:600;padding:0 14px;cursor:pointer">Start Learning</button>
+    </div>
+  </div>
+</header>
+
+<section style="max-width:1200px;width:100%;margin:0 auto;padding:72px 24px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:48px">
+  <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;align-items:end">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;height:28px;padding:0 10px 0 6px;border:1px solid #E2E5EB;border-radius:14px;background:#fff;font-size:12.5px;color:#4A5266">
+        <div style="display:flex"><div style="width:18px;height:18px;border-radius:50%;background:#DDE3FF;border:1.5px solid #fff"></div><div style="width:18px;height:18px;border-radius:50%;background:#FDE9D6;border:1.5px solid #fff;margin-left:-6px"></div><div style="width:18px;height:18px;border-radius:50%;background:#D7F1F6;border:1.5px solid #fff;margin-left:-6px"></div></div>
+        3,412 Study Buddy pairs studying right now
+      </div>
+      <h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:96px;line-height:.95;font-weight:600;letter-spacing:-0.045em">Don't learn<br>alone.</h1>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px;padding-bottom:8px">
+      <p style="margin:0;font-size:18px;line-height:1.55;color:#4A5266;text-wrap:pretty">Get matched with someone learning the same thing at your level. Study together in a shared workspace with an AI that knows what you're working on. Then turn what you've learned into real project experience.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button style="height:46px;border:0;border-radius:8px;background:#4B4FE0;color:#fff;font-size:15px;font-weight:600;padding:0 20px;display:flex;align-items:center;gap:8px;cursor:pointer" style-hover="background:#3D40C9">Start Learning<i style="font-size:18px">arrow_forward</i></button>
+        <button style="height:46px;border:1px solid #CDD2DB;border-radius:8px;background:#fff;color:#0F1320;font-size:15px;font-weight:500;padding:0 18px;cursor:pointer" style-hover="background:#F0F2F5">Explore Projects</button>
+      </div>
+      <div style="font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.04em;color:#6B7386">LEARN TOGETHER · BUILD TOGETHER · GROW TOGETHER</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;gap:4px;align-self:center;background:#E9EBEF;padding:4px;border-radius:9px">
+      <sc-for list="{{ heroTabs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.go }}" style="display:flex;align-items:center;gap:8px;height:34px;padding:0 16px;border:0;border-radius:6px;background:{{ t.bg }};box-shadow:{{ t.sh }};font-size:13.5px;font-weight:600;color:{{ t.fg }};cursor:pointer"><span style="width:8px;height:8px;border-radius:{{ t.shape }};background:{{ t.c }}"></span>{{ t.n }}</button>
+      </sc-for>
+    </div>
+
+    <div style="background:#0A0C12;border-radius:16px;padding:10px;box-shadow:0 40px 80px -30px rgba(15,19,32,.45)">
+      <div style="display:flex;align-items:center;gap:6px;padding:4px 8px 10px"><span style="width:10px;height:10px;border-radius:50%;background:#2E3446"></span><span style="width:10px;height:10px;border-radius:50%;background:#2E3446"></span><span style="width:10px;height:10px;border-radius:50%;background:#2E3446"></span><span style="margin:0 auto;font-family:'JetBrains Mono';font-size:11px;color:#7C8497">{{ heroUrl }}</span></div>
+
+      <sc-if value="{{ isLearn }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:200px minmax(0,1fr) 300px;height:520px;border-radius:10px;overflow:hidden;border:1px solid #232838;color:#E6E9F0">
+          <div style="background:#10131B;border-right:1px solid #232838;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">Angular</span><span style="font-size:11.5px;color:#A3AABB">Intermediate · 62%</span></div>
+            <div style="height:4px;border-radius:2px;background:#232838"><div style="width:62%;height:100%;border-radius:2px;background:#8186FF"></div></div>
+            <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.06em;color:#7C8497;margin-top:6px">MODULE 4 · DI</div>
+            <div style="display:flex;flex-direction:column;gap:2px;font-size:12.5px">
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;color:#A3AABB"><i style="font-size:15px;color:#4ADE80">check_circle</i>4.1 Why DI</div>
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;color:#A3AABB"><i style="font-size:15px;color:#4ADE80">check_circle</i>4.2 Services</div>
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;background:#1C2130;font-weight:600"><i style="font-size:15px;color:#8186FF">play_circle</i>4.3 Providers</div>
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;color:#A3AABB"><i style="font-size:15px">radio_button_unchecked</i>4.4 Injection tokens</div>
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;color:#A3AABB"><i style="font-size:15px">code</i>Exercise: Cart service</div>
+            </div>
+          </div>
+          <div style="background:#0A0C12;display:flex;flex-direction:column">
+            <div style="position:relative;flex:1;margin:14px;border-radius:8px;background:repeating-linear-gradient(135deg,#131722 0 10px,#161A26 10px 20px);display:flex;align-items:center;justify-content:center">
+              <span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497">LESSON VIDEO · PROVIDERS &amp; INJECTORS</span>
+              <div style="position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:8px;background:rgba(10,12,18,.8);border:1px solid #2E3446;border-radius:16px;padding:4px 10px 4px 4px;font-size:12px">
+                <div style="position:relative;width:22px;height:22px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">AM<span style="position:absolute;right:-1px;bottom:-1px;width:7px;height:7px;border-radius:50%;background:#4ADE80;border:1.5px solid #0A0C12"></span></div>Alex is watching with you
+              </div>
+              <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="position:relative;height:4px;border-radius:2px;background:rgba(255,255,255,.15)"><div style="width:58%;height:100%;border-radius:2px;background:#8186FF"></div><div style="position:absolute;left:58%;top:-12px;transform:translateX(-50%);font-family:'JetBrains Mono';font-size:9.5px;color:#0A0C12;background:#FBC98A;border-radius:3px;padding:0 4px">AM</div></div>
+                <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:#A3AABB"><i style="color:#E6E9F0">pause</i><span style="font-family:'JetBrains Mono'">14:32 / 24:10</span><span style="margin-left:auto;font-family:'JetBrains Mono'">1.25×</span><i>closed_caption</i><i>fullscreen</i></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;padding:0 14px 14px">
+              <div style="flex:1;border:1px solid #232838;border-radius:8px;padding:10px 12px;background:#10131B;display:flex;flex-direction:column;gap:4px"><span style="font-family:'JetBrains Mono';font-size:10px;color:#7C8497">SHARED NOTE · 14:32</span><span style="font-size:12.5px;line-height:1.4">providedIn: 'root' creates one app-wide instance. Ask: when do we want one per component?</span></div>
+              <div style="flex:1;border:1px solid #232838;border-radius:8px;padding:10px 12px;background:#10131B;display:flex;flex-direction:column;gap:4px"><span style="font-family:'JetBrains Mono';font-size:10px;color:#7C8497">ALEX · CHAT</span><span style="font-size:12.5px;line-height:1.4">Want to finish Module 4 tonight? I'll do the cart exercise after this.</span></div>
+            </div>
+          </div>
+          <div style="background:#10131B;border-left:1px solid #232838;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#4CC9E6"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span>AI BUDDY</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:#A3AABB;align-items:center"><i style="font-size:13px;color:#4CC9E6">my_location</i>Using <span style="padding:1px 6px;border:1px solid #2E3446;border-radius:4px">Module 4 › 4.3</span><span style="padding:1px 6px;border:1px solid #2E3446;border-radius:4px">14:32</span></div>
+            <div style="align-self:flex-end;background:#1C2130;border-radius:10px 10px 2px 10px;padding:8px 10px;font-size:12.5px;max-width:85%">Why not just call new UserService()?</div>
+            <div style="border:1px dashed rgba(76,201,230,.45);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#E6E9F0">Good question to sit with. At 14:32 the instructor swaps the service in a test. What would you have to change if every component called <span style="font-family:'JetBrains Mono';font-size:11.5px;color:#4CC9E6">new</span> itself?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span style="font-size:11.5px;padding:4px 8px;border:1px solid #2E3446;border-radius:5px;color:#A3AABB">Give a hint</span><span style="font-size:11.5px;padding:4px 8px;border:1px solid #2E3446;border-radius:5px;color:#A3AABB">Quiz me</span><span style="font-size:11.5px;padding:4px 8px;border:1px solid #2E3446;border-radius:5px;color:#A3AABB">Compare with React</span>
+            </div>
+            <div style="margin-top:auto;height:36px;border:1px solid #2E3446;border-radius:8px;display:flex;align-items:center;padding:0 10px;font-size:12.5px;color:#7C8497">Ask about this moment…</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBuild }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 320px;height:520px;border-radius:10px;overflow:hidden;border:1px solid #232838;color:#E6E9F0;background:#0A0C12">
+          <div style="display:flex;flex-direction:column;min-width:0">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #232838"><span style="font-size:14px;font-weight:600">Real-Time Delivery Platform</span><span style="font-size:12px;color:#A3AABB">Sprint 2 · 42%</span><span style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:#FBBF24;font-weight:600"><i style="font-size:14px">warning</i>At risk</span></div>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px;flex:1">
+              <sc-for list="{{ miniBoard }}" as="col" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#7C8497">{{ col.h }}</div>
+                  <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
+                    <div style="background:#10131B;border:1px solid {{ c.b }};border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px">
+                      <span style="font-family:'JetBrains Mono';font-size:10px;color:#7C8497">{{ c.id }}</span>
+                      <span style="font-size:12.5px;font-weight:500;line-height:1.35">{{ c.t }}</span>
+                      <span style="font-size:11px;color:{{ c.tc }}">{{ c.tag }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:#10131B;border-left:1px solid #232838;padding:14px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#4CC9E6"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span>AI PROJECT MANAGER</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+              <div style="display:flex;gap:10px"><span style="font-family:'JetBrains Mono';color:#7C8497;width:38px">09:32</span><div><span style="font-family:'JetBrains Mono';font-size:10px;color:#A3AABB">OBSERVED</span><br>TASK-18 is blocking TASK-24</div></div>
+              <div style="display:flex;gap:10px"><span style="font-family:'JetBrains Mono';color:#7C8497;width:38px">09:33</span><div><span style="font-family:'JetBrains Mono';font-size:10px;color:#FBBF24">REQUESTED</span><br>Status from Sarah</div></div>
+              <div style="display:flex;gap:10px"><span style="font-family:'JetBrains Mono';color:#7C8497;width:38px">09:41</span><div><span style="font-family:'JetBrains Mono';font-size:10px;color:#8186FF">RECOMMENDED</span><br>Split TASK-18</div></div>
+            </div>
+            <div style="border:1px dashed rgba(76,201,230,.45);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-top:4px">
+              <span style="font-size:12.5px;font-weight:600">Reassign TASK-31 to Sarah?</span>
+              <span style="font-size:11.5px;color:#A3AABB;line-height:1.45">TASK-28 is done and she has matching backend skills.</span>
+              <div style="display:flex;gap:6px"><span style="font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:5px;background:#5B5FEF">Approve</span><span style="font-size:11.5px;padding:5px 10px;border-radius:5px;border:1px solid #2E3446">Modify</span><span style="font-size:11.5px;padding:5px 10px;color:#A3AABB">Reject</span></div>
+            </div>
+            <div style="margin-top:auto;border:1px solid #232838;border-radius:8px;padding:10px;display:flex;gap:8px;align-items:center;font-size:12px"><i style="font-size:16px;color:#8186FF">merge</i>PR #42 · <span style="color:#4ADE80">✓ tests ✓ lint ✓ build</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isGrow }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;height:520px;border-radius:10px;overflow:hidden;border:1px solid #232838;background:#F5F6F8">
+          <div style="padding:28px;display:flex;flex-direction:column;gap:16px;border-right:1px solid #E2E5EB;background:#fff">
+            <div style="display:flex;gap:14px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div><div><div style="font-size:18px;font-weight:600">Manoj Kumar</div><div style="font-size:13px;color:#4A5266">Backend developer · TU Berlin</div></div></div>
+            <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">PROJECT EXPERIENCE</div>
+            <div style="border:1px solid #E2E5EB;border-radius:10px;padding:14px;display:flex;gap:12px;align-items:center"><span style="width:10px;height:10px;border-radius:2px;background:#0B8FB0"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">Real-Time Delivery Platform</div><div style="font-size:12.5px;color:#4A5266">Backend Developer · 6 weeks · 14 tasks · 7 PRs</div></div><i style="color:#15803D">verified</i></div>
+            <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">COMPLETED</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;font-size:12.5px"><span style="width:7px;height:7px;border-radius:50%;background:#4B4FE0"></span>Angular Intermediate</span><span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;font-size:12.5px"><span style="width:7px;height:7px;border-radius:50%;background:#4B4FE0"></span>Databases</span><span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;font-size:12.5px"><span style="width:7px;height:7px;border-radius:50%;background:#4B4FE0"></span>Python Fundamentals</span></div>
+          </div>
+          <div style="padding:28px;display:flex;flex-direction:column;gap:12px">
+            <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">JOBS FOR YOUR SKILLS</div>
+            <sc-for list="{{ miniJobs }}" as="j" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:14px;font-weight:600">{{ j.t }}</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:#15803D">{{ j.m }}</span></div>
+                <span style="font-size:12.5px;color:#4A5266">{{ j.c }}</span>
+                <span style="font-size:12px;color:#4A5266">{{ j.s }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#6B7386">{{ heroCaption }}</div>
+  </div>
+</section>
+
+<section style="max-width:1200px;width:100%;margin:0 auto;padding:40px 24px;box-sizing:border-box">
+  <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid #CDD2DB;border-bottom:1px solid #CDD2DB">
+    <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="6">
+      <div style="padding:20px 16px;display:flex;flex-direction:column;gap:6px;border-right:1px solid #E2E5EB">
+        <span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">{{ p.k }}</span>
+        <span style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600;letter-spacing:-0.02em">{{ p.n }}</span>
+        <span style="font-size:12.5px;color:#4A5266;line-height:1.45">{{ p.d }}</span>
+      </div>
+    </sc-for>
+  </div>
+  <p style="margin:20px 0 0;font-size:14px;color:#4A5266;text-align:center">Not just a course site, an AI tutor, a social network or a job board. StudywidBuddy is what you get when those work together.</p>
+</section>
+
+<section style="max-width:1200px;width:100%;margin:0 auto;padding:64px 24px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:48px;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:20px;position:sticky;top:96px">
+    <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.06em;color:#4B4FE0">HOW IT WORKS</span>
+    <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:52px;line-height:1;font-weight:600;letter-spacing:-0.035em">From "I want to learn this" to "I built this."</h2>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="6">
+        <button onClick="{{ s.go }}" style="display:flex;align-items:center;gap:14px;padding:14px 0;border:0;border-bottom:1px solid #E2E5EB;background:transparent;text-align:left;cursor:pointer;color:{{ s.fg }}">
+          <span style="font-family:'JetBrains Mono';font-size:12px;width:20px;color:{{ s.nc }}">{{ s.n }}</span>
+          <span style="font-size:17px;font-weight:{{ s.fw }};flex:1">{{ s.t }}</span>
+          <i style="font-size:18px;color:{{ s.nc }}">{{ s.arrow }}</i>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid #E2E5EB;border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px;min-height:460px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">STEP {{ cur.n }}</span><span style="font-size:13px;color:#6B7386">{{ cur.k }}</span></div>
+    <div style="font-family:'Bricolage Grotesque';font-size:30px;font-weight:600;letter-spacing:-0.02em">{{ cur.t }}</div>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:#4A5266;text-wrap:pretty">{{ cur.d }}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ cur.chips }}" as="c" hint-placeholder-count="5">
+        <span style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;border:1px solid {{ c.b }};background:{{ c.bg }};font-size:13.5px;font-weight:500;color:{{ c.fg }}">{{ c.t }}</span>
+      </sc-for>
+    </div>
+    <div style="margin-top:auto;border-top:1px solid #E2E5EB;padding-top:16px;font-size:13px;color:#4A5266;display:flex;gap:8px;align-items:center"><i style="font-size:17px;color:#4B4FE0">info</i>{{ cur.note }}</div>
+  </div>
+</section>
+
+<section style="max-width:1200px;width:100%;margin:0 auto;padding:24px 24px 72px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:40px;font-weight:600;letter-spacing:-0.03em">Everything a study group gives you, minus the scheduling chaos.</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#E2E5EB;border:1px solid #E2E5EB;border-radius:14px;overflow:hidden">
+    <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="6">
+      <div style="background:#fff;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <i style="font-size:22px;color:{{ b.c }}">{{ b.i }}</i>
+        <span style="font-size:17px;font-weight:600">{{ b.t }}</span>
+        <span style="font-size:14px;line-height:1.55;color:#4A5266">{{ b.d }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="background:#0A0C12;color:#E6E9F0">
+  <div style="max-width:1200px;margin:0 auto;padding:88px 24px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:end">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.06em;color:#4CC9E6"><span style="width:8px;height:8px;border-radius:2px;background:#4CC9E6"></span>SIMULATED PROFESSIONAL EXPERIENCE</span>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:56px;line-height:1;font-weight:600;letter-spacing:-0.035em">Join a team.<br>Ship a real project.</h2>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#A3AABB;text-wrap:pretty">Apply for a role, do a short AI interview, and get picked for a team of 6. You'll work in sprints with real GitHub repos, code reviews and tests. An AI Project Manager keeps the work moving, and you approve its decisions.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px">
+      <sc-for list="{{ flow }}" as="f" hint-placeholder-count="7">
+        <div style="border:1px solid {{ f.b }};background:{{ f.bg }};border-radius:10px;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:150px;box-sizing:border-box">
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497">{{ f.n }}</span><i style="font-size:18px;color:{{ f.ic }}">{{ f.i }}</i></div>
+          <span style="font-size:15px;font-weight:600">{{ f.t }}</span>
+          <span style="font-size:12.5px;line-height:1.45;color:#A3AABB">{{ f.d }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:12px">
+      <div style="border:1px solid #232838;background:#10131B;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#4CC9E6;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>AI INTERVIEWER · Q3 OF 7</span>
+        <span style="font-size:15px;line-height:1.45">"How would you prevent duplicate orders if a client retries the same request?"</span>
+        <div style="height:64px;border:1px solid #2E3446;border-radius:8px;padding:10px;font-size:12.5px;color:#A3AABB;line-height:1.5">I'd require an idempotency key on POST /orders and store it with a unique…</div>
+      </div>
+      <div style="border:1px solid #232838;background:#10131B;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#7C8497">YOUR TEAM</span>
+        <sc-for list="{{ team }}" as="m" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:26px;height:26px;border-radius:50%;background:{{ m.bg }};color:{{ m.fg }};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ m.i }}</div><span style="font-weight:500">{{ m.n }}</span><span style="margin-left:auto;color:#A3AABB;font-size:12px">{{ m.r }}</span></div>
+        </sc-for>
+      </div>
+      <div style="border:1px solid #232838;background:#10131B;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#4CC9E6;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>AI REVIEWER · PR #42</span>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px"><span style="font-family:'JetBrains Mono';font-size:10px;font-weight:600;color:#F87171;border:1px solid rgba(248,113,113,.4);border-radius:3px;padding:1px 5px">HIGH</span><span>Possible race condition in <span style="font-family:'JetBrains Mono';font-size:11.5px">rotateToken()</span></span></div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px"><span style="font-family:'JetBrains Mono';font-size:10px;font-weight:600;color:#FBBF24;border:1px solid rgba(251,191,36,.4);border-radius:3px;padding:1px 5px">MED</span><span>Missing token-expiration test</span></div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px"><span style="font-family:'JetBrains Mono';font-size:10px;font-weight:600;color:#A3AABB;border:1px solid #2E3446;border-radius:3px;padding:1px 5px">LOW</span><span>Rename <span style="font-family:'JetBrains Mono';font-size:11.5px">tkn</span> to something clearer</span></div>
+        <span style="margin-top:auto;font-size:12px;color:#A3AABB">Suggests a direction. Doesn't rewrite your code.</span>
+      </div>
+    </div>
+    <div><button style="height:46px;border:0;border-radius:8px;background:#E6E9F0;color:#0A0C12;font-size:15px;font-weight:600;padding:0 20px;display:flex;align-items:center;gap:8px;cursor:pointer">Explore Projects<i style="font-size:18px">arrow_forward</i></button></div>
+  </div>
+</section>
+
+<section style="max-width:1200px;width:100%;margin:0 auto;padding:96px 24px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center">
+  <div style="display:flex;align-items:center"><div style="width:52px;height:52px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #F5F6F8">You</div><div style="width:52px;height:52px;border-radius:50%;background:#FDE9D6;color:#9A4A0A;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #4B4FE0;margin-left:-14px">?</div></div>
+  <h2 style="margin:0;font-family:'Bricolage Grotesque';font-size:64px;line-height:1;font-weight:600;letter-spacing:-0.04em">Someone at your level<br>is starting today.</h2>
+  <p style="margin:0;font-size:17px;color:#4A5266">Pick a topic and we'll find them. It's free to start, and you can have up to 4 courses running at once.</p>
+  <div style="display:flex;gap:10px"><button style="height:48px;border:0;border-radius:8px;background:#4B4FE0;color:#fff;font-size:15px;font-weight:600;padding:0 22px;cursor:pointer">Start Learning</button><button style="height:48px;border:1px solid #CDD2DB;border-radius:8px;background:#fff;font-size:15px;font-weight:500;padding:0 20px;cursor:pointer">Explore Projects</button></div>
+</section>
+
+<footer style="border-top:1px solid #E2E5EB;background:#fff">
+  <div style="max-width:1200px;margin:0 auto;padding:48px 24px 32px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.6fr) repeat(4,minmax(0,1fr));gap:32px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:16px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+      <span style="font-size:13px;color:#4A5266">Learn together. Build together. Grow together.</span>
+    </div>
+    <sc-for list="{{ footer }}" as="c" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#6B7386">{{ c.h }}</span>
+        <sc-for list="{{ c.l }}" as="l" hint-placeholder-count="4"><a href="#" style="font-size:13.5px;color:#4A5266">{{ l }}</a></sc-for>
+      </div>
+    </sc-for>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:16px 24px 32px;box-sizing:border-box;display:flex;gap:16px;font-size:12.5px;color:#6B7386"><span>© 2026 StudywidBuddy</span><span style="margin-left:auto">Privacy</span><span>Terms</span><span>Community guidelines</span></div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { hero: 'learn', step: 2 };
+  renderVals() {
+    const s = this.state;
+    const defs = [
+      { id: 'learn', n: 'Learn together', c: '#4B4FE0', shape: '50%', url: 'studywidbuddy.com/learn/angular/workspace', cap: 'The Study Workspace: a shared lesson, shared notes, your buddy beside you, and an AI that knows you\'re at 14:32.' },
+      { id: 'build', n: 'Build together', c: '#0B8FB0', shape: '2px', url: 'studywidbuddy.com/projects/delivery-platform/board', cap: 'The Project Workspace: a real team and a real sprint, with an AI PM whose every action you can see.' },
+      { id: 'grow', n: 'Grow together', c: '#D97706', shape: '0', url: 'studywidbuddy.com/@manoj.dev', cap: 'Your profile shows the courses and projects you finished. Jobs are matched to what you can prove.' },
+    ];
+    const cur = defs.find(d => d.id === s.hero);
+    const chip = (t, on) => ({ t, b: on ? '#4B4FE0' : '#E2E5EB', bg: on ? '#EEF0FD' : '#fff', fg: on ? '#2E31A8' : '#0F1320' });
+    const stepDefs = [
+      { t: 'Choose what you want to learn', k: 'Pick from 120+ topics', d: 'Programming, AI, cloud, system design, UI/UX, maths, business or languages. Start with one. You can have up to four running at the same time.', chips: [chip('Angular', 1), chip('Python'), chip('System Design'), chip('UI/UX'), chip('German'), chip('Machine Learning')], note: 'Four active courses at most, so you finish what you start.' },
+      { t: 'Select your current level', k: 'Honest, not a test', d: "Tell us where you're starting from. We use this to match you with a partner, not to grade you, and you can change it whenever you like.", chips: [chip('Beginner'), chip('Intermediate', 1), chip('Advanced')], note: 'Intermediate means you can build small things but get stuck on structure.' },
+      { t: 'Find your Study Buddy', k: 'Matched on 6 signals', d: 'We look for someone on the same course at a similar level, with compatible goals, a shared language, overlapping timezone and the same kind of availability. You see why you were matched before you send a request.', chips: [chip('Alex Morgan · 92% match', 1), chip('Same level'), chip('English · German'), chip('Weekday evenings'), chip('CET ±1h')], note: 'Study partners, not a dating app. Requests are about the course and nothing else.' },
+      { t: 'Learn and practice together', k: 'One private workspace per pair', d: 'Watch lessons in sync, write shared notes pinned to timestamps, code in the same editor, send voice notes, and call when you get stuck.', chips: [chip('Watch together', 1), chip('Shared notes'), chip('Pair coding'), chip('Voice notes'), chip('Video session')], note: 'Your buddy shows up in the workspace in small ways, never as a distraction.' },
+      { t: 'Get AI assistance', k: 'Context-aware, hint-first', d: 'AI Buddy knows your lesson, the video timestamp, your notes, your code and your level. It starts with hints and gives you the answer when you ask for it.', chips: [chip('Explain simply'), chip('Quiz me', 1), chip('Help with my code'), chip('Compare with React')], note: 'You can always see what context the AI is using, and change it.' },
+      { t: 'Build real projects', k: 'Learning becomes experience', d: 'When you finish a course, we suggest projects that fit your new skills. Apply for a role, join a team and ship something you can show.', chips: [chip('Real-Time Delivery Platform', 1), chip('Frontend Developer'), chip('6 weeks')], note: 'Finished projects appear on your profile and help match you to jobs.' },
+    ];
+    const step = stepDefs[s.step];
+    return {
+      heroTabs: defs.map(d => ({ ...d, bg: d.id === s.hero ? '#fff' : 'transparent', fg: d.id === s.hero ? '#0F1320' : '#4A5266', sh: d.id === s.hero ? '0 1px 2px rgba(15,19,32,.1)' : 'none', go: () => this.setState({ hero: d.id }) })),
+      isLearn: s.hero === 'learn', isBuild: s.hero === 'build', isGrow: s.hero === 'grow', heroUrl: cur.url, heroCaption: cur.cap,
+      miniBoard: [
+        { h: 'TODO', cards: [{ id: 'TASK-31', t: 'Order status webhooks', tag: 'Backend', tc: '#A3AABB', b: '#232838' }, { id: 'TASK-33', t: 'Idempotency keys on POST /orders', tag: '◆ AI suggested', tc: '#4CC9E6', b: '#232838' }] },
+        { h: 'IN PROGRESS', cards: [{ id: 'TASK-24', t: 'Refresh token rotation', tag: 'Blocked by TASK-18', tc: '#F87171', b: 'rgba(248,113,113,.4)' }, { id: 'TASK-27', t: 'Driver location stream', tag: 'Frontend · Emma', tc: '#A3AABB', b: '#232838' }] },
+        { h: 'REVIEW', cards: [{ id: 'TASK-22', t: 'Auth refresh endpoint', tag: 'PR #42 · checks passed', tc: '#4ADE80', b: '#232838' }] },
+        { h: 'DONE', cards: [{ id: 'TASK-28', t: 'Order schema v2', tag: 'Sarah', tc: '#A3AABB', b: '#232838' }, { id: 'TASK-19', t: 'CI pipeline', tag: 'DevOps · Lukas', tc: '#A3AABB', b: '#232838' }] },
+      ],
+      miniJobs: [
+        { t: 'Backend Software Engineer', m: '89% match', c: 'Parcelo · Berlin · Hybrid', s: '✓ TypeScript  ✓ Node.js  ✓ PostgreSQL  · gap: Kubernetes' },
+        { t: 'Junior Platform Engineer', m: '81% match', c: 'Nordlicht Energy · Remote (EU)', s: '✓ Docker  ✓ PostgreSQL  · gap: Terraform' },
+        { t: 'API Developer (Graduate)', m: '78% match', c: 'Finomo · Munich', s: '✓ NestJS  ✓ REST  · gap: GraphQL' },
+      ],
+      pillars: [
+        { k: '01', n: 'People', d: 'A partner at your level' }, { k: '02', n: 'Learning', d: 'Structured courses' }, { k: '03', n: 'AI', d: 'That knows your context' },
+        { k: '04', n: 'Building', d: 'Code, together' }, { k: '05', n: 'Experience', d: 'Team projects' }, { k: '06', n: 'Career', d: 'Jobs from proof' }],
+      steps: stepDefs.map((d, i) => ({ n: '0' + (i + 1), t: d.t, fw: i === s.step ? 600 : 500, fg: i === s.step ? '#0F1320' : '#4A5266', nc: i === s.step ? '#4B4FE0' : '#9AA1B1', arrow: i === s.step ? 'arrow_forward' : 'add', go: () => this.setState({ step: i }) })),
+      cur: { ...step, n: '0' + (s.step + 1) },
+      benefits: [
+        { i: 'group', c: '#4B4FE0', t: 'Study together', d: 'A partner who has the same course, the same level and the same deadline as you. Streaks you keep together are harder to break.' },
+        { i: 'psychology', c: '#0B8FB0', t: 'AI learning companion', d: 'Ask about the exact moment in a video, a line in your code or a note. You get hints first, so you still do the thinking.' },
+        { i: 'code_blocks', c: '#4B4FE0', t: 'Collaborative practice', d: 'Exercises run in a shared editor with a real terminal and tests. You can follow your buddy\'s cursor whenever you want to.' },
+        { i: 'deployed_code', c: '#0B8FB0', t: 'Build real projects', d: 'Teams of 4–8 people with defined roles, sprints, GitHub repos and code review, all modelled on how software teams actually work.' },
+        { i: 'workspace_premium', c: '#B45309', t: 'Turn skills into experience', d: 'Every course and project ends with an evaluation and a certificate anyone can verify.' },
+        { i: 'work', c: '#B45309', t: 'Find opportunities', d: "Jobs are matched to what you've actually shown, and each match explains why it fits and where you have gaps." },
+      ],
+      flow: [
+        { n: '01', i: 'description', t: 'Apply', d: 'Your profile fills most of the form', b: '#232838', bg: '#10131B', ic: '#A3AABB' },
+        { n: '02', i: 'record_voice_over', t: 'AI Interview', d: '7 role-specific questions, about 25 min', b: 'rgba(76,201,230,.35)', bg: '#10131B', ic: '#4CC9E6' },
+        { n: '03', i: 'groups', t: 'Join Team', d: 'Picked for balanced skill coverage', b: '#232838', bg: '#10131B', ic: '#A3AABB' },
+        { n: '04', i: 'code', t: 'Build', d: 'Sprints, tasks, branches', b: '#232838', bg: '#10131B', ic: '#A3AABB' },
+        { n: '05', i: 'timeline', t: 'AI PM', d: 'Plans, unblocks and asks before it acts', b: 'rgba(76,201,230,.35)', bg: '#10131B', ic: '#4CC9E6' },
+        { n: '06', i: 'rate_review', t: 'Review', d: 'AI and peer code review', b: 'rgba(76,201,230,.35)', bg: '#10131B', ic: '#4CC9E6' },
+        { n: '07', i: 'verified', t: 'Complete', d: 'Evaluation, certificate, profile', b: '#2E3446', bg: '#161A24', ic: '#4ADE80' },
+      ],
+      team: [
+        { i: 'MK', n: 'Manoj Kumar', r: 'Backend', bg: '#2A3050', fg: '#B8BCFF' }, { i: 'SC', n: 'Sarah Chen', r: 'Backend', bg: '#173A33', fg: '#7FE0C2' },
+        { i: 'EF', n: 'Emma Fischer', r: 'Frontend', bg: '#123845', fg: '#7FD6EA' }, { i: 'LB', n: 'Lukas Braun', r: 'DevOps', bg: '#40301A', fg: '#F5C97F' }],
+      footer: [
+        { h: 'PRODUCT', l: ['Study Buddy', 'Study Workspace', 'AI Buddy', 'Projects', 'Jobs'] },
+        { h: 'LEARN', l: ['Programming', 'AI & ML', 'Cloud & DevOps', 'Design', 'Languages'] },
+        { h: 'COMPANY', l: ['About', 'For universities', 'Careers', 'Press'] },
+        { h: 'SUPPORT', l: ['Help center', 'Safety', 'Verify a certificate', 'Contact'] },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

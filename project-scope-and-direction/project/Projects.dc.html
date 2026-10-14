@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E6E8EC;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1320;-webkit-font-smoothing:antialiased}
+a{color:#4B4FE0;text-decoration:none}a:hover{color:#3D40C9;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:56px;display:flex;flex-direction:column;gap:20px;width:1440px">
+
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">47 · 75</span><span style="font-size:20px;font-weight:600">Project discovery</span><span style="font-size:13px;color:#4A5266">Try it: role and difficulty filters</span></div>
+<div data-screen-label="47 Project Discovery" style="width:1440px;display:flex;background:#F5F6F8;border-radius:12px;overflow:hidden;border:1px solid #CDD2DB">
+  <aside style="width:248px;flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:2px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px;margin-bottom:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:15px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+      <a href="{{ n.href }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};text-decoration:none"><i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1">{{ n.label }}</span><span style="font-size:11px;font-weight:600;color:#4B4FE0">{{ n.badge }}</span></a>
+      <sc-if value="{{ n.on }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:1px;padding:2px 0 6px 20px"><a href="#workspace" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 10px;font-size:12.5px;color:#4A5266;border-left:1px solid #E2E5EB;text-decoration:none"><span style="width:6px;height:6px;border-radius:1px;background:#0B8FB0"></span><span style="flex:1">Delivery Platform</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">S2</span></a></div>
+      </sc-if>
+    </sc-for>
+    <div style="height:1px;background:#E2E5EB;margin:8px 4px"></div>
+    <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:1px dashed #9ED8E6;border-radius:6px;background:#F7FCFD;color:#0A6E88;font-size:13.5px;font-weight:500"><span style="width:7px;height:7px;background:#0B8FB0;transform:rotate(45deg);margin:0 6px 0 5px"></span><span style="flex:1">AI Buddy</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">⌘J</span></div>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid #E2E5EB;background:#fff">
+      <span style="font-size:15px;font-weight:600">Projects</span>
+      <div style="display:flex;gap:18px;margin-left:16px;font-size:13.5px;height:56px;align-items:stretch"><span style="display:flex;align-items:center;border-bottom:2px solid #0F1320;font-weight:600">Discover</span><span style="display:flex;align-items:center;color:#4A5266">My applications <span style="margin-left:6px;font-size:11px;font-weight:700;background:#4B4FE0;color:#fff;border-radius:8px;padding:1px 6px">1</span></span><span style="display:flex;align-items:center;color:#4A5266">Completed</span></div>
+      <div style="margin-left:auto;width:280px;height:34px;border:1px solid #E2E5EB;border-radius:6px;background:#F7F8FA;display:flex;align-items:center;gap:8px;padding:0 10px;color:#6B7386;font-size:13.5px"><i>search</i>Search projects, tech, roles</div>
+    </header>
+    <div style="padding:28px 32px 36px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#0A6E88"><span style="width:8px;height:8px;border-radius:2px;background:#0B8FB0"></span>SIMULATED PROFESSIONAL EXPERIENCE</span><h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:40px;font-weight:600;letter-spacing:-0.03em">Build real projects</h1><span style="font-size:15px;color:#4A5266">Turn what you've learned into experience. Teams of 4–8, 4–8 weeks, with real repos and reviews.</span></div>
+
+        <div style="background:#0F1320;color:#E6E9F0;border-radius:12px;padding:20px 22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;gap:24px;align-items:center">
+          <div style="display:flex;flex-direction:column;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#A3AABB">YOU'RE READY TO BUILD</span><span style="font-size:13px;color:#A3AABB">Based on</span><div style="display:flex;flex-wrap:wrap;gap:5px"><span style="font-size:12px;padding:3px 8px;border-radius:4px;background:#1C2130">Angular · 62%</span><span style="font-size:12px;padding:3px 8px;border-radius:4px;background:#1C2130">TypeScript · Advanced</span><span style="font-size:12px;padding:3px 8px;border-radius:4px;background:#1C2130">REST APIs</span></div></div>
+          <div style="display:flex;flex-direction:column;gap:4px;border-left:1px solid #2E3446;padding-left:24px"><span style="font-size:12px;color:#A3AABB">Recommended</span><span style="font-size:17px;font-weight:600">Fleet Telemetry Dashboard</span><span style="font-size:13px;color:#A3AABB">Frontend Developer · Intermediate · 2 of 2 seats open · starts 3 Nov</span></div>
+          <button style="height:38px;border:0;border-radius:6px;background:#E6E9F0;color:#0F1320;font-size:13.5px;font-weight:600;padding:0 14px;white-space:nowrap">View Project</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:12.5px;font-weight:600;width:72px">Role</span>
+            <sc-for list="{{ roleChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.go }}" style="height:30px;padding:0 12px;border-radius:15px;border:1px solid {{ c.b }};background:{{ c.bg }};color:{{ c.fg }};font-size:12.5px;font-weight:600;cursor:pointer">{{ c.n }}</button></sc-for>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:12.5px;font-weight:600;width:72px">Difficulty</span>
+            <sc-for list="{{ diffChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.go }}" style="height:30px;padding:0 12px;border-radius:15px;border:1px solid {{ c.b }};background:{{ c.bg }};color:{{ c.fg }};font-size:12.5px;font-weight:600;cursor:pointer">{{ c.n }}</button></sc-for>
+            <span style="margin-left:auto;display:flex;gap:6px"><span style="display:flex;align-items:center;gap:4px;height:30px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;background:#fff;font-size:12.5px;color:#4A5266">Technology<i style="font-size:16px">expand_more</i></span><span style="display:flex;align-items:center;gap:4px;height:30px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;background:#fff;font-size:12.5px;color:#4A5266">Type<i style="font-size:16px">expand_more</i></span><span style="display:flex;align-items:center;gap:4px;height:30px;padding:0 10px;border:1px solid #E2E5EB;border-radius:6px;background:#fff;font-size:12.5px;color:#4A5266">Status: Recruiting<i style="font-size:16px">expand_more</i></span></span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+          <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">{{ p.type }}</span><span style="margin-left:auto;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:4px;background:{{ p.dbg }};color:{{ p.dfg }}">{{ p.diff }}</span><span style="font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:4px;color:{{ p.sc }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ p.sc }}"></span>{{ p.status }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'Bricolage Grotesque';font-size:21px;font-weight:600;letter-spacing:-0.02em;line-height:1.15">{{ p.t }}</span><span style="font-size:13.5px;line-height:1.5;color:#4A5266">{{ p.d }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">TEAM NEEDED</span>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px">
+                  <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0"><span style="flex:1;font-weight:{{ r.fw }};color:{{ r.c }}">{{ r.n }}</span><span style="display:flex;gap:2px"><sc-for list="{{ r.seats }}" as="s" hint-placeholder-count="2"><span style="width:9px;height:9px;border-radius:2px;background:{{ s.bg }};border:{{ s.b }};box-sizing:border-box"></span></sc-for></span></div></sc-for>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px"><sc-for list="{{ p.tech }}" as="k" hint-placeholder-count="5"><span style="font-size:11.5px;padding:2px 7px;border:1px solid {{ k.b }};border-radius:4px;color:{{ k.c }};background:{{ k.bg }}">{{ k.n }}</span></sc-for></div>
+              <div style="display:flex;align-items:center;gap:14px;padding-top:12px;border-top:1px solid #F0F2F5;font-size:12.5px;color:#4A5266"><span>{{ p.weeks }}</span><span>{{ p.apps }} applicants</span><span>{{ p.open }} open of {{ p.pos }}</span><button style="margin-left:auto;height:32px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13px;font-weight:600;padding:0 12px;color:#0F1320">View Project</button></div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ none }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:24px;font-size:14px;color:#4A5266">No recruiting projects match. Try another role, or <b style="color:#0F1320">get notified</b> when one opens.</div></sc-if>
+      </div>
+      <aside style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:14px;font-weight:600">Your applications</span>
+          <sc-for list="{{ apps }}" as="a" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px solid #F0F2F5">
+              <div style="display:flex;align-items:center"><span style="font-size:13.5px;font-weight:600">{{ a.t }}</span></div>
+              <span style="font-size:12px;color:#4A5266">{{ a.r }}</span>
+              <div style="display:flex;gap:3px"><sc-for list="{{ a.steps }}" as="s" hint-placeholder-count="5"><span style="flex:1;height:4px;border-radius:2px;background:{{ s }}"></span></sc-for></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px"><i style="font-size:15px;color:{{ a.c }}">{{ a.i }}</i><span style="color:{{ a.c }};font-weight:600">{{ a.s }}</span><span style="margin-left:auto;color:#4B4FE0;font-weight:600">{{ a.cta }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:14px;font-weight:600">How selection works</span>
+          <sc-for list="{{ process }}" as="s" hint-placeholder-count="6"><div style="display:flex;gap:10px;align-items:center;font-size:12.5px"><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386;width:16px">{{ s.n }}</span><span style="font-weight:500">{{ s.t }}</span><span style="margin-left:auto;font-size:11.5px;color:#6B7386">{{ s.d }}</span></div></sc-for>
+          <span style="font-size:11.5px;color:#6B7386;line-height:1.5">Teams are picked for skill coverage, not just top scores. You get written feedback whether or not you're selected.</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div id="workspace" style="display:flex;align-items:baseline;gap:12px;margin-top:40px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">55 – 60</span><span style="font-size:20px;font-weight:600">Project workspace</span><span style="font-size:13px;color:#4A5266">Try it: Overview, Board (click a card), AI PM (approve or reject; expand a log entry), Team</span></div>
+<div data-screen-label="55 Project Workspace" style="width:1440px;height:940px;display:flex;background:#0A0C12;border-radius:12px;overflow:hidden;border:1px solid #2E3446;position:relative;color:#E6E9F0">
+  <nav style="width:56px;flex-shrink:0;border-right:1px solid #232838;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px">
+    <div style="position:relative;width:24px;height:16px;margin-bottom:14px"><div style="position:absolute;left:0;top:0;width:16px;height:16px;border-radius:50%;background:#6E72FF"></div><div style="position:absolute;left:8px;top:0;width:16px;height:16px;border-radius:50%;border:2.5px solid #4CC9E6;box-sizing:border-box"></div></div>
+    <sc-for list="{{ rail }}" as="r" hint-placeholder-count="6"><a href="{{ r.href }}" title="{{ r.n }}" style="width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ r.bg }};color:{{ r.c }};text-decoration:none"><i style="font-size:20px">{{ r.i }}</i></a></sc-for>
+    <div style="margin-top:auto;width:30px;height:30px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div>
+  </nav>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="flex-shrink:0;border-bottom:1px solid #232838;padding:12px 20px 0;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="width:10px;height:10px;border-radius:2px;background:#4CC9E6"></span>
+        <span style="font-size:16px;font-weight:600">Real-Time Delivery Platform</span>
+        <span style="font-size:12.5px;color:#A3AABB">Sprint 2 of 3 · ends Fri 17 Oct</span>
+        <div style="display:flex;align-items:center;gap:8px"><div style="width:90px;height:4px;border-radius:2px;background:#232838"><div style="width:42%;height:100%;border-radius:2px;background:#4CC9E6"></div></div><span style="font-family:'JetBrains Mono';font-size:11.5px;color:#A3AABB">42% complete</span></div>
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:4px;background:rgba(251,191,36,.12);color:#FBBF24"><i style="font-size:14px">warning</i>At risk</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <div style="display:flex"><sc-for list="{{ teamMini }}" as="m" hint-placeholder-count="6"><div title="{{ m.n }}" style="position:relative;width:28px;height:28px;border-radius:50%;background:{{ m.bg }};color:{{ m.fg }};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #0A0C12;margin-left:-6px">{{ m.i }}<span style="position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:50%;background:{{ m.p }};border:1.5px solid #0A0C12"></span></div></sc-for></div>
+          <button style="height:30px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:12.5px;padding:0 10px;display:flex;align-items:center;gap:6px"><i style="font-size:16px">videocam</i>Standup 10:00</button>
+          <button style="height:30px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:12.5px;font-weight:600;padding:0 10px;display:flex;align-items:center;gap:6px"><i style="font-size:16px">add</i>Task</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:2px">
+        <sc-for list="{{ wtabs }}" as="t" hint-placeholder-count="9"><button onClick="{{ t.go }}" style="height:36px;padding:0 10px;border:0;border-bottom:2px solid {{ t.bc }};background:transparent;color:{{ t.fg }};font-size:13px;font-weight:{{ t.fw }};cursor:pointer;display:flex;align-items:center;gap:6px"><span style="display:{{ t.dd }};width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>{{ t.n }}<span style="display:{{ t.cd }};font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">{{ t.c }}</span></button></sc-for>
+        <span style="margin-left:auto;align-self:center;font-family:'JetBrains Mono';font-size:11px;color:#7C8497">G then B for Board · ? for shortcuts</span>
+      </div>
+    </header>
+
+    <div style="flex:1;min-height:0;display:flex;position:relative">
+      <sc-if value="{{ wOverview }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;overflow:auto;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-content:start">
+          <div style="border:1px dashed rgba(76,201,230,.45);border-radius:12px;padding:16px 18px;background:rgba(76,201,230,.035);display:flex;flex-direction:column;gap:12px;grid-column:span 2">
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span><span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4CC9E6">AI PM · DAILY SUMMARY</span><span style="font-size:11.5px;color:#7C8497">updated 09:45 · from board, GitHub and standup</span><button onClick="{{ goPM }}" style="margin-left:auto;border:0;background:transparent;color:#8186FF;font-size:12.5px;font-weight:600;cursor:pointer">Open AI PM</button></div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+              <div style="display:flex;gap:10px;font-size:13.5px;line-height:1.5"><i style="color:#F87171">block</i><span><b>2 tasks are blocked.</b> TASK-24 and TASK-27 are both waiting on TASK-18.</span></div>
+              <div style="display:flex;gap:10px;font-size:13.5px;line-height:1.5"><i style="color:#FBBF24">hourglass_top</i><span><b>Authentication API is waiting</b> for the database migration (TASK-18, Sarah, due yesterday).</span></div>
+              <div style="display:flex;gap:10px;font-size:13.5px;line-height:1.5"><i style="color:#8186FF">merge</i><span><b>3 pull requests need review.</b> PR #42 has been open for 26 hours.</span></div>
+            </div>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center"><span style="font-size:14px;font-weight:600">Sprint 2 progress</span><span style="margin-left:auto;font-size:12px;color:#A3AABB">21 of 50 pts · 3 days left</span></div>
+            <div style="display:flex;align-items:flex-end;gap:6px;height:110px">
+              <sc-for list="{{ burn }}" as="b" hint-placeholder-count="10"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:100%;height:{{ b.h }};border-radius:3px 3px 0 0;background:{{ b.c }};border:{{ b.br }};box-sizing:border-box"></div><span style="font-family:'JetBrains Mono';font-size:9.5px;color:#7C8497">{{ b.d }}</span></div></sc-for>
+            </div>
+            <div style="display:flex;gap:16px;font-size:11.5px;color:#A3AABB"><span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:#4CC9E6"></span>Points remaining</span><span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;border:1px dashed #7C8497"></span>Projected</span><span style="margin-left:auto;color:#FBBF24">Projected to miss by about 6 pts</span></div>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:14px;font-weight:600">Milestones</span>
+            <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="width:14px;height:14px;border-radius:50%;border:2px solid {{ m.c }};background:{{ m.f }};box-sizing:border-box;flex-shrink:0"></span><span style="flex:1;color:{{ m.tc }}">{{ m.t }}</span><span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497">{{ m.d }}</span></div></sc-for>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center"><span style="font-size:14px;font-weight:600">Pull requests</span><span style="margin-left:auto;font-size:12px;color:#A3AABB">3 awaiting review</span></div>
+            <sc-for list="{{ prs }}" as="p" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #1C2130;font-size:13px"><i style="font-size:17px;color:#8186FF">merge</i><span style="font-family:'JetBrains Mono';font-size:11.5px;color:#7C8497">#{{ p.n }}</span><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.t }}</span><span style="font-family:'JetBrains Mono';font-size:11px;color:{{ p.cc }}">{{ p.checks }}</span><span style="font-size:11.5px;color:{{ p.rc }}">{{ p.r }}</span></div></sc-for>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600">Blockers &amp; deadlines</span>
+            <sc-for list="{{ blockers }}" as="b" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #1C2130;font-size:13px"><i style="font-size:16px;color:{{ b.c }}">{{ b.i }}</i><span style="font-family:'JetBrains Mono';font-size:11.5px;color:#7C8497">{{ b.id }}</span><span style="flex:1">{{ b.t }}</span><span style="font-size:11.5px;color:{{ b.c }}">{{ b.d }}</span></div></sc-for>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:8px;grid-column:span 2">
+            <span style="font-size:14px;font-weight:600">Team</span>
+            <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">
+              <sc-for list="{{ team }}" as="m" hint-placeholder-count="6"><div style="border:1px solid #232838;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;background:#0E1118"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:{{ m.bg }};color:{{ m.fg }};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ m.i }}</div><div style="display:flex;flex-direction:column;line-height:1.25;min-width:0"><span style="font-size:12.5px;font-weight:600">{{ m.n }}</span><span style="font-size:11px;color:#A3AABB">{{ m.r }}</span></div></div><span style="font-size:11.5px;color:{{ m.sc }};display:flex;align-items:center;gap:4px"><i style="font-size:13px">{{ m.si }}</i>{{ m.cur }}</span></div></sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ wBoard }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #232838">
+            <sc-for list="{{ boardRoles }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.go }}" style="height:28px;padding:0 10px;border-radius:5px;border:1px solid {{ c.b }};background:{{ c.bg }};color:{{ c.fg }};font-size:12px;font-weight:600;cursor:pointer">{{ c.n }}</button></sc-for>
+            <span style="width:1px;height:18px;background:#2E3446;margin:0 6px"></span>
+            <button onClick="{{ toggleMine }}" style="height:28px;padding:0 10px;border-radius:5px;border:1px solid {{ mine.b }};background:{{ mine.bg }};color:{{ mine.fg }};font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px"><i style="font-size:14px">person</i>Assigned to me</button>
+            <span style="display:flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:1px solid #2E3446;border-radius:5px;font-size:12px;color:#A3AABB">Priority<i style="font-size:15px">expand_more</i></span>
+            <span style="display:flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:1px solid #2E3446;border-radius:5px;font-size:12px;color:#A3AABB">Sprint 2<i style="font-size:15px">expand_more</i></span>
+            <span style="margin-left:auto;font-size:12px;color:#7C8497">{{ boardCount }} tasks</span>
+          </div>
+          <div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:14px 20px;overflow:auto">
+            <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+              <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;padding:0 2px"><i style="font-size:15px;color:{{ col.c }}">{{ col.i }}</i><span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#A3AABB">{{ col.h }}</span><span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497">{{ col.n }}</span></div>
+                <sc-for list="{{ col.cards }}" as="t" hint-placeholder-count="2">
+                  <button onClick="{{ t.open }}" style="text-align:left;background:{{ t.bg }};border:1px solid {{ t.b }};border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;cursor:pointer;color:#E6E9F0">
+                    <div style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10.5px;color:#7C8497">{{ t.id }}<span style="display:{{ t.aid }};margin-left:auto;align-items:center;gap:4px;color:#4CC9E6;font-size:9.5px;letter-spacing:.04em"><span style="width:5px;height:5px;background:#4CC9E6;transform:rotate(45deg)"></span>AI SUGGESTED</span><span style="display:{{ t.pd }};margin-left:auto;align-items:center;gap:2px;color:{{ t.pc }};font-family:'Instrument Sans';font-size:11px;font-weight:600"><i style="font-size:13px">{{ t.pi }}</i>{{ t.p }}</span></div>
+                    <span style="font-size:13px;font-weight:500;line-height:1.35">{{ t.t }}</span>
+                    <div style="display:{{ t.depd }};align-items:center;gap:4px;font-size:11px;color:{{ t.depc }}"><i style="font-size:13px">{{ t.depi }}</i>{{ t.dep }}</div>
+                    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#A3AABB"><span style="padding:1px 6px;border-radius:3px;background:#1C2130">{{ t.role }}</span><span style="font-family:'JetBrains Mono'">{{ t.pts }} pts</span><div style="margin-left:auto;width:20px;height:20px;border-radius:50%;background:{{ t.abg }};color:{{ t.afg }};font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ t.ai }}</div></div>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ wPM }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;overflow:auto;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:14px;align-content:start">
+          <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+              <sc-for list="{{ health }}" as="h" hint-placeholder-count="4"><div style="border:1px solid #232838;border-radius:10px;background:#10131B;padding:14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#7C8497">{{ h.k }}</span><span style="font-size:18px;font-weight:600;color:{{ h.c }};display:flex;align-items:center;gap:6px"><i style="font-size:18px">{{ h.i }}</i>{{ h.v }}</span><span style="font-size:11.5px;color:#A3AABB">{{ h.s }}</span></div></sc-for>
+            </div>
+            <div style="border:1px dashed {{ rec.border }};border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;background:{{ rec.bg }}">
+              <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.05em;font-weight:600;color:{{ rec.vc }}"><i style="font-size:16px">{{ rec.vi }}</i>{{ rec.verb }}<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;color:{{ rec.sc }}"><i style="font-size:15px">{{ rec.si }}</i>{{ rec.status }}</span></div>
+              <span style="font-size:16px;font-weight:600">Reassign TASK-31 "Order status webhooks" from Manoj to Sarah</span>
+              <div style="display:grid;grid-template-columns:80px 1fr;gap:6px 12px;font-size:13px;line-height:1.5"><span style="color:#7C8497">Reason</span><span>TASK-28 is now complete and Sarah has matching backend skills (NestJS, webhooks). Manoj has 13 pts in progress and is blocked on TASK-24.</span><span style="color:#7C8497">Impact</span><span>Changes the task owner. Both get notified. The sprint forecast improves by about 5 pts.</span><span style="color:#7C8497">Confidence</span><span>Medium. Based on capacity, skills and dependency data. Sarah hasn't confirmed availability.</span></div>
+              <sc-if value="{{ rec.pending }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;gap:8px;align-items:center"><button onClick="{{ approve }}" style="height:32px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:13px;font-weight:600;padding:0 14px;cursor:pointer">Approve</button><button onClick="{{ modify }}" style="height:32px;border:1px solid #2E3446;border-radius:6px;background:transparent;color:#E6E9F0;font-size:13px;padding:0 12px;cursor:pointer">Modify</button><button onClick="{{ reject }}" style="height:32px;border:0;border-radius:6px;background:transparent;color:#A3AABB;font-size:13px;padding:0 12px;cursor:pointer">Reject</button><span style="margin-left:auto;font-size:11.5px;color:#7C8497">Nothing changes until someone approves</span></div>
+              </sc-if>
+              <sc-if value="{{ rec.modifying }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="color:#A3AABB">Reassign to</span><span style="height:30px;padding:0 10px;border:1px solid #8186FF;border-radius:6px;display:flex;align-items:center;gap:6px">Sarah Chen<i style="font-size:15px">expand_more</i></span><span style="color:#A3AABB">and</span><span style="height:30px;padding:0 10px;border:1px solid #2E3446;border-radius:6px;display:flex;align-items:center;gap:6px">ask her first<i style="font-size:15px">expand_more</i></span><button onClick="{{ approve }}" style="margin-left:auto;height:30px;border:0;border-radius:6px;background:#5B5FEF;color:#fff;font-size:12.5px;font-weight:600;padding:0 12px;cursor:pointer">Approve modified</button></div>
+              </sc-if>
+              <sc-if value="{{ rec.done }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:#A3AABB"><i style="font-size:16px">history</i>{{ rec.note }}<button onClick="{{ undoRec }}" style="margin-left:auto;border:0;background:transparent;color:#8186FF;font-size:12.5px;font-weight:600;cursor:pointer">Undo</button></div>
+              </sc-if>
+            </div>
+            <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:14px;font-weight:600">Dependencies on the critical path</span>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px">
+                <span style="padding:6px 10px;border:1px solid rgba(248,113,113,.5);border-radius:6px;background:rgba(248,113,113,.06)"><span style="font-family:'JetBrains Mono';color:#F87171">TASK-18</span> DB migration · Sarah · overdue</span><i style="color:#7C8497">arrow_forward</i>
+                <span style="padding:6px 10px;border:1px solid #2E3446;border-radius:6px"><span style="font-family:'JetBrains Mono';color:#A3AABB">TASK-24</span> Refresh tokens · Manoj</span><i style="color:#7C8497">arrow_forward</i>
+                <span style="padding:6px 10px;border:1px solid #2E3446;border-radius:6px"><span style="font-family:'JetBrains Mono';color:#A3AABB">TASK-35</span> Auth e2e tests · Aiko</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px">
+                <span style="padding:6px 10px;border:1px solid rgba(248,113,113,.5);border-radius:6px;background:rgba(248,113,113,.06)"><span style="font-family:'JetBrains Mono';color:#F87171">TASK-18</span></span><i style="color:#7C8497">arrow_forward</i>
+                <span style="padding:6px 10px;border:1px solid #2E3446;border-radius:6px"><span style="font-family:'JetBrains Mono';color:#A3AABB">TASK-27</span> Driver location stream · Emma</span>
+              </div>
+            </div>
+            <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:14px;font-weight:600">Risks</span>
+              <div style="display:flex;gap:10px;font-size:13px;line-height:1.5"><span style="font-family:'JetBrains Mono';font-size:10px;font-weight:600;color:#FBBF24;border:1px solid rgba(251,191,36,.4);border-radius:3px;padding:1px 5px;height:fit-content">MED</span>Payment integration may delay Sprint 3. Nobody on the team has Stripe experience yet.</div>
+              <div style="display:flex;gap:10px;font-size:13px;line-height:1.5"><span style="font-family:'JetBrains Mono';font-size:10px;font-weight:600;color:#A3AABB;border:1px solid #2E3446;border-radius:3px;padding:1px 5px;height:fit-content">LOW</span>QA coverage is thin on realtime features (1 of 4 tested).</div>
+            </div>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;display:flex;flex-direction:column;min-height:0">
+            <div style="display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid #232838"><span style="width:7px;height:7px;background:#4CC9E6;transform:rotate(45deg)"></span><span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#4CC9E6">AGENT ACTIVITY</span><span style="margin-left:auto;font-size:11.5px;color:#7C8497">Today · audit log</span></div>
+            <div style="padding:8px 10px;display:flex;flex-direction:column">
+              <sc-for list="{{ log }}" as="l" hint-placeholder-count="6">
+                <div style="display:flex;flex-direction:column;border-radius:8px;background:{{ l.bg }}">
+                  <button onClick="{{ l.go }}" style="display:flex;align-items:flex-start;gap:10px;padding:10px 8px;border:0;background:transparent;color:#E6E9F0;text-align:left;cursor:pointer;width:100%">
+                    <span style="font-family:'JetBrains Mono';font-size:11px;color:#7C8497;width:38px;padding-top:2px">{{ l.t }}</span>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono';font-size:10px;letter-spacing:.05em;font-weight:600;color:{{ l.vc }}"><i style="font-size:13px">{{ l.vi }}</i>{{ l.v }}</span><span style="font-size:13px;line-height:1.4">{{ l.x }}</span></div>
+                    <i style="font-size:17px;color:#7C8497">{{ l.chev }}</i>
+                  </button>
+                  <sc-if value="{{ l.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin:0 8px 10px 56px;border:1px solid #2E3446;border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:96px 1fr;gap:6px 10px;font-size:12px;line-height:1.45;background:#0E1118">
+                      <sc-for list="{{ l.detail }}" as="d" hint-placeholder-count="5"><span style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.05em;color:#7C8497;padding-top:1px">{{ d.k }}</span><span style="color:#D3D7E2">{{ d.v }}</span></sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ wTeam }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;overflow:auto;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-content:start">
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;overflow:hidden">
+            <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) 120px minmax(0,1fr);padding:10px 16px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#7C8497;border-bottom:1px solid #232838">MEMBER<span>SKILLS</span><span>LOAD</span><span>CURRENT</span></div>
+            <sc-for list="{{ team }}" as="m" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) 120px minmax(0,1fr);padding:12px 16px;border-bottom:1px solid #1C2130;align-items:center;font-size:13px">
+                <div style="display:flex;align-items:center;gap:10px"><div style="position:relative;width:30px;height:30px;border-radius:50%;background:{{ m.bg }};color:{{ m.fg }};font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ m.i }}<span style="position:absolute;right:-2px;bottom:-2px;width:9px;height:9px;border-radius:50%;background:{{ m.p }};border:2px solid #10131B"></span></div><div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:600">{{ m.n }}</span><span style="font-size:11.5px;color:#A3AABB">{{ m.r }} · {{ m.tz }}</span></div></div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ m.sk }}" as="k" hint-placeholder-count="3"><span style="font-size:11px;padding:1px 6px;border:1px solid #2E3446;border-radius:3px;color:#D3D7E2">{{ k }}</span></sc-for></div>
+                <div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;border-radius:2px;background:#232838"><div style="width:{{ m.load }};height:100%;border-radius:2px;background:{{ m.lc }}"></div></div><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#A3AABB">{{ m.pts }}</span></div>
+                <span style="font-size:12px;color:{{ m.sc }};display:flex;align-items:center;gap:4px"><i style="font-size:14px">{{ m.si }}</i>{{ m.cur }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="border:1px solid #232838;border-radius:12px;background:#10131B;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:14px;font-weight:600">Skill coverage</span>
+            <sc-for list="{{ coverage }}" as="c" hint-placeholder-count="7"><div style="display:grid;grid-template-columns:110px 1fr 28px;align-items:center;gap:10px;font-size:12.5px"><span>{{ c.k }}</span><div style="height:6px;border-radius:3px;background:#232838"><div style="width:{{ c.v }};height:100%;border-radius:3px;background:{{ c.c }}"></div></div><span style="font-family:'JetBrains Mono';font-size:11px;color:#A3AABB">{{ c.n }}</span></div></sc-for>
+            <span style="font-size:11.5px;color:#FBBF24;display:flex;gap:6px;align-items:center;margin-top:4px"><i style="font-size:15px">warning</i>Payments: no one has this yet. AI PM flagged it for Sprint 3.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ wLater }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
+          <div style="max-width:440px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;border:1px dashed #2E3446;border-radius:12px;padding:24px">
+            <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#7C8497">TIER 3 · NEXT PASS</span>
+            <span style="font-size:17px;font-weight:600">{{ laterTitle }}</span>
+            <span style="font-size:13.5px;color:#A3AABB;line-height:1.55">{{ laterDesc }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:0;right:0;bottom:0;width:520px;background:#10131B;border-left:1px solid #2E3446;box-shadow:-20px 0 48px rgba(0,0,0,.45);display:flex;flex-direction:column;z-index:5">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #232838"><span style="font-family:'JetBrains Mono';font-size:12px;color:#A3AABB">{{ task.id }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:4px;background:{{ task.sbg }};color:{{ task.sfg }}"><i style="font-size:13px">{{ task.si }}</i>{{ task.status }}</span><div style="margin-left:auto;display:flex;gap:4px;color:#A3AABB"><i style="padding:4px">link</i><i style="padding:4px">open_in_full</i><button onClick="{{ closeDrawer }}" style="border:0;background:transparent;color:#A3AABB;cursor:pointer;padding:4px"><i>close</i></button></div></div>
+          <div style="flex:1;overflow:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px">
+            <span style="font-size:19px;font-weight:600;line-height:1.3">{{ task.t }}</span>
+            <div style="display:grid;grid-template-columns:96px 1fr;gap:9px 12px;font-size:13px;align-items:center">
+              <span style="color:#7C8497">Assignee</span><span style="display:flex;align-items:center;gap:8px"><span style="width:20px;height:20px;border-radius:50%;background:{{ task.abg }};color:{{ task.afg }};font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ task.ai }}</span>{{ task.an }}</span>
+              <span style="color:#7C8497">Role</span><span>{{ task.role }}</span>
+              <span style="color:#7C8497">Priority</span><span style="color:{{ task.pc }};display:flex;align-items:center;gap:3px"><i style="font-size:15px">{{ task.pi }}</i>{{ task.p }}</span>
+              <span style="color:#7C8497">Estimate</span><span style="font-family:'JetBrains Mono';font-size:12.5px">{{ task.pts }} points</span>
+              <span style="color:#7C8497">Depends on</span><span style="color:{{ task.depc }}">{{ task.depFull }}</span>
+              <span style="color:#7C8497">Branch</span><span style="font-family:'JetBrains Mono';font-size:12px;color:#D3D7E2">{{ task.branch }}</span>
+              <span style="color:#7C8497">Pull request</span><span style="font-size:12.5px;color:#8186FF">{{ task.pr }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Description</span><span style="font-size:13.5px;line-height:1.6;color:#D3D7E2">{{ task.desc }}</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Acceptance criteria</span><sc-for list="{{ task.ac }}" as="a" hint-placeholder-count="3"><div style="display:flex;gap:8px;font-size:13px;line-height:1.45;color:{{ a.c }}"><i style="font-size:17px;color:{{ a.ic }}">{{ a.i }}</i>{{ a.t }}</div></sc-for></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 12px;border:1px dashed rgba(76,201,230,.42);border-radius:8px"><span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#4CC9E6;margin-right:4px"><span style="width:6px;height:6px;background:#4CC9E6;transform:rotate(45deg)"></span>AI</span><sc-for list="{{ taskAI }}" as="a" hint-placeholder-count="4"><span style="font-size:12px;padding:4px 9px;border:1px solid #2E3446;border-radius:5px">{{ a }}</span></sc-for></div>
+            <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;font-weight:600">Activity</span>
+              <sc-for list="{{ task.act }}" as="a" hint-placeholder-count="3"><div style="display:flex;gap:10px;font-size:12.5px;line-height:1.5"><div style="width:22px;height:22px;border-radius:50%;background:{{ a.bg }};color:{{ a.fg }};font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:{{ a.b }};box-sizing:border-box">{{ a.i }}</div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="color:#A3AABB"><b style="color:#E6E9F0">{{ a.n }}</b> · {{ a.w }}</span><span style="color:#D3D7E2">{{ a.t }}</span></div></div></sc-for>
+            </div>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid #232838;display:flex;align-items:center;gap:8px"><div style="flex:1;height:34px;border:1px solid #2E3446;border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:13px;color:#7C8497">Comment, @mention, or paste a file…</div><i style="color:#7C8497">attach_file</i></div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { role: 'All roles', diff: 'All', wt: 'overview', brole: 'All', mine: false, task: null, rec: 'pending', logOpen: 2 };
+  renderVals() {
+    const s = this.state;
+    const pill = (on) => ({ b: on ? '#0F1320' : '#E2E5EB', bg: on ? '#0F1320' : '#fff', fg: on ? '#fff' : '#4A5266' });
+    const R = (n, total, filled, mine) => ({ n: `${n} ×${total}`, fw: mine ? 600 : 400, c: mine ? '#2E31A8' : '#0F1320', seats: Array.from({ length: total }, (_, k) => ({ bg: k < filled ? '#0B8FB0' : 'transparent', b: k < filled ? '0' : '1.5px solid #9AA1B1' })), key: n });
+    const userSkills = ['TypeScript', 'Angular', 'NestJS', 'PostgreSQL', 'Node.js', 'REST'];
+    const T = (arr) => arr.map(n => { const m = userSkills.includes(n); return { n, b: m ? '#BFE3C9' : '#E2E5EB', c: m ? '#15803D' : '#4A5266', bg: m ? '#F2FAF4' : '#fff' }; });
+    const projDefs = [
+      { type: 'LOGISTICS · WEB PLATFORM', t: 'Real-Time Delivery Platform', diff: 'Intermediate', status: 'In progress', d: 'Build a scalable delivery system with real-time order tracking, driver dispatch and customer notifications.', roles: [R('Backend', 2, 2), R('Frontend', 2, 2), R('DevOps', 1, 1), R('QA', 1, 1)], tech: ['NestJS', 'Angular', 'PostgreSQL', 'Redis', 'Docker'], apps: 12, pos: 6, open: 0, weeks: '6 weeks' },
+      { type: 'IOT · DASHBOARD', t: 'Fleet Telemetry Dashboard', diff: 'Intermediate', status: 'Recruiting', d: 'Live map and charts for 2,000 delivery vans, covering streaming ingestion, alerting and an Angular dashboard with offline support.', roles: [R('Frontend', 2, 0, 1), R('Backend', 2, 1), R('Data', 1, 0), R('QA', 1, 1)], tech: ['Angular', 'TypeScript', 'WebSockets', 'TimescaleDB', 'Grafana'], apps: 9, pos: 6, open: 4, weeks: '5 weeks' },
+      { type: 'FINTECH · API', t: 'Split-Bill Payments API', diff: 'Advanced', status: 'Recruiting', d: 'Multi-party payments with idempotent ledger writes, Stripe Connect and a fraud-check pipeline.', roles: [R('Backend', 3, 1), R('DevOps', 1, 0), R('QA', 1, 0), R('Security', 1, 1)], tech: ['Node.js', 'PostgreSQL', 'Stripe', 'Kafka', 'Kubernetes'], apps: 21, pos: 6, open: 4, weeks: '8 weeks' },
+      { type: 'AI · CONSUMER APP', t: 'AI Travel Planner', diff: 'Beginner', status: 'Recruiting', d: 'Plan multi-city trips with an LLM agent that books against mock APIs, with a React Native client and a RAG knowledge base.', roles: [R('AI Engineer', 2, 1), R('Frontend', 2, 1), R('Backend', 1, 0), R('Design', 1, 1)], tech: ['Python', 'LangChain', 'React Native', 'pgvector', 'REST'], apps: 34, pos: 6, open: 3, weeks: '4 weeks' },
+      { type: 'EDTECH · WEB', t: 'Campus Events Hub', diff: 'Beginner', status: 'Recruiting', d: 'An events and RSVP platform for a university, with SSO, calendar sync and an admin moderation queue.', roles: [R('Frontend', 2, 1), R('Backend', 2, 0), R('QA', 1, 0)], tech: ['Angular', 'NestJS', 'PostgreSQL', 'OAuth'], apps: 6, pos: 5, open: 4, weeks: '4 weeks' },
+      { type: 'DEVTOOLS · CLI', t: 'Flaky Test Detector', diff: 'Advanced', status: 'Starting soon', d: 'A CI plugin that reruns, fingerprints and quarantines flaky tests across GitHub Actions workflows.', roles: [R('Backend', 2, 2), R('DevOps', 2, 1), R('Frontend', 1, 0)], tech: ['Go', 'GitHub Actions', 'ClickHouse', 'React'], apps: 15, pos: 5, open: 2, weeks: '6 weeks' },
+    ];
+    const diffC = { Beginner: ['#E8F6EC', '#15803D'], Intermediate: ['#EEF0FD', '#2E31A8'], Advanced: ['#FDF3E3', '#8A4308'] };
+    const statC = { 'Recruiting': '#15803D', 'In progress': '#4B4FE0', 'Starting soon': '#B45309' };
+    const projects = projDefs.filter(p => (s.role === 'All roles' || p.roles.some(r => r.key.startsWith(s.role))) && (s.diff === 'All' || p.diff === s.diff))
+      .map(p => ({ ...p, tech: T(p.tech), dbg: diffC[p.diff][0], dfg: diffC[p.diff][1], sc: statC[p.status] }));
+
+    // workspace
+    const ppl = {
+      MK: { n: 'Manoj Kumar', r: 'Backend', bg: '#2A3050', fg: '#B8BCFF', p: '#4ADE80', tz: 'CET', sk: ['TypeScript', 'NestJS', 'PostgreSQL'], pts: '13 pts', load: '92%', lc: '#FBBF24', cur: 'TASK-24 · blocked', sc: '#F87171', si: 'block' },
+      SC: { n: 'Sarah Chen', r: 'Backend', bg: '#173A33', fg: '#7FE0C2', p: '#4ADE80', tz: 'CET', sk: ['NestJS', 'PostgreSQL', 'Webhooks'], pts: '5 pts', load: '40%', lc: '#4CC9E6', cur: 'TASK-18 · finishing', sc: '#FBBF24', si: 'pending' },
+      EF: { n: 'Emma Fischer', r: 'Frontend', bg: '#123845', fg: '#7FD6EA', p: '#4ADE80', tz: 'CET', sk: ['Angular', 'TypeScript', 'RxJS'], pts: '8 pts', load: '64%', lc: '#4CC9E6', cur: 'TASK-27 · waiting', sc: '#FBBF24', si: 'hourglass_top' },
+      TO: { n: 'Tomás Ortega', r: 'Frontend', bg: '#1E2F4A', fg: '#9CC3F5', p: '#7C8497', tz: 'WET', sk: ['Angular', 'Maps', 'CSS'], pts: '8 pts', load: '64%', lc: '#4CC9E6', cur: 'TASK-29 · in progress', sc: '#A3AABB', si: 'play_circle' },
+      LB: { n: 'Lukas Braun', r: 'DevOps', bg: '#40301A', fg: '#F5C97F', p: '#FBBF24', tz: 'CET', sk: ['Docker', 'GitHub Actions', 'Terraform'], pts: '5 pts', load: '40%', lc: '#4CC9E6', cur: 'TASK-30 · in review', sc: '#8186FF', si: 'rate_review' },
+      AY: { n: 'Aiko Yamada', r: 'QA', bg: '#3A2350', fg: '#D6B0F5', p: '#4ADE80', tz: 'JST', sk: ['Playwright', 'Jest', 'k6'], pts: '3 pts', load: '24%', lc: '#4CC9E6', cur: 'TASK-35 · waiting', sc: '#FBBF24', si: 'hourglass_top' },
+    };
+    const team = Object.entries(ppl).map(([i, m]) => ({ i, ...m }));
+    const prio = { High: ['#F87171', 'keyboard_double_arrow_up'], Med: ['#FBBF24', 'drag_handle'], Low: ['#A3AABB', 'keyboard_arrow_down'] };
+    const tasks = [
+      { id: 'TASK-33', t: 'Add idempotency keys to POST /orders', col: 0, role: 'Backend', a: 'MK', p: 'High', pts: 3, ai: 1 },
+      { id: 'TASK-36', t: 'Stripe sandbox spike for Sprint 3', col: 0, role: 'Backend', a: 'SC', p: 'Med', pts: 2, ai: 1 },
+      { id: 'TASK-37', t: 'Empty states for order history', col: 0, role: 'Frontend', a: 'TO', p: 'Low', pts: 2 },
+      { id: 'TASK-31', t: 'Order status webhooks', col: 1, role: 'Backend', a: 'MK', p: 'Med', pts: 5 },
+      { id: 'TASK-35', t: 'Auth end-to-end tests', col: 1, role: 'QA', a: 'AY', p: 'Med', pts: 3, dep: 'TASK-24' },
+      { id: 'TASK-24', t: 'Implement refresh token rotation', col: 2, role: 'Backend', a: 'MK', p: 'High', pts: 5, dep: 'TASK-18', blocked: 1 },
+      { id: 'TASK-18', t: 'Database migration: orders v2 + sessions', col: 2, role: 'Backend', a: 'SC', p: 'High', pts: 3, overdue: 1 },
+      { id: 'TASK-27', t: 'Driver location stream (WebSocket)', col: 2, role: 'Frontend', a: 'EF', p: 'High', pts: 8, dep: 'TASK-18', blocked: 1 },
+      { id: 'TASK-29', t: 'Live map clustering', col: 2, role: 'Frontend', a: 'TO', p: 'Med', pts: 5 },
+      { id: 'TASK-22', t: 'Auth refresh endpoint', col: 3, role: 'Backend', a: 'MK', p: 'High', pts: 5, pr: 'PR #42' },
+      { id: 'TASK-30', t: 'Staging deploy pipeline', col: 3, role: 'DevOps', a: 'LB', p: 'Med', pts: 5, pr: 'PR #44' },
+      { id: 'TASK-28', t: 'Order schema v2', col: 4, role: 'Backend', a: 'SC', p: 'Med', pts: 3 },
+      { id: 'TASK-19', t: 'CI pipeline with test matrix', col: 4, role: 'DevOps', a: 'LB', p: 'Med', pts: 3 },
+      { id: 'TASK-21', t: 'Login + signup screens', col: 4, role: 'Frontend', a: 'EF', p: 'Med', pts: 5 },
+    ];
+    const colDefs = [['BACKLOG', 'inbox', '#7C8497'], ['TODO', 'radio_button_unchecked', '#A3AABB'], ['IN PROGRESS', 'play_circle', '#4CC9E6'], ['REVIEW', 'rate_review', '#8186FF'], ['DONE', 'check_circle', '#4ADE80']];
+    const visible = tasks.filter(t => (s.brole === 'All' || t.role === s.brole) && (!s.mine || t.a === 'MK'));
+    const card = (t) => { const m = ppl[t.a]; const [pc, pi] = prio[t.p]; return { ...t, ai: m ? t.a : '', abg: m.bg, afg: m.fg, pc, pi, aid: t.ai ? 'inline-flex' : 'none', pd: t.ai ? 'none' : 'inline-flex',
+      depd: (t.dep || t.overdue || t.pr) ? 'flex' : 'none', dep: t.blocked ? `Blocked by ${t.dep}` : t.overdue ? 'Overdue · blocks 2 tasks' : t.pr ? `${t.pr} · checks passed` : `Depends on ${t.dep}`,
+      depc: (t.blocked || t.overdue) ? '#F87171' : t.pr ? '#4ADE80' : '#A3AABB', depi: t.blocked ? 'block' : t.overdue ? 'schedule' : t.pr ? 'merge' : 'link',
+      b: s.task === t.id ? '#8186FF' : t.blocked ? 'rgba(248,113,113,.38)' : t.ai ? 'rgba(76,201,230,.35)' : '#232838', bg: s.task === t.id ? '#161A2E' : '#10131B',
+      open: () => this.setState({ task: t.id }) }; };
+    const columns = colDefs.map(([h, i, c], k) => { const cards = visible.filter(t => t.col === k).map(card); return { h, i, c, n: cards.length, cards }; });
+    const sel = tasks.find(t => t.id === s.task) || tasks[5];
+    const sm = ppl[sel.a]; const [spc, spi] = prio[sel.p];
+    const stMap = [['Backlog', 'inbox', '#1C2130', '#A3AABB'], ['To do', 'radio_button_unchecked', '#1C2130', '#A3AABB'], ['In progress', 'play_circle', 'rgba(76,201,230,.12)', '#4CC9E6'], ['In review', 'rate_review', 'rgba(129,134,255,.14)', '#A5A8FF'], ['Done', 'check_circle', 'rgba(74,222,128,.12)', '#4ADE80']][sel.col];
+    const isRT = sel.id === 'TASK-24';
+    const task = { ...sel, an: sm.n, ai: sel.a, abg: sm.bg, afg: sm.fg, pc: spc, pi: spi, status: sel.blocked ? 'Blocked' : stMap[0], si: sel.blocked ? 'block' : stMap[1], sbg: sel.blocked ? 'rgba(248,113,113,.12)' : stMap[2], sfg: sel.blocked ? '#F87171' : stMap[3],
+      depFull: sel.dep ? `${sel.dep} · Database migration (Sarah) · in progress` : 'None', depc: sel.blocked ? '#F87171' : '#D3D7E2',
+      branch: isRT ? 'feature/auth-refresh' : `feature/${sel.id.toLowerCase()}`, pr: sel.pr ? `${sel.pr} · ✓ tests ✓ lint ✓ build` : isRT ? 'Not opened yet' : '—',
+      desc: isRT ? 'Rotate refresh tokens on every use and invalidate the whole token family on reuse. This prevents replay if a token leaks. Store token families in the sessions table that TASK-18 creates.' : 'Scoped during sprint planning. See the linked spec in #backend for details.',
+      ac: isRT ? [{ t: 'A new refresh token is issued on every /auth/refresh', i: 'check_box', ic: '#4ADE80', c: '#A3AABB' }, { t: 'Reusing an old token revokes the family and returns 401', i: 'check_box_outline_blank', ic: '#A3AABB', c: '#E6E9F0' }, { t: 'Unit tests cover expiry, reuse and concurrent refresh', i: 'check_box_outline_blank', ic: '#A3AABB', c: '#E6E9F0' }] : [{ t: 'Meets the definition of done in the project README', i: 'check_box_outline_blank', ic: '#A3AABB', c: '#E6E9F0' }],
+      act: isRT ? [
+        { i: '◆', n: 'AI PM', w: '09:33', t: 'REQUESTED: Asked Sarah for an ETA on TASK-18 because this task is blocked.', bg: 'transparent', fg: '#4CC9E6', b: '1px dashed rgba(76,201,230,.6)' },
+        { i: 'SC', n: 'Sarah Chen', w: '09:40', t: 'Migration is done locally, and I\'ll push after the index fix. Should land today.', bg: '#173A33', fg: '#7FE0C2', b: '0' },
+        { i: 'MK', n: 'Manoj Kumar', w: '09:52', t: 'Thanks! I\'ll stub the sessions repo in the meantime so I can write the tests.', bg: '#2A3050', fg: '#B8BCFF', b: '0' }] : [{ i: 'MK', n: 'Manoj Kumar', w: 'Mon', t: 'Created this task during sprint planning.', bg: '#2A3050', fg: '#B8BCFF', b: '0' }] };
+    const recStates = {
+      pending: { verb: 'RECOMMENDED', vi: 'lightbulb', vc: '#A5A8FF', status: 'NEEDS APPROVAL', si: 'hourglass_top', sc: '#FBBF24', border: 'rgba(76,201,230,.45)', bg: 'rgba(76,201,230,.035)', pending: true, modifying: false, done: false, note: '' },
+      modify: { verb: 'RECOMMENDED · EDITING', vi: 'edit', vc: '#A5A8FF', status: 'NEEDS APPROVAL', si: 'hourglass_top', sc: '#FBBF24', border: 'rgba(129,134,255,.6)', bg: 'rgba(129,134,255,.05)', pending: false, modifying: true, done: false, note: '' },
+      approved: { verb: 'EXECUTED', vi: 'check_circle', vc: '#4ADE80', status: 'APPROVED BY MANOJ · 10:02', si: 'verified_user', sc: '#4ADE80', border: 'rgba(74,222,128,.5)', bg: 'rgba(74,222,128,.04)', pending: false, modifying: false, done: true, note: 'TASK-31 is now owned by Sarah. Sarah and Manoj were both notified.' },
+      rejected: { verb: 'REJECTED', vi: 'do_not_disturb_on', vc: '#A3AABB', status: 'REJECTED BY MANOJ · 10:02', si: 'person', sc: '#A3AABB', border: '#2E3446', bg: 'transparent', pending: false, modifying: false, done: true, note: 'No changes made. AI PM will stop suggesting this unless capacity changes.' },
+    };
+    const rec = recStates[s.rec];
+    const V = { OBSERVED: ['visibility', '#A3AABB'], REQUESTED: ['outgoing_mail', '#FBBF24'], RECOMMENDED: ['lightbulb', '#A5A8FF'], EXECUTED: ['check_circle', '#4ADE80'], RECEIVED: ['inbox', '#A3AABB'], REJECTED: ['do_not_disturb_on', '#A3AABB'] };
+    const logDefs = [
+      { t: '09:32', v: 'OBSERVED', x: 'TASK-18 is overdue and blocking TASK-24 and TASK-27.', detail: [['OBSERVED', 'TASK-18 was due Mon 13 Oct and is still In progress.'], ['WHY IT MATTERS', 'TASK-24 and TASK-27 depend on it, which puts 13 pts on the critical path.'], ['DECISION', 'Ask the owner for a status update before suggesting changes.'], ['ACTION', 'None yet.'], ['SOURCES', 'Board · dependency graph']] },
+      { t: '09:33', v: 'REQUESTED', x: 'Asked Sarah for a status update on TASK-18.', detail: [['ACTION', 'Sent a DM to Sarah Chen and posted a note on TASK-24.'], ['WHY', 'She owns the blocking task.'], ['VISIBILITY', 'Sarah, Manoj']] },
+      { t: '09:40', v: 'RECEIVED', x: 'Sarah expects to finish TASK-18 today after an index fix.', detail: [['OBSERVED', 'Sarah replied: "Migration done locally, pushing after the index fix."'], ['WHY IT MATTERS', 'The block should clear today, so no reassignment is needed for TASK-18.'], ['DECISION', 'Keep the owner. Suggest splitting the task so others can start now.'], ['ACTION', 'Recommendation drafted (09:41).'], ['RESULT', 'Pending: developer expects completion today.']] },
+      { t: '09:41', v: 'RECOMMENDED', x: 'Split TASK-18 into "migration" and "seed data" so TASK-27 can start.', detail: [['RECOMMENDED', 'Create TASK-18b for the seed data and keep the schema in TASK-18.'], ['CONFIDENCE', 'High. TASK-27 only needs the schema.'], ['STATUS', 'Accepted by Sarah at 09:48.']] },
+      { t: '09:44', v: 'EXECUTED', x: 'Labelled PR #42 "needs-review" and pinged 2 reviewers.', detail: [['ACTION', 'Added a GitHub label and requested reviews from Sarah and Lukas.'], ['WHY', 'PR #42 has been open 26 h. Team rule: reviews within 24 h.'], ['PERMISSION', 'Low-impact action, so it\'s auto-allowed by the project settings.'], ['UNDO', 'Remove the label at any time.']] },
+      { t: '09:45', v: 'RECOMMENDED', x: 'Reassign TASK-31 to Sarah.', detail: [['STATUS', 'Waiting for approval (see the card on the left).']] },
+    ];
+    if (s.rec === 'approved') logDefs.push({ t: '10:02', v: 'EXECUTED', x: 'Reassigned TASK-31 to Sarah after approval from Manoj.', detail: [['APPROVED BY', 'Manoj Kumar'], ['ACTION', 'Owner changed and both people notified.'], ['UNDO', 'Available for 24 h.']] });
+    if (s.rec === 'rejected') logDefs.push({ t: '10:02', v: 'REJECTED', x: 'Manoj rejected the TASK-31 reassignment.', detail: [['RESULT', 'No changes made.']] });
+    const log = logDefs.map((l, k) => ({ ...l, vi: V[l.v][0], vc: V[l.v][1], open: s.logOpen === k, chev: s.logOpen === k ? 'expand_less' : 'expand_more', bg: s.logOpen === k ? '#161A24' : 'transparent', detail: l.detail.map(([k2, v]) => ({ k: k2, v })), go: () => this.setState({ logOpen: s.logOpen === k ? null : k }) }));
+    const later = { code: ['Code', 'A shared cloud IDE on the project branch, with the AI reviewer inline. It uses the same editor and terminal components as the Study Workspace, at developer density.'], github: ['GitHub', 'Repo, branches, commits, PRs and issues, with check status and an AI code review with findings by severity, file and line.'], chat: ['Project chat', 'Channels (#general, #backend, #frontend, #devops), plus rich previews for PRs, tasks and builds. Kept separate from Study Buddy chat.'], meetings: ['Meetings', 'Video standups with agenda, notes and an AI summary after the meeting (decisions and action items).'], activity: ['Activity', 'A timeline of tasks, GitHub, AI, team and builds, with filters. Agent entries use the same audit format as AI PM.'] };
+    const wtDefs = [['overview', 'Overview'], ['board', 'Board', '14'], ['code', 'Code'], ['github', 'GitHub', '3 PRs'], ['team', 'Team', '6'], ['chat', 'Chat'], ['meetings', 'Meetings'], ['pm', 'AI PM', '1'], ['activity', 'Activity']];
+    return {
+      nav: [['home', 'home', 'Home', 'Network.dc.html'], ['learn', 'school', 'Learn', 'Learning.dc.html'], ['projects', 'deployed_code', 'Projects', 'Projects.dc.html'], ['people', 'group', 'People', 'Network.dc.html'], ['messages', 'forum', 'Messages', '#', '3'], ['jobs', 'work', 'Jobs', '#']].map(([id, icon, label, href, badge]) => { const on = id === 'projects'; return { on, icon, label, href, badge: badge || '', bg: on ? '#EEF0FD' : 'transparent', fg: on ? '#2E31A8' : '#4A5266', ic: on ? '#4B4FE0' : '#6B7386', fw: on ? 600 : 500 }; }),
+      roleChips: ['All roles', 'Frontend', 'Backend', 'DevOps', 'QA', 'AI Engineer'].map(n => ({ n, ...pill(s.role === n), go: () => this.setState({ role: n }) })),
+      diffChips: ['All', 'Beginner', 'Intermediate', 'Advanced'].map(n => ({ n, ...pill(s.diff === n), go: () => this.setState({ diff: n }) })),
+      projects, none: projects.length === 0,
+      apps: [
+        { t: 'Real-Time Delivery Platform', r: 'Backend Developer', steps: ['#0B8FB0', '#0B8FB0', '#0B8FB0', '#0B8FB0', '#E2E5EB'], s: 'On the team · Sprint 2', i: 'groups', c: '#15803D', cta: 'Open' },
+        { t: 'Split-Bill Payments API', r: 'Backend Developer', steps: ['#0B8FB0', '#E2E5EB', '#E2E5EB', '#E2E5EB', '#E2E5EB'], s: 'AI interview ready', i: 'record_voice_over', c: '#4B4FE0', cta: 'Start' },
+        { t: 'Flaky Test Detector', r: 'DevOps Engineer', steps: ['#0B8FB0', '#0B8FB0', '#0B8FB0', '#E2E5EB', '#E2E5EB'], s: 'Not selected · feedback ready', i: 'feedback', c: '#4A5266', cta: 'Read' }],
+      process: [{ n: '1', t: 'Apply', d: '~5 min' }, { n: '2', t: 'AI interview', d: '~25 min' }, { n: '3', t: 'Evaluation', d: '1–2 days' }, { n: '4', t: 'Team selection', d: 'at close' }, { n: '5', t: 'Build', d: '4–8 weeks' }, { n: '6', t: 'Final evaluation', d: 'certificate' }],
+      rail: [['home', 'Home', 'Network.dc.html'], ['school', 'Learn', 'Learning.dc.html'], ['deployed_code', 'Projects', 'Projects.dc.html', 1], ['group', 'People', 'Network.dc.html'], ['forum', 'Messages', '#'], ['work', 'Jobs', '#']].map(([i, n, href, on]) => ({ i, n, href, bg: on ? '#1C2130' : 'transparent', c: on ? '#4CC9E6' : '#7C8497' })),
+      teamMini: team.map(m => ({ i: m.i, n: m.n, bg: m.bg, fg: m.fg, p: m.p })), team,
+      wtabs: wtDefs.map(([id, n, c]) => ({ n, c: c || '', cd: c ? 'inline' : 'none', dd: id === 'pm' ? 'inline-block' : 'none', bc: s.wt === id ? '#4CC9E6' : 'transparent', fg: s.wt === id ? '#E6E9F0' : '#A3AABB', fw: s.wt === id ? 600 : 500, go: () => this.setState({ wt: id, task: null }) })),
+      wOverview: s.wt === 'overview', wBoard: s.wt === 'board', wPM: s.wt === 'pm', wTeam: s.wt === 'team', wLater: !!later[s.wt],
+      laterTitle: later[s.wt] ? later[s.wt][0] : '', laterDesc: later[s.wt] ? later[s.wt][1] : '',
+      goPM: () => this.setState({ wt: 'pm' }),
+      burn: [50, 47, 44, 44, 40, 36, 33, 29, 27, 22, 21].slice(0, 8).map((v, k) => ({ h: (v * 2) + 'px', c: '#4CC9E6', br: '0', d: ['M', 'T', 'W', 'T', 'F', 'M', 'T', 'W'][k] })).concat([{ h: '30px', c: 'transparent', br: '1px dashed #7C8497', d: 'T' }, { h: '12px', c: 'transparent', br: '1px dashed #7C8497', d: 'F' }]),
+      milestones: [{ t: 'Sprint 1 · Orders + auth skeleton', d: '03 OCT', c: '#4ADE80', f: '#4ADE80', tc: '#A3AABB' }, { t: 'Sprint 2 · Realtime tracking + token rotation', d: '17 OCT', c: '#4CC9E6', f: 'transparent', tc: '#E6E9F0' }, { t: 'Sprint 3 · Payments + hardening', d: '31 OCT', c: '#2E3446', f: 'transparent', tc: '#A3AABB' }, { t: 'Final evaluation & demo day', d: '04 NOV', c: '#2E3446', f: 'transparent', tc: '#A3AABB' }],
+      prs: [{ n: 42, t: 'Implement authentication refresh tokens', checks: '✓✓✓', cc: '#4ADE80', r: '◆ AI review ready', rc: '#4CC9E6' }, { n: 44, t: 'Staging deploy pipeline with preview envs', checks: '✓✓✓', cc: '#4ADE80', r: 'Needs 1 review', rc: '#A3AABB' }, { n: 45, t: 'Live map clustering (WIP)', checks: '✓✕✓', cc: '#F87171', r: 'Lint failing', rc: '#F87171' }],
+      blockers: [{ id: 'TASK-18', t: 'DB migration · Sarah', d: '1 day overdue', i: 'schedule', c: '#F87171' }, { id: 'TASK-24', t: 'Refresh token rotation · you', d: 'blocked', i: 'block', c: '#F87171' }, { id: 'SPRINT', t: 'Sprint 2 review & demo', d: 'Fri 15:00', i: 'event', c: '#FBBF24' }],
+      boardRoles: ['All', 'Backend', 'Frontend', 'DevOps', 'QA'].map(n => ({ n, b: s.brole === n ? '#8186FF' : '#2E3446', bg: s.brole === n ? 'rgba(129,134,255,.14)' : 'transparent', fg: s.brole === n ? '#E6E9F0' : '#A3AABB', go: () => this.setState({ brole: n }) })),
+      mine: { b: s.mine ? '#8186FF' : '#2E3446', bg: s.mine ? 'rgba(129,134,255,.14)' : 'transparent', fg: s.mine ? '#E6E9F0' : '#A3AABB' }, toggleMine: () => this.setState({ mine: !s.mine }),
+      boardCount: visible.length, columns,
+      drawer: !!s.task && s.wt === 'board', closeDrawer: () => this.setState({ task: null }), task,
+      taskAI: ['Explain Task', 'Break Into Steps', 'Identify Blockers', 'Ask AI'],
+      health: [{ k: 'PROJECT HEALTH', v: 'At risk', i: 'warning', c: '#FBBF24', s: 'Critical path is slipping by 1 day' }, { k: 'SPRINT PROGRESS', v: '42%', i: 'donut_large', c: '#E6E9F0', s: '21 / 50 pts · 3 days left' }, { k: 'BLOCKERS', v: '2', i: 'block', c: '#F87171', s: 'Both caused by TASK-18' }, { k: 'PULL REQUESTS', v: '3 open', i: 'merge', c: '#E6E9F0', s: '1 over the 24 h review SLA' }],
+      rec, approve: () => this.setState({ rec: 'approved' }), reject: () => this.setState({ rec: 'rejected' }), modify: () => this.setState({ rec: 'modify' }), undoRec: () => this.setState({ rec: 'pending' }),
+      log,
+      coverage: [{ k: 'Backend', v: '100%', n: '2/2', c: '#4ADE80' }, { k: 'Frontend', v: '100%', n: '2/2', c: '#4ADE80' }, { k: 'DevOps', v: '100%', n: '1/1', c: '#4ADE80' }, { k: 'QA', v: '100%', n: '1/1', c: '#4ADE80' }, { k: 'Realtime', v: '66%', n: '2', c: '#4CC9E6' }, { k: 'Security', v: '33%', n: '1', c: '#FBBF24' }, { k: 'Payments', v: '4%', n: '0', c: '#F87171' }],
+    };
+  }
+}
+</script>
+</body>
+</html>

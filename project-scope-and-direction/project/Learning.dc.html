@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E6E8EC;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1320;-webkit-font-smoothing:antialiased}
+a{color:#4B4FE0;text-decoration:none}a:hover{color:#3D40C9;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:56px;display:flex;flex-direction:column;gap:20px;width:1440px">
+
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">20 · 24</span><span style="font-size:20px;font-weight:600">My Learning: the 4-slot rule</span><span style="font-size:13px;color:#4A5266">Try it: switch the demo state, open a course's ⋯ menu</span>
+  <div style="margin-left:auto;display:inline-flex;gap:2px;background:#fff;padding:3px;border-radius:7px;border:1px solid #CDD2DB">
+    <sc-for list="{{ demoStates }}" as="d" hint-placeholder-count="2"><button onClick="{{ d.go }}" style="height:28px;padding:0 12px;border:0;border-radius:5px;background:{{ d.bg }};color:{{ d.fg }};font-size:12.5px;font-weight:600;cursor:pointer">{{ d.n }}</button></sc-for>
+  </div>
+</div>
+<div data-screen-label="20 Learning Dashboard" style="width:1440px;display:flex;background:#F5F6F8;border-radius:12px;overflow:hidden;border:1px solid #CDD2DB">
+  <aside style="width:248px;flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:2px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px;margin-bottom:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:15px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+      <a href="{{ n.href }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};text-decoration:none"><i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1">{{ n.label }}</span><span style="font-size:11px;font-weight:600;color:#4B4FE0">{{ n.badge }}</span></a>
+      <sc-if value="{{ n.on }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:1px;padding:2px 0 6px 20px">
+          <sc-for list="{{ sideCourses }}" as="c" hint-placeholder-count="4">
+            <a href="Study Workspace.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 10px;font-size:12.5px;color:#4A5266;border-left:1px solid #E2E5EB;text-decoration:none"><span style="width:6px;height:6px;border-radius:50%;background:#4B4FE0"></span><span style="flex:1">{{ c.t }}</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">{{ c.p }}</span></a>
+          </sc-for>
+        </div>
+      </sc-if>
+    </sc-for>
+    <div style="height:1px;background:#E2E5EB;margin:8px 4px"></div>
+    <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:1px dashed #9ED8E6;border-radius:6px;background:#F7FCFD;color:#0A6E88;font-size:13.5px;font-weight:500"><span style="width:7px;height:7px;background:#0B8FB0;transform:rotate(45deg);margin:0 6px 0 5px"></span><span style="flex:1">AI Buddy</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">⌘J</span></div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:6px"><div style="width:28px;height:28px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div><div style="display:flex;flex-direction:column;line-height:1.25"><span style="font-size:13px;font-weight:600">Manoj Kumar</span><span style="font-size:11.5px;color:#6B7386">@manoj.dev</span></div></div>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid #E2E5EB;background:#fff">
+      <span style="font-size:15px;font-weight:600">Learn</span>
+      <div style="display:flex;gap:18px;margin-left:16px;font-size:13.5px;height:56px;align-items:stretch">
+        <span style="display:flex;align-items:center;border-bottom:2px solid #0F1320;font-weight:600">My Learning</span><span style="display:flex;align-items:center;color:#4A5266">Discover</span><span style="display:flex;align-items:center;color:#4A5266">Study Buddies</span><span style="display:flex;align-items:center;color:#4A5266">Certificates</span>
+      </div>
+      <div style="margin-left:auto;width:280px;height:34px;border:1px solid #E2E5EB;border-radius:6px;background:#F7F8FA;display:flex;align-items:center;gap:8px;padding:0 10px;color:#6B7386;font-size:13.5px"><i>search</i>Search courses<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;border:1px solid #E2E5EB;border-radius:4px;padding:1px 5px;background:#fff">⌘K</span></div>
+    </header>
+    <div style="padding:28px 32px 36px;display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;align-items:flex-end;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:6px"><h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">My Learning</h1><span style="font-size:14px;color:#4A5266">{{ subline }}</span></div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end"><span style="font-family:'JetBrains Mono';font-size:11px;color:#4A5266">{{ slotLabel }}</span><div style="display:flex;gap:4px"><sc-for list="{{ slotMeter }}" as="m" hint-placeholder-count="4"><span style="width:22px;height:8px;border-radius:2px;background:{{ m.bg }};border:{{ m.b }};box-sizing:border-box"></span></sc-for></div></div>
+          <button disabled="{{ full }}" title="{{ startTitle }}" style="height:38px;border:0;border-radius:6px;background:{{ startBg }};color:{{ startFg }};font-size:13.5px;font-weight:600;padding:0 14px;display:flex;align-items:center;gap:6px;cursor:{{ startCursor }}"><i style="font-size:18px">add</i>Start New Course</button>
+        </div>
+      </div>
+      <sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #D6DAFB;background:#F7F8FF;border-radius:10px;font-size:13.5px">
+          <i style="color:#4B4FE0">info</i><span><b>You can have up to 4 active courses.</b> Complete or leave a course to start another. With fewer courses, you and your buddies finish more of them.</span>
+          <span style="margin-left:auto;font-weight:600;color:#4B4FE0;white-space:nowrap">Manage courses</span>
+        </div>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+        <sc-for list="{{ courses }}" as="c" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px;position:relative">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">SLOT {{ c.slot }} · {{ c.cat }}</span><button onClick="{{ c.menu }}" style="margin-left:auto;width:26px;height:26px;border:0;border-radius:5px;background:{{ c.menuBg }};color:#4A5266;cursor:pointer"><i style="font-size:18px">more_horiz</i></button></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'Bricolage Grotesque';font-size:24px;font-weight:600;letter-spacing:-0.02em">{{ c.t }}</span><span style="font-size:13px;color:#4A5266">{{ c.l }}</span></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:6px;border-radius:3px;background:#E8EAF0"><div style="width:{{ c.p }};height:100%;border-radius:3px;background:#4B4FE0"></div></div><span style="font-family:'JetBrains Mono';font-size:13px;font-weight:600">{{ c.p }}</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#F7F8FA">
+              <div style="position:relative;width:30px;height:30px;border-radius:50%;background:{{ c.bbg }};color:{{ c.bfg }};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #4B4FE0;box-sizing:border-box;flex-shrink:0">{{ c.bi }}<span style="position:absolute;right:-3px;bottom:-3px;width:9px;height:9px;border-radius:50%;background:{{ c.pres }};border:2px solid #F7F8FA"></span></div>
+              <div style="display:flex;flex-direction:column;line-height:1.3;min-width:0"><span style="font-size:11px;color:#6B7386">Study Buddy</span><span style="font-size:13px;font-weight:600">{{ c.b }}</span></div>
+              <span style="margin-left:auto;font-size:11px;color:#4A5266">{{ c.presL }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:12.5px">
+              <span style="color:#6B7386">Module</span><span style="font-weight:500">{{ c.mod }}</span>
+              <span style="color:#6B7386">Next</span><span style="font-weight:500">{{ c.next }}</span>
+              <span style="color:#6B7386">Session</span><span style="font-weight:500;color:{{ c.sc }}">{{ c.sess }}</span>
+            </div>
+            <a href="Study Workspace.dc.html" style="height:36px;border-radius:6px;background:{{ c.ctaBg }};color:{{ c.ctaFg }};border:{{ c.ctaB }};font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;box-sizing:border-box">Continue Learning<i style="font-size:17px">arrow_forward</i></a>
+            <sc-if value="{{ c.open }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:44px;right:12px;width:210px;background:#fff;border:1px solid #E2E5EB;border-radius:10px;box-shadow:0 8px 24px rgba(15,19,32,.12);padding:4px;font-size:13px;z-index:3">
+                <div style="padding:8px 10px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">event</i>Schedule session</div>
+                <div style="padding:8px 10px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">notifications_paused</i>Pause reminders</div>
+                <div style="padding:8px 10px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">swap_horiz</i>Change Study Buddy</div>
+                <div style="height:1px;background:#E2E5EB;margin:4px 0"></div>
+                <button onClick="{{ c.leave }}" style="width:100%;border:0;background:transparent;padding:8px 10px;display:flex;gap:8px;align-items:center;color:#C81E1E;font-size:13px;cursor:pointer;border-radius:6px"><i style="font-size:16px">logout</i>Leave course…</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ hasEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1.5px dashed #CDD2DB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;background:#FBFBFC">
+            <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">SLOT 4 · OPEN</span>
+            <span style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600;letter-spacing:-0.02em;line-height:1.15">Start learning something new.</span>
+            <span style="font-size:13px;color:#4A5266;line-height:1.5">Pick a course and we'll match you with a buddy at your level within a day or so.</span>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+              <sc-for list="{{ quickPicks }}" as="q" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #E2E5EB;border-radius:7px;background:#fff;font-size:13px"><span style="font-weight:500">{{ q.t }}</span><span style="color:#6B7386;font-size:12px">{{ q.s }}</span><i style="margin-left:auto;font-size:16px;color:#4B4FE0">add</i></div>
+              </sc-for>
+            </div>
+            <button style="margin-top:auto;height:36px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600">Browse courses</button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-if value="{{ confirmLeave }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid #F3C4C4;background:#FFFBFB;border-radius:10px;font-size:13.5px">
+          <i style="color:#C81E1E">logout</i><div style="display:flex;flex-direction:column;gap:2px"><b>Leave {{ leaveName }}?</b><span style="color:#4A5266;font-size:12.5px">Your progress and notes are kept for 90 days. Your Study Buddy gets a heads-up and can find a new partner.</span></div>
+          <div style="margin-left:auto;display:flex;gap:8px"><button onClick="{{ cancelLeave }}" style="height:32px;border:1px solid #CDD2DB;background:#fff;border-radius:6px;font-size:13px;padding:0 12px;cursor:pointer">Keep course</button><button onClick="{{ doLeave }}" style="height:32px;border:0;background:#C81E1E;color:#fff;border-radius:6px;font-size:13px;font-weight:600;padding:0 12px;cursor:pointer">Leave course</button></div>
+        </div>
+      </sc-if>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:14px">
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center"><span style="font-size:15px;font-weight:600">Upcoming sessions</span><span style="margin-left:auto;font-size:12.5px;color:#4B4FE0;font-weight:600">Calendar</span></div>
+          <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #F0F2F5">
+              <div style="width:46px;display:flex;flex-direction:column;align-items:center;line-height:1.1"><span style="font-family:'JetBrains Mono';font-size:10px;color:#6B7386">{{ s.d }}</span><span style="font-size:16px;font-weight:600">{{ s.t }}</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:13.5px;font-weight:600">{{ s.c }}</span><span style="font-size:12px;color:#4A5266">{{ s.w }}</span></div>
+              <span style="font-size:11.5px;font-weight:600;color:{{ s.sc }};display:flex;align-items:center;gap:4px"><i style="font-size:14px">{{ s.si }}</i>{{ s.s }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:15px;font-weight:600">Study streak</span><span style="margin-left:auto;font-family:'Bricolage Grotesque';font-size:26px;font-weight:600">21</span><span style="font-size:12.5px;color:#4A5266">days</span></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+            <sc-for list="{{ streak }}" as="d" hint-placeholder-count="35"><span style="aspect-ratio:1;border-radius:3px;background:{{ d.bg }};border:{{ d.b }};box-sizing:border-box"></span></sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:#4A5266"><span style="width:10px;height:10px;border-radius:2px;background:#4B4FE0"></span>Together<span style="width:10px;height:10px;border-radius:2px;background:#A5A8F5;margin-left:8px"></span>Solo<span style="width:10px;height:10px;border-radius:2px;border:1.5px solid #4B4FE0;box-sizing:border-box;margin-left:8px"></span>Today</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:15px;font-weight:600">This month</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:8px;background:#F7F8FA"><span style="font-family:'Bricolage Grotesque';font-size:24px;font-weight:600">{{ s.v }}</span><span style="font-size:12px;color:#4A5266">{{ s.k }}</span></div></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:14px">
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:15px;font-weight:600">Recent activity</span>
+          <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4">
+            <div style="display:flex;gap:10px;font-size:13px;line-height:1.45"><i style="font-size:16px;color:{{ a.c }};padding-top:1px">{{ a.i }}</i><span style="flex:1">{{ a.t }}</span><span style="font-size:11.5px;color:#6B7386;white-space:nowrap">{{ a.w }}</span></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:baseline"><span style="font-size:15px;font-weight:600">Recommended for you</span><span style="margin-left:10px;font-size:12.5px;color:#4A5266">Based on Angular, TypeScript and your goal: build projects</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+            <sc-for list="{{ recs }}" as="r" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">{{ r.cat }}</span>
+                <span style="font-size:15px;font-weight:600">{{ r.t }}</span>
+                <span style="font-size:12.5px;color:#4A5266;line-height:1.45">{{ r.d }}</span>
+                <div style="display:flex;gap:12px;font-size:12px;color:#4A5266;margin-top:2px"><span>{{ r.lv }}</span><span>{{ r.dur }}</span><span>{{ r.n }} learners</span></div>
+                <button disabled="{{ full }}" title="{{ startTitle }}" style="margin-top:4px;height:32px;border:1px solid {{ recB }};border-radius:6px;background:#fff;color:{{ recFg }};font-size:13px;font-weight:600;cursor:{{ startCursor }}">{{ recCta }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;align-items:baseline;gap:12px;margin-top:40px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">25 – 28</span><span style="font-size:20px;font-weight:600">Find your Study Buddy</span><span style="font-size:13px;color:#4A5266">Try it: filter, click View Profile, then Study Together → Send. Preview the later states in the modal.</span></div>
+<div data-screen-label="25 Study Buddy Matching" style="width:1440px;height:1020px;display:flex;background:#F5F6F8;border-radius:12px;overflow:hidden;border:1px solid #CDD2DB;position:relative">
+  <aside style="width:248px;flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:2px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px;margin-bottom:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:15px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+    <sc-for list="{{ navFlat }}" as="n" hint-placeholder-count="6">
+      <a href="{{ n.href }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};text-decoration:none"><i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1">{{ n.label }}</span><span style="font-size:11px;font-weight:600;color:#4B4FE0">{{ n.badge }}</span></a>
+    </sc-for>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 24px;border-bottom:1px solid #E2E5EB;background:#fff;font-size:13.5px">
+      <span style="color:#4A5266">Learn</span><i style="font-size:16px;color:#9AA1B1">chevron_right</i><span style="color:#4A5266">AI Engineering</span><i style="font-size:16px;color:#9AA1B1">chevron_right</i><span style="font-weight:600">Find Study Buddy</span>
+    </header>
+    <div style="flex:1;display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;padding:24px 32px;min-height:0">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;flex-direction:column;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">MATCHING FOR</span><div style="border:1px solid #E2E5EB;background:#fff;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">AI Engineering</span><span style="font-size:12.5px;color:#4A5266">Beginner · Build projects</span></div></div>
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12.5px;font-weight:600">{{ f.h }}</span>
+            <sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="3">
+              <button onClick="{{ o.go }}" style="display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:3px 0;font-size:13px;color:#0F1320;cursor:pointer;text-align:left"><span style="width:16px;height:16px;border-radius:4px;border:1.5px solid {{ o.b }};background:{{ o.bg }};display:flex;align-items:center;justify-content:center;box-sizing:border-box"><i style="font-size:13px;color:#fff">{{ o.ck }}</i></span>{{ o.n }}<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:#6B7386">{{ o.c }}</span></button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div style="display:flex;align-items:flex-end;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:32px;font-weight:600;letter-spacing:-0.02em">Find your Study Buddy</h1><span style="font-size:14px;color:#4A5266">{{ matchCount }} people starting AI Engineering at your level. Ranked by course, level, goals, schedule and language.</span></div>
+          <span style="margin-left:auto;font-size:12.5px;color:#4A5266;display:flex;align-items:center;gap:4px">Sort: Best match<i style="font-size:16px">expand_more</i></span>
+        </div>
+        <sc-for list="{{ matches }}" as="m" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid {{ m.border }};border-radius:12px;padding:18px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 170px;gap:24px">
+            <div style="display:flex;gap:14px;min-width:0">
+              <div style="position:relative;width:52px;height:52px;border-radius:50%;background:{{ m.bg }};color:{{ m.fg }};font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ m.i }}<span style="position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:{{ m.pres }};border:2.5px solid #fff"></span></div>
+              <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:16px;font-weight:600">{{ m.n }}</span><span style="font-size:12.5px;color:#4A5266">{{ m.h }}</span></div>
+                <span style="font-size:13px;line-height:1.45"><span style="color:#6B7386">Goal · </span>{{ m.goal }}</span>
+                <div style="display:flex;flex-wrap:wrap;gap:5px"><sc-for list="{{ m.skills }}" as="k" hint-placeholder-count="3"><span style="font-size:11.5px;padding:2px 7px;border:1px solid #E2E5EB;border-radius:4px">{{ k }}</span></sc-for></div>
+                <div style="display:flex;gap:14px;font-size:12px;color:#4A5266"><span style="display:flex;align-items:center;gap:4px"><i style="font-size:15px">translate</i>{{ m.lang }}</span><span style="display:flex;align-items:center;gap:4px"><i style="font-size:15px">schedule</i>{{ m.avail }}</span><span style="display:flex;align-items:center;gap:4px"><i style="font-size:15px">public</i>{{ m.tz }}</span></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#6B7386">WHY YOU MATCH</span>
+              <sc-for list="{{ m.why }}" as="w" hint-placeholder-count="4">
+                <div style="display:grid;grid-template-columns:78px 1fr 1fr;align-items:center;gap:8px;font-size:12px"><span style="color:#4A5266">{{ w.k }}</span><span style="height:4px;border-radius:2px;background:#E8EAF0"><span style="display:block;width:{{ w.v }};height:100%;border-radius:2px;background:{{ w.c }}"></span></span><span style="color:#0F1320;font-size:11.5px">{{ w.t }}</span></div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:stretch">
+              <div style="display:flex;align-items:baseline;gap:4px;justify-content:flex-end"><span style="font-family:'Bricolage Grotesque';font-size:30px;font-weight:600;letter-spacing:-0.02em;color:#2E31A8">{{ m.score }}</span><span style="font-size:12px;color:#4A5266">match</span></div>
+              <button onClick="{{ m.study }}" style="height:36px;border:0;border-radius:6px;background:{{ m.cbg }};color:{{ m.cfg }};font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i style="font-size:17px">{{ m.ci }}</i>{{ m.cl }}</button>
+              <button onClick="{{ m.view }}" style="height:34px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13px;font-weight:500;cursor:pointer">View Profile</button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:28px;display:flex;flex-direction:column;gap:8px;align-items:flex-start"><span style="font-size:15px;font-weight:600">No one matches all of these filters yet</span><span style="font-size:13.5px;color:#4A5266">Try removing a filter. We'll also let you know when someone matching joins.</span><button onClick="{{ clearFilters }}" style="margin-top:6px;height:32px;border:1px solid #CDD2DB;background:#fff;border-radius:6px;font-size:13px;padding:0 12px;cursor:pointer">Clear filters</button></div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:0;right:0;bottom:0;width:420px;background:#fff;border-left:1px solid #E2E5EB;box-shadow:-16px 0 40px rgba(15,19,32,.10);display:flex;flex-direction:column;z-index:4">
+      <div style="display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid #E2E5EB"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">PROFILE PREVIEW</span><button onClick="{{ closeDrawer }}" style="margin-left:auto;border:0;background:transparent;cursor:pointer;color:#4A5266"><i>close</i></button></div>
+      <div style="padding:20px 18px;display:flex;flex-direction:column;gap:16px;overflow:auto">
+        <div style="display:flex;gap:14px;align-items:center"><div style="width:60px;height:60px;border-radius:50%;background:{{ sel.bg }};color:{{ sel.fg }};font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ sel.i }}</div><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:600">{{ sel.n }}</span><span style="font-size:13px;color:#4A5266">{{ sel.h }}</span></div></div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:#4A5266">{{ sel.bio }}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><sc-for list="{{ sel.stats }}" as="s" hint-placeholder-count="3"><div style="padding:10px;border-radius:8px;background:#F7F8FA;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Bricolage Grotesque';font-size:20px;font-weight:600">{{ s.v }}</span><span style="font-size:11.5px;color:#4A5266">{{ s.k }}</span></div></sc-for></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600">Shared with you</span><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ sel.shared }}" as="k" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 8px;border-radius:4px;background:#E8F6EC;color:#15803D;font-weight:500"><i style="font-size:13px">check</i>{{ k }}</span></sc-for></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600">Learning history</span><sc-for list="{{ sel.hist }}" as="h" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:8px;font-size:13px"><i style="font-size:16px;color:#15803D">check_circle</i>{{ h }}</div></sc-for></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:#F7F8FA;font-size:12.5px;color:#4A5266"><i style="font-size:16px">verified_user</i>Responds within about 4 hours · member since 2025</div>
+      </div>
+      <div style="margin-top:auto;padding:14px 18px;border-top:1px solid #E2E5EB;display:flex;gap:8px"><button onClick="{{ sel.study }}" style="flex:1;height:38px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer">Study Together</button><button style="height:38px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13.5px;padding:0 14px">Full profile</button><button style="width:38px;height:38px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;color:#4A5266" title="Report or block"><i>flag</i></button></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(15,19,32,.32);display:flex;align-items:center;justify-content:center;z-index:5">
+      <div style="width:520px;background:#fff;border-radius:14px;box-shadow:0 24px 64px rgba(15,19,32,.25);overflow:hidden">
+        <div style="padding:20px 22px 0;display:flex;align-items:flex-start;gap:14px">
+          <div style="display:flex"><div style="width:44px;height:44px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2.5px solid #fff">MK</div><div style="width:44px;height:44px;border-radius:50%;background:{{ sel.bg }};color:{{ sel.fg }};font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2.5px solid {{ reqRing }};margin-left:-12px">{{ sel.i }}</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600;letter-spacing:-0.02em">{{ reqTitle }}</span><span style="font-size:13px;color:#4A5266">AI Engineering · Beginner</span></div>
+          <button onClick="{{ closeModal }}" style="border:0;background:transparent;cursor:pointer;color:#4A5266"><i>close</i></button>
+        </div>
+        <sc-if value="{{ reqCompose }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12.5px;font-weight:600">Shared goals</span><div style="display:flex;flex-wrap:wrap;gap:6px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12.5px;padding:4px 9px;border-radius:5px;background:#EEF0FD;color:#2E31A8;font-weight:500"><i style="font-size:14px">check</i>Build real applications</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:12.5px;padding:4px 9px;border-radius:5px;background:#EEF0FD;color:#2E31A8;font-weight:500"><i style="font-size:14px">check</i>Finish the RAG capstone</span></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px"><div style="padding:10px;border-radius:8px;background:#F7F8FA;display:flex;flex-direction:column;gap:2px"><span style="color:#6B7386">Proposed rhythm</span><span style="font-weight:600">Tue + Thu, 19:00 CET</span></div><div style="padding:10px;border-radius:8px;background:#F7F8FA;display:flex;flex-direction:column;gap:2px"><span style="color:#6B7386">Start at</span><span style="font-weight:600">Module 1 · together</span></div></div>
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:600">Message <span style="font-weight:400;color:#6B7386">optional</span>
+              <textarea style="height:76px;border:1px solid #CDD2DB;border-radius:8px;padding:10px 12px;font-size:13.5px;resize:none;color:#0F1320;line-height:1.5">Hey! I'm also coming from data work. Want to do two evenings a week and actually ship the capstone?</textarea>
+            </label>
+            <span style="font-size:12px;color:#6B7386;display:flex;align-items:center;gap:6px"><i style="font-size:15px">shield_person</i>Requests expire after 72 hours. You can only have one open request per course.</span>
+          </div>
+          <div style="padding:14px 22px;border-top:1px solid #E2E5EB;display:flex;gap:8px;justify-content:flex-end;background:#FBFBFC"><button onClick="{{ closeModal }}" style="height:36px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13.5px;padding:0 14px;cursor:pointer">Cancel</button><button onClick="{{ send }}" style="height:36px;border:0;border-radius:6px;background:#4B4FE0;color:#fff;font-size:13.5px;font-weight:600;padding:0 16px;cursor:pointer">Send Study Request</button></div>
+        </sc-if>
+        <sc-if value="{{ reqStatus }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px 22px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:{{ st.bg }};color:{{ st.fg }};font-size:13.5px;font-weight:500"><i>{{ st.i }}</i>{{ st.msg }}</div>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <sc-for list="{{ st.steps }}" as="p" hint-placeholder-count="3">
+                <div style="display:flex;gap:12px;align-items:flex-start;padding:6px 0"><span style="width:18px;height:18px;border-radius:50%;border:2px solid {{ p.c }};background:{{ p.f }};box-sizing:border-box;margin-top:1px;flex-shrink:0"></span><div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13.5px;font-weight:600;color:{{ p.tc }}">{{ p.t }}</span><span style="font-size:12px;color:#6B7386">{{ p.d }}</span></div></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:12px 22px;border-top:1px solid #E2E5EB;display:flex;gap:8px;align-items:center;background:#FBFBFC">
+            <span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">PREVIEW STATE</span>
+            <sc-for list="{{ stateTabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="height:26px;padding:0 9px;border:1px solid {{ t.b }};border-radius:5px;background:{{ t.bg }};color:{{ t.fg }};font-size:12px;font-weight:600;cursor:pointer">{{ t.n }}</button></sc-for>
+            <a href="{{ st.href }}" style="margin-left:auto;height:32px;border-radius:6px;background:{{ st.cbg }};color:{{ st.cfg }};font-size:13px;font-weight:600;padding:0 12px;display:flex;align-items:center;text-decoration:none;border:1px solid {{ st.cb }}">{{ st.cta }}</a>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { demo: 'full', menuOpen: null, leaving: null, left: [], f: { level: ['Beginner'], lang: [], avail: [], tz: [] }, drawer: null, modal: false, req: 'compose', sent: {} };
+  nav(active) {
+    const items = [['home', 'home', 'Home', 'Network.dc.html'], ['learn', 'school', 'Learn', 'Learning.dc.html'], ['projects', 'deployed_code', 'Projects', 'Projects.dc.html'], ['people', 'group', 'People', 'Network.dc.html'], ['messages', 'forum', 'Messages', '#', '3'], ['jobs', 'work', 'Jobs', '#']];
+    return items.map(([id, icon, label, href, badge]) => { const on = id === active; return { on, icon, label, href, badge: badge || '', bg: on ? '#EEF0FD' : 'transparent', fg: on ? '#2E31A8' : '#4A5266', ic: on ? '#4B4FE0' : '#6B7386', fw: on ? 600 : 500 }; });
+  }
+  renderVals() {
+    const s = this.state;
+    const allCourses = [
+      { id: 'ng', t: 'Angular', cat: 'FRONTEND', l: 'Intermediate', p: '62%', b: 'Alex Morgan', bi: 'AM', bbg: '#FDE9D6', bfg: '#9A4A0A', online: 1, mod: '4 · Dependency Injection', next: '4.4 Injection tokens', sess: 'Today 19:00', sc: '#B45309' },
+      { id: 'de', t: 'German', cat: 'LANGUAGE', l: 'A2 · Elementary', p: '41%', b: 'Lena Vogel', bi: 'LV', bbg: '#E0EEFC', bfg: '#1F5D99', online: 0, mod: '6 · Im Alltag', next: 'Speaking: at the doctor', sess: 'Wed 08:00', sc: '#0F1320' },
+      { id: 'sd', t: 'System Design', cat: 'ARCHITECTURE', l: 'Intermediate', p: '78%', b: 'David Rossi', bi: 'DR', bbg: '#E2F4E4', bfg: '#24733A', online: 1, mod: '7 · Caching', next: 'Design a URL shortener', sess: 'Thu 18:30', sc: '#0F1320' },
+      { id: 'ai', t: 'AI Engineering', cat: 'AI', l: 'Beginner', p: '48%', b: 'Priya Nair', bi: 'PN', bbg: '#FBE3EC', bfg: '#9D2452', online: 0, mod: '3 · Embeddings', next: 'Build a semantic search', sess: 'Not scheduled', sc: '#6B7386' },
+    ];
+    let active = allCourses.filter(c => !s.left.includes(c.id));
+    if (s.demo === 'open') active = active.filter(c => c.id !== 'ai');
+    const full = active.length >= 4;
+    const courses = active.map((c, k) => ({ ...c, slot: k + 1, pres: c.online ? '#16A34A' : '#B4BAC6', presL: c.online ? 'Online' : 'Offline',
+      ctaBg: k === 0 ? '#4B4FE0' : '#fff', ctaFg: k === 0 ? '#fff' : '#0F1320', ctaB: k === 0 ? '0' : '1px solid #CDD2DB',
+      open: s.menuOpen === c.id, menuBg: s.menuOpen === c.id ? '#F0F2F5' : 'transparent',
+      menu: () => this.setState({ menuOpen: s.menuOpen === c.id ? null : c.id }), leave: () => this.setState({ leaving: c.id, menuOpen: null }) }));
+    const leavingC = allCourses.find(c => c.id === s.leaving);
+    const streak = Array.from({ length: 35 }, (_, k) => { const seq = [1, 1, 2, 0, 1, 1, 1, 2, 1, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 4]; const v = seq[k]; return { bg: v === 1 ? '#4B4FE0' : v === 2 ? '#A5A8F5' : v === 3 ? '#4B4FE0' : '#EEF0F3', b: v === 3 ? '0' : v === 4 ? '1.5px solid #4B4FE0' : '0' }; });
+
+    // matching
+    const people = [
+      { id: 'pn', i: 'PN', n: 'Priya Nair', bg: '#FBE3EC', fg: '#9D2452', online: 1, h: 'Data Analyst moving into ML · Berlin', goal: 'Ship the RAG capstone and move into an ML engineering role', skills: ['Python', 'SQL', 'pandas'], lang: 'English, Hindi', langs: ['English'], avail: 'Weekday evenings', av: 'Weekday evenings', tz: 'CET', tzk: 'CET ±1h', level: 'Beginner', score: '92%',
+        why: [{ k: 'Level', v: '100%', t: 'Both Beginner' }, { k: 'Goals', v: '90%', t: 'Build projects' }, { k: 'Schedule', v: '85%', t: 'Tue/Thu evenings' }, { k: 'Language', v: '100%', t: 'English' }],
+        bio: 'Two years of dashboards, and now I want to build the models behind them. I learn best by explaining things out loud.', stats: [{ v: '3', k: 'courses done' }, { v: '94%', k: 'session attendance' }, { v: '1', k: 'project' }], shared: ['Python', 'Build projects', 'Weekday evenings', 'CET'], hist: ['Python Fundamentals', 'Statistics for Data Science'] },
+      { id: 'tk', i: 'TK', n: 'Tobias Krüger', bg: '#E0EEFC', fg: '#1F5D99', online: 0, h: 'Backend developer · Hamburg', goal: 'Add LLM features to the product I work on', skills: ['TypeScript', 'Node.js', 'PostgreSQL'], lang: 'German, English', langs: ['English', 'German'], avail: 'Weekend mornings', av: 'Weekends', tz: 'CET', tzk: 'CET ±1h', level: 'Beginner', score: '84%',
+        why: [{ k: 'Level', v: '100%', t: 'Both Beginner' }, { k: 'Goals', v: '70%', t: 'Improve skills' }, { k: 'Schedule', v: '55%', t: 'Weekends only' }, { k: 'Language', v: '100%', t: 'English, German' }],
+        bio: 'Backend dev for five years. My team wants AI features and I want to understand what I\'d be shipping.', stats: [{ v: '2', k: 'courses done' }, { v: '88%', k: 'session attendance' }, { v: '0', k: 'projects' }], shared: ['TypeScript', 'PostgreSQL', 'German', 'CET'], hist: ['Databases · Intermediate'] },
+      { id: 'ms', i: 'MS', n: 'Mei Sato', bg: '#F1E4FB', fg: '#7A2F9E', online: 1, h: 'CS student · Tokyo → Munich exchange', goal: 'University support for her ML elective plus a portfolio project', skills: ['Python', 'Linear algebra', 'Git'], lang: 'English, Japanese', langs: ['English'], avail: 'Weekday evenings', av: 'Weekday evenings', tz: 'CET', tzk: 'CET ±1h', level: 'Beginner', score: '79%',
+        why: [{ k: 'Level', v: '100%', t: 'Both Beginner' }, { k: 'Goals', v: '60%', t: 'University + build' }, { k: 'Schedule', v: '80%', t: 'Mon/Wed evenings' }, { k: 'Language', v: '100%', t: 'English' }],
+        bio: 'Exchange student in Munich this semester. I have an ML elective and want a partner to keep me honest.', stats: [{ v: '1', k: 'course done' }, { v: '—', k: 'new member' }, { v: '0', k: 'projects' }], shared: ['Python', 'Weekday evenings', 'English'], hist: ['Git & Collaboration'] },
+      { id: 'jo', i: 'JO', n: 'James Okafor', bg: '#E2F4E4', fg: '#24733A', online: 0, h: 'Career changer, ex-teacher · London', goal: 'Learn fundamentals and prepare for interviews', skills: ['Python', 'JavaScript'], lang: 'English', langs: ['English'], avail: 'Weekday evenings', av: 'Weekday evenings', tz: 'GMT', tzk: 'GMT', level: 'Intermediate', score: '71%',
+        why: [{ k: 'Level', v: '60%', t: 'One step ahead' }, { k: 'Goals', v: '65%', t: 'Interviews' }, { k: 'Schedule', v: '75%', t: 'Evenings, −1h' }, { k: 'Language', v: '100%', t: 'English' }],
+        bio: 'Taught maths for eight years and now I\'m retraining. Patient, organised, and I always bring snacks to calls.', stats: [{ v: '4', k: 'courses done' }, { v: '97%', k: 'session attendance' }, { v: '1', k: 'project' }], shared: ['Python', 'Weekday evenings', 'English'], hist: ['Python Fundamentals', 'JavaScript Basics'] },
+    ];
+    const F = s.f;
+    const pass = (p) => (!F.level.length || F.level.includes(p.level)) && (!F.lang.length || F.lang.some(l => p.langs.includes(l))) && (!F.avail.length || F.avail.includes(p.av)) && (!F.tz.length || F.tz.includes(p.tzk));
+    const shown = people.filter(pass);
+    const toggleF = (k, v) => this.setState(st => { const cur = st.f[k]; return { f: { ...st.f, [k]: cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v] } }; });
+    const opt = (k, n) => { const on = F[k].includes(n); const c = people.filter(p => ({ level: p.level, lang: p.langs.includes(n) ? n : '', avail: p.av, tz: p.tzk })[k] === n).length; return { n, c, b: on ? '#4B4FE0' : '#B4BAC6', bg: on ? '#4B4FE0' : '#fff', ck: on ? 'check' : '', go: () => toggleF(k, n) }; };
+    const selP = people.find(p => p.id === s.drawer) || people.find(p => p.id === s.modalFor) || people[0];
+    const openModal = (id) => this.setState(st => ({ modal: true, modalFor: id, drawer: null, req: st.sent[id] ? 'sent' : 'compose' }));
+    const matches = shown.map(p => { const sent = !!s.sent[p.id]; return { ...p, pres: p.online ? '#16A34A' : '#B4BAC6', border: sent ? '#D6DAFB' : '#E2E5EB',
+      cbg: sent ? '#EEF0FD' : '#4B4FE0', cfg: sent ? '#2E31A8' : '#fff', ci: sent ? 'schedule' : 'group_add', cl: sent ? 'Request sent' : 'Study Together',
+      study: () => openModal(p.id), view: () => this.setState({ drawer: p.id }) }; });
+    const reqStates = {
+      sent: { i: 'schedule_send', bg: '#EEF0FD', fg: '#2E31A8', msg: `Request sent. ${selP.n.split(' ')[0]} usually replies within 4 hours.`, cta: 'Done', href: '#', cbg: '#fff', cfg: '#0F1320', cb: '#CDD2DB', title: 'Request sent',
+        steps: [{ t: 'Request sent', d: 'Today 17:42', c: '#4B4FE0', f: '#4B4FE0', tc: '#0F1320' }, { t: `Waiting for ${selP.n.split(' ')[0]}`, d: 'Expires in 71 h', c: '#4B4FE0', f: '#fff', tc: '#0F1320' }, { t: 'Shared workspace opens', d: 'AI Engineering · Module 1', c: '#CDD2DB', f: '#fff', tc: '#6B7386' }] },
+      accepted: { i: 'handshake', bg: '#E8F6EC', fg: '#15803D', msg: `${selP.n.split(' ')[0]} accepted. Your shared workspace is ready.`, cta: 'Open Study Workspace', href: 'Study Workspace.dc.html', cbg: '#4B4FE0', cfg: '#fff', cb: '#4B4FE0', title: "You're Study Buddies",
+        steps: [{ t: 'Request sent', d: 'Today 17:42', c: '#15803D', f: '#15803D', tc: '#0F1320' }, { t: 'Accepted', d: 'Today 18:05 · "Tue/Thu works!"', c: '#15803D', f: '#15803D', tc: '#0F1320' }, { t: 'First session suggested', d: 'Tue 19:00 CET · Module 1', c: '#4B4FE0', f: '#fff', tc: '#0F1320' }] },
+      declined: { i: 'do_not_disturb_on', bg: '#F0F2F5', fg: '#4A5266', msg: `${selP.n.split(' ')[0]} can't take on a partner right now. That happens, and it isn't personal.`, cta: 'See next best match', href: '#', cbg: '#4B4FE0', cfg: '#fff', cb: '#4B4FE0', title: 'Not this time',
+        steps: [{ t: 'Request sent', d: 'Today 17:42', c: '#4A5266', f: '#4A5266', tc: '#0F1320' }, { t: 'Declined', d: 'Today 19:10', c: '#4A5266', f: '#fff', tc: '#0F1320' }, { t: '3 other matches above 75%', d: 'Tobias, Mei and James are available', c: '#4B4FE0', f: '#fff', tc: '#0F1320' }] },
+      expired: { i: 'timer_off', bg: '#FDF3E3', fg: '#B45309', msg: 'This request expired after 72 hours without a reply.', cta: 'Send again', href: '#', cbg: '#fff', cfg: '#0F1320', cb: '#CDD2DB', title: 'Request expired',
+        steps: [{ t: 'Request sent', d: 'Mon 17:42', c: '#B45309', f: '#B45309', tc: '#0F1320' }, { t: 'No reply', d: 'Expired Thu 17:42', c: '#B45309', f: '#fff', tc: '#0F1320' }, { t: 'You can resend once', d: 'or pick another match', c: '#CDD2DB', f: '#fff', tc: '#6B7386' }] },
+    };
+    const st = reqStates[s.req] || reqStates.sent;
+    return {
+      nav: this.nav('learn'), navFlat: this.nav('learn').map(n => ({ ...n, on: false })),
+      sideCourses: active.map(c => ({ t: c.t, p: c.p })),
+      demoStates: [['full', '4 active · limit'], ['open', '3 active · slot open']].map(([id, n]) => ({ n, bg: s.demo === id ? '#0F1320' : 'transparent', fg: s.demo === id ? '#fff' : '#4A5266', go: () => this.setState({ demo: id, left: [], leaving: null, menuOpen: null }) })),
+      subline: full ? 'All 4 slots are in use. Alex has been online for 12 minutes.' : `${active.length} of 4 slots in use. You have room for one more.`,
+      slotLabel: `${active.length} / 4 ACTIVE`, slotMeter: [0, 1, 2, 3].map(k => ({ bg: k < active.length ? '#4B4FE0' : 'transparent', b: k < active.length ? '0' : '1.5px dashed #B4BAC6' })),
+      full, hasEmpty: !full, startBg: full ? '#E2E5EB' : '#4B4FE0', startFg: full ? '#6B7386' : '#fff', startCursor: full ? 'not-allowed' : 'pointer',
+      startTitle: full ? 'You can have up to 4 active courses. Complete or leave a course to start another.' : 'Start a new course',
+      recB: full ? '#E2E5EB' : '#4B4FE0', recFg: full ? '#6B7386' : '#4B4FE0', recCta: full ? 'Slots full · save for later' : 'Start Learning',
+      courses, confirmLeave: !!leavingC, leaveName: leavingC ? leavingC.t : '',
+      cancelLeave: () => this.setState({ leaving: null }), doLeave: () => this.setState(st => ({ left: [...st.left, st.leaving], leaving: null })),
+      quickPicks: [{ t: 'RxJS in Depth', s: 'pairs well with Angular' }, { t: 'Docker Essentials', s: 'for your project' }, { t: 'TypeScript Advanced', s: '1,204 learners' }],
+      sessions: [
+        { d: 'TODAY', t: '19:00', c: 'Angular · 4.4 Injection tokens', w: 'with Alex Morgan · Watch together', s: 'Confirmed', sc: '#15803D', si: 'check_circle' },
+        { d: 'WED', t: '08:00', c: 'German · Speaking practice', w: 'with Lena Vogel · Video', s: 'Confirmed', sc: '#15803D', si: 'check_circle' },
+        { d: 'THU', t: '18:30', c: 'System Design · Caching', w: 'with David Rossi · Whiteboard', s: 'Awaiting David', sc: '#B45309', si: 'schedule' }],
+      streak,
+      stats: [{ v: '18.5h', k: 'studied · 72% together' }, { v: '23', k: 'lessons completed' }, { v: '11', k: 'coding exercises' }, { v: '86%', k: 'quick-check accuracy' }],
+      activity: [
+        { i: 'edit_note', c: '#4B4FE0', t: 'Alex added 2 notes to "Providers & injectors"', w: '12m' },
+        { i: 'check_circle', c: '#15803D', t: 'You finished 4.3 Providers in Angular', w: '1h' },
+        { i: 'quiz', c: '#0B8FB0', t: 'Quick check on caching: 4 of 5 correct', w: 'Yesterday' },
+        { i: 'mic', c: '#4A5266', t: 'Lena sent a voice note in German', w: 'Yesterday' }],
+      recs: [
+        { cat: 'FRONTEND · NEXT STEP', t: 'Angular Advanced', d: 'Signals, change detection internals, SSR and performance.', lv: 'Advanced', dur: '6 weeks', n: '842' },
+        { cat: 'FRONTEND', t: 'RxJS in Depth', d: 'Operators, higher-order streams and testing marbles.', lv: 'Intermediate', dur: '4 weeks', n: '1,390' },
+        { cat: 'DEVOPS', t: 'Docker Essentials', d: 'Images, compose and multi-stage builds, so you\'re ready for project work.', lv: 'Beginner', dur: '3 weeks', n: '2,610' }],
+      filters: [
+        { h: 'Level', opts: ['Beginner', 'Intermediate'].map(n => opt('level', n)) },
+        { h: 'Language', opts: ['English', 'German'].map(n => opt('lang', n)) },
+        { h: 'Availability', opts: ['Weekday evenings', 'Weekends'].map(n => opt('avail', n)) },
+        { h: 'Timezone', opts: ['CET ±1h', 'GMT'].map(n => opt('tz', n)) }],
+      matches, matchCount: shown.length, noMatches: shown.length === 0, clearFilters: () => this.setState({ f: { level: [], lang: [], avail: [], tz: [] } }),
+      drawer: !!s.drawer, closeDrawer: () => this.setState({ drawer: null }),
+      sel: { ...selP, study: () => openModal(selP.id) },
+      modal: s.modal, closeModal: () => this.setState({ modal: false }),
+      reqCompose: s.req === 'compose', reqStatus: s.req !== 'compose', reqTitle: s.req === 'compose' ? `Study with ${selP.n.split(' ')[0]}?` : st.title,
+      reqRing: s.req === 'accepted' ? '#15803D' : '#4B4FE0',
+      send: () => this.setState(x => ({ req: 'sent', sent: { ...x.sent, [x.modalFor]: true } })),
+      st, stateTabs: [['sent', 'Pending'], ['accepted', 'Accepted'], ['declined', 'Declined'], ['expired', 'Expired']].map(([id, n]) => ({ n, b: s.req === id ? '#0F1320' : '#E2E5EB', bg: s.req === id ? '#0F1320' : '#fff', fg: s.req === id ? '#fff' : '#4A5266', go: () => this.setState({ req: id }) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

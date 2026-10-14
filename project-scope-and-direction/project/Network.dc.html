@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E6E8EC;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1320;-webkit-font-smoothing:antialiased}
+a{color:#4B4FE0;text-decoration:none}a:hover{color:#3D40C9;text-decoration:underline}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:400;font-size:18px;line-height:1;display:inline-block;vertical-align:middle;letter-spacing:0;text-transform:none;white-space:nowrap;font-feature-settings:'liga';user-select:none}
+button,input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:56px;display:flex;flex-direction:column;gap:20px;width:1440px">
+
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">14</span><span style="font-size:20px;font-weight:600">Home feed</span><span style="font-size:13px;color:#4A5266">Try it: like, save, the post-type picker, feed filters</span></div>
+<div data-screen-label="14 Home Feed" style="width:1440px;height:1160px;display:flex;background:#F5F6F8;border-radius:12px;overflow:hidden;border:1px solid #CDD2DB">
+  <aside style="width:248px;flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:2px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px;margin-bottom:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:15px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+    <sc-for list="{{ navHome }}" as="n" hint-placeholder-count="6">
+      <a href="{{ n.href }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};text-decoration:none"><i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1">{{ n.label }}</span><span style="font-size:11px;font-weight:600;color:#4B4FE0">{{ n.badge }}</span></a>
+    </sc-for>
+    <div style="height:1px;background:#E2E5EB;margin:8px 4px"></div>
+    <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:1px dashed #9ED8E6;border-radius:6px;background:#F7FCFD;color:#0A6E88;font-size:13.5px;font-weight:500"><span style="width:7px;height:7px;background:#0B8FB0;transform:rotate(45deg);margin:0 6px 0 5px"></span><span style="flex:1">AI Buddy</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">⌘J</span></div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:2px">
+      <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;font-size:13.5px;color:#4A5266"><i style="font-size:19px">settings</i>Settings</div>
+      <div style="display:flex;align-items:center;gap:10px;padding:6px"><div style="width:28px;height:28px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">MK</div><div style="display:flex;flex-direction:column;line-height:1.25"><span style="font-size:13px;font-weight:600">Manoj Kumar</span><span style="font-size:11.5px;color:#6B7386">@manoj.dev</span></div></div>
+    </div>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid #E2E5EB;background:#fff">
+      <span style="font-size:15px;font-weight:600">Home</span>
+      <div style="margin-left:24px;flex:1;max-width:440px;height:34px;border:1px solid #E2E5EB;border-radius:6px;background:#F7F8FA;display:flex;align-items:center;gap:8px;padding:0 10px;color:#6B7386;font-size:13.5px"><i>search</i>Search people, courses, projects…<span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;border:1px solid #E2E5EB;border-radius:4px;padding:1px 5px;background:#fff">⌘K</span></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+        <button style="height:32px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;display:flex;align-items:center;gap:6px;padding:0 10px;font-size:13px;font-weight:500"><i style="font-size:17px">add</i>New</button>
+        <button style="width:34px;height:34px;border:0;background:transparent;color:#4A5266"><i>chat_bubble</i></button>
+        <button style="width:34px;height:34px;border:0;background:transparent;color:#4A5266;position:relative"><i>notifications</i><span style="position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:#C81E1E;border:1.5px solid #fff"></span></button>
+      </div>
+    </header>
+    <div style="flex:1;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;padding:24px 32px;max-width:1120px;width:100%;box-sizing:border-box;margin:0 auto">
+      <main style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div style="display:flex;align-items:baseline;gap:12px"><h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:28px;font-weight:600;letter-spacing:-0.02em">Good evening, Manoj</h1><span style="font-size:13.5px;color:#4A5266">Alex is online and you have a session at 19:00</span></div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">MK</div><div style="flex:1;height:38px;border:1px solid #E2E5EB;border-radius:8px;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#6B7386">{{ composerHint }}</div></div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <sc-for list="{{ postTypes }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.go }}" style="display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:6px;border:1px solid {{ t.b }};background:{{ t.bg }};color:{{ t.fg }};font-size:12.5px;font-weight:500;cursor:pointer"><i style="font-size:16px">{{ t.i }}</i>{{ t.n }}</button>
+            </sc-for>
+            <span style="margin-left:auto;display:flex;gap:2px;color:#6B7386"><i style="font-size:19px;padding:5px">image</i><i style="font-size:19px;padding:5px">code</i><i style="font-size:19px;padding:5px">link</i></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <sc-for list="{{ feedTabs }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.go }}" style="height:30px;padding:0 12px;border-radius:15px;border:1px solid {{ t.b }};background:{{ t.bg }};color:{{ t.fg }};font-size:12.5px;font-weight:600;cursor:pointer">{{ t.n }}</button>
+          </sc-for>
+        </div>
+        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
+          <article style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div style="width:36px;height:36px;border-radius:50%;background:{{ p.abg }};color:{{ p.afg }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ p.ini }}</div>
+              <div style="display:flex;flex-direction:column;line-height:1.35;min-width:0"><span style="font-size:14px;font-weight:600">{{ p.name }} <span style="font-weight:400;color:#4A5266">{{ p.verb }}</span></span><span style="font-size:12px;color:#6B7386">{{ p.meta }}</span></div>
+              <i style="margin-left:auto;color:#6B7386">more_horiz</i>
+            </div>
+            <div style="font-size:14.5px;line-height:1.55;text-wrap:pretty">{{ p.body }}</div>
+            <sc-if value="{{ p.course }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #E2E5EB;border-radius:8px;padding:14px;display:flex;align-items:center;gap:14px;background:#FBFBFC">
+                <div style="width:44px;height:44px;border-radius:8px;background:#EEF0FD;display:flex;align-items:center;justify-content:center"><span style="width:14px;height:14px;border-radius:50%;background:#4B4FE0"></span></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#4B4FE0">COURSE COMPLETED</span><span style="font-size:15px;font-weight:600">{{ p.course.t }}</span><span style="font-size:12.5px;color:#4A5266">{{ p.course.s }}</span></div>
+                <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#15803D"><i style="font-size:16px">verified</i>Verified</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.code }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#0E1118;border-radius:8px;padding:12px 14px;font-family:'JetBrains Mono';font-size:12.5px;line-height:1.7;color:#E6E9F0">
+                <sc-for list="{{ p.code }}" as="l" hint-placeholder-count="4"><div style="white-space:pre;color:{{ l.c }}">{{ l.t }}</div></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.project }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #E2E5EB;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;background:#FBFBFC">
+                <div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#0B8FB0"></span><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#0A6E88">PROJECT MILESTONE</span><span style="margin-left:auto;font-size:12px;color:#4A5266">Sprint 1 of 3 · complete</span></div>
+                <span style="font-size:15px;font-weight:600">Real-Time Delivery Platform</span>
+                <div style="display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:12px;padding:3px 8px;border:1px solid #E2E5EB;border-radius:4px;background:#fff">NestJS</span><span style="font-size:12px;padding:3px 8px;border:1px solid #E2E5EB;border-radius:4px;background:#fff">Angular</span><span style="font-size:12px;padding:3px 8px;border:1px solid #E2E5EB;border-radius:4px;background:#fff">PostgreSQL</span><span style="font-size:12px;padding:3px 8px;border:1px solid #E2E5EB;border-radius:4px;background:#fff">Redis</span><span style="margin-left:auto;display:flex"><span style="width:24px;height:24px;border-radius:50%;background:#DDE3FF;border:2px solid #fff"></span><span style="width:24px;height:24px;border-radius:50%;background:#D5F2E8;border:2px solid #fff;margin-left:-8px"></span><span style="width:24px;height:24px;border-radius:50%;background:#D7F1F6;border:2px solid #fff;margin-left:-8px"></span><span style="width:24px;height:24px;border-radius:50%;background:#FBEBD0;border:2px solid #fff;margin-left:-8px"></span><span style="width:24px;height:24px;border-radius:50%;background:#F0F2F5;border:2px solid #fff;margin-left:-8px;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#4A5266">+2</span></span></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.started }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #D6DAFB;border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#F7F8FF">
+                <span style="width:10px;height:10px;border-radius:50%;border:2px solid #4B4FE0;box-sizing:border-box"></span>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">AI Engineering · Beginner</span><span style="font-size:12.5px;color:#4A5266">Looking for a Study Buddy · weekday evenings, CET</span></div>
+                <button style="height:30px;border:1px solid #4B4FE0;border-radius:6px;background:#fff;color:#4B4FE0;font-size:12.5px;font-weight:600;padding:0 10px">See match</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.image }}" hint-placeholder-val="{{ false }}">
+              <div style="height:220px;border-radius:8px;border:1px solid #E2E5EB;background:repeating-linear-gradient(135deg,#F3F4F7 0 10px,#EDEFF3 10px 20px);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:11.5px;color:#6B7386">IMAGE · ARCHITECTURE DIAGRAM</div>
+            </sc-if>
+            <div style="display:flex;align-items:center;gap:4px;padding-top:4px;border-top:1px solid #F0F2F5;font-size:13px;color:#4A5266">
+              <button onClick="{{ p.like }}" style="display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:{{ p.lc }};font-size:13px;font-weight:500;cursor:pointer"><i style="font-size:18px;font-variation-settings:'FILL' {{ p.lf }}">favorite</i>{{ p.likes }}</button>
+              <button style="display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#4A5266;font-size:13px;font-weight:500"><i style="font-size:18px">mode_comment</i>{{ p.comments }}</button>
+              <button style="display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#4A5266;font-size:13px;font-weight:500"><i style="font-size:18px">ios_share</i>Share</button>
+              <button onClick="{{ p.save }}" style="margin-left:auto;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:{{ p.sc }};font-size:13px;font-weight:500;cursor:pointer"><i style="font-size:18px;font-variation-settings:'FILL' {{ p.sf }}">bookmark</i>{{ p.sl }}</button>
+            </div>
+          </article>
+        </sc-for>
+      </main>
+      <aside style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center"><span style="font-size:14px;font-weight:600">Current learning</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11.5px;color:#6B7386">4 / 4 slots</span></div>
+          <sc-for list="{{ learning }}" as="c" hint-placeholder-count="4">
+            <a href="Learning.dc.html" style="display:flex;flex-direction:column;gap:6px;color:#0F1320;text-decoration:none">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="font-weight:500">{{ c.t }}</span><span style="color:#6B7386;font-size:12px">{{ c.l }}</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:12px">{{ c.p }}</span></div>
+              <div style="height:5px;border-radius:3px;background:#E8EAF0"><div style="width:{{ c.p }};height:100%;border-radius:3px;background:#4B4FE0"></div></div>
+            </a>
+          </sc-for>
+        </div>
+        <div style="background:#0F1320;color:#E6E9F0;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#A3AABB">UPCOMING SESSION</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11.5px;color:#FBBF24">in 42 min</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="display:flex"><div style="width:32px;height:32px;border-radius:50%;background:#2A3050;color:#B8BCFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #0F1320">MK</div><div style="width:32px;height:32px;border-radius:50%;background:#4A3218;color:#FBC98A;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #8186FF;margin-left:-10px">AM</div></div><div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Angular with Alex</span><span style="font-size:12px;color:#A3AABB">Today 19:00 · 4.4 Injection tokens</span></div></div>
+          <a href="Learning.dc.html" style="height:34px;border-radius:6px;background:#5B5FEF;color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;text-decoration:none">Open workspace</a>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:2px;background:#0B8FB0"></span><span style="font-size:14px;font-weight:600">Active project</span><span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:#B45309"><i style="font-size:14px">warning</i>At risk</span></div>
+          <span style="font-size:13.5px;font-weight:500">Real-Time Delivery Platform</span>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#4A5266">Sprint 2<div style="flex:1;height:5px;border-radius:3px;background:#E8EAF0"><div style="width:42%;height:100%;border-radius:3px;background:#0B8FB0"></div></div><span style="font-family:'JetBrains Mono'">42%</span></div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:6px;background:#FDF3E3"><i style="font-size:16px;color:#B45309">block</i><span>Your TASK-24 is waiting on TASK-18</span></div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:14px;font-weight:600">People learning what you learn</span>
+          <sc-for list="{{ suggested }}" as="u" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:50%;background:{{ u.bg }};color:{{ u.fg }};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ u.i }}</div>
+              <div style="flex:1;display:flex;flex-direction:column;line-height:1.3;min-width:0"><span style="font-size:13px;font-weight:600">{{ u.n }}</span><span style="font-size:11.5px;color:#4A5266">{{ u.r }}</span></div>
+              <button onClick="{{ u.go }}" style="height:28px;border:1px solid {{ u.b }};border-radius:6px;background:#fff;color:{{ u.c }};font-size:12px;font-weight:600;padding:0 10px;cursor:pointer;white-space:nowrap">{{ u.l }}</button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:center">
+          <div style="width:40px;height:40px;border-radius:8px;background:#FDF3E3;display:flex;align-items:center;justify-content:center"><i style="color:#B45309">workspace_premium</i></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">RECENT ACHIEVEMENT</span><span style="font-size:13.5px;font-weight:600">21-day study streak</span><span style="font-size:12px;color:#4A5266">with Alex, on Angular</span></div>
+          <span style="font-size:12.5px;color:#4B4FE0;font-weight:600">Share</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;align-items:baseline;gap:12px;margin-top:40px"><span style="font-family:'JetBrains Mono';font-size:12px;color:#4B4FE0">43</span><span style="font-size:20px;font-weight:600">User profile</span><span style="font-size:13px;color:#4A5266">Try it: switch "Viewing as", click through the tabs, use Connect and the ⋯ menu</span></div>
+<div data-screen-label="43 User Profile" style="width:1440px;min-height:1240px;display:flex;background:#F5F6F8;border-radius:12px;overflow:hidden;border:1px solid #CDD2DB">
+  <aside style="width:248px;flex-shrink:0;background:#FBFBFC;border-right:1px solid #E2E5EB;display:flex;flex-direction:column;padding:12px 10px;gap:2px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;height:36px;padding:0 6px;margin-bottom:10px"><div style="position:relative;width:26px;height:18px"><div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;border:2.5px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-size:15px;font-weight:600">Studywid<span style="color:#4B4FE0">Buddy</span></span></div>
+    <sc-for list="{{ navPeople }}" as="n" hint-placeholder-count="6">
+      <a href="{{ n.href }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:6px;background:{{ n.bg }};color:{{ n.fg }};font-size:13.5px;font-weight:{{ n.fw }};text-decoration:none"><i style="font-size:19px;color:{{ n.ic }}">{{ n.icon }}</i><span style="flex:1">{{ n.label }}</span><span style="font-size:11px;font-weight:600;color:#4B4FE0">{{ n.badge }}</span></a>
+    </sc-for>
+    <div style="height:1px;background:#E2E5EB;margin:8px 4px"></div>
+    <div style="display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border:1px dashed #9ED8E6;border-radius:6px;background:#F7FCFD;color:#0A6E88;font-size:13.5px;font-weight:500"><span style="width:7px;height:7px;background:#0B8FB0;transform:rotate(45deg);margin:0 6px 0 5px"></span><span style="flex:1">AI Buddy</span><span style="font-family:'JetBrains Mono';font-size:10.5px;color:#6B7386">⌘J</span></div>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 24px;border-bottom:1px solid #E2E5EB;background:#fff;font-size:13.5px">
+      <span style="color:#4A5266">People</span><i style="font-size:16px;color:#9AA1B1">chevron_right</i><span style="font-weight:600">Manoj Kumar</span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px"><span style="font-size:12.5px;color:#6B7386">Viewing as</span>
+        <div style="display:inline-flex;gap:2px;background:#F0F2F5;padding:3px;border-radius:7px">
+          <sc-for list="{{ viewAs }}" as="v" hint-placeholder-count="2"><button onClick="{{ v.go }}" style="height:26px;padding:0 10px;border:0;border-radius:5px;background:{{ v.bg }};box-shadow:{{ v.sh }};font-size:12.5px;font-weight:600;color:{{ v.fg }};cursor:pointer">{{ v.n }}</button></sc-for>
+        </div>
+      </div>
+    </header>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;padding:24px 32px 40px;max-width:1120px;width:100%;box-sizing:border-box;margin:0 auto">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;overflow:visible;position:relative">
+          <div style="height:96px;border-radius:12px 12px 0 0;background:#0F1320;position:relative;overflow:hidden">
+            <div style="position:absolute;right:24px;top:20px;display:flex;gap:18px;font-family:'JetBrains Mono';font-size:11px;color:#7C8497"><span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#8186FF"></span>4 COURSES</span><span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:1px;background:#4CC9E6"></span>2 PROJECTS</span><span style="display:flex;align-items:center;gap:6px"><span style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:7px solid #FBBF24"></span>3 CERTIFICATES</span></div>
+          </div>
+          <div style="padding:0 24px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:flex-end;gap:16px;margin-top:-36px">
+              <div style="position:relative;width:88px;height:88px;border-radius:50%;background:#DDE3FF;color:#3236B3;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;border:4px solid #fff;box-sizing:border-box">MK<span style="position:absolute;right:4px;bottom:4px;width:14px;height:14px;border-radius:50%;background:#16A34A;border:2.5px solid #fff"></span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;align-items:center;position:relative">
+                <sc-if value="{{ isVisitor }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;gap:8px">
+                    <button onClick="{{ connect }}" style="height:36px;border:{{ conn.b }};border-radius:6px;background:{{ conn.bg }};color:{{ conn.fg }};font-size:13.5px;font-weight:600;padding:0 14px;display:flex;align-items:center;gap:6px;cursor:pointer"><i style="font-size:17px">{{ conn.i }}</i>{{ conn.l }}</button>
+                    <button style="height:36px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13.5px;font-weight:500;padding:0 14px;display:flex;align-items:center;gap:6px"><i style="font-size:17px">chat_bubble</i>Message</button>
+                    <button onClick="{{ toggleMenu }}" style="width:36px;height:36px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;cursor:pointer"><i>more_horiz</i></button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:8px">
+                    <button style="height:36px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13.5px;font-weight:500;padding:0 14px;display:flex;align-items:center;gap:6px"><i style="font-size:17px">edit</i>Edit profile</button>
+                    <button style="height:36px;border:1px solid #CDD2DB;border-radius:6px;background:#fff;font-size:13.5px;font-weight:500;padding:0 14px;display:flex;align-items:center;gap:6px"><i style="font-size:17px">visibility</i>Visibility</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;top:42px;right:0;width:200px;background:#fff;border:1px solid #E2E5EB;border-radius:10px;box-shadow:0 8px 24px rgba(15,19,32,.12);padding:4px;font-size:13px;z-index:3">
+                    <div style="padding:8px 10px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">link</i>Copy profile link</div>
+                    <div style="padding:8px 10px;display:flex;gap:8px;align-items:center"><i style="font-size:16px;color:#4A5266">school</i>Invite to study</div>
+                    <div style="height:1px;background:#E2E5EB;margin:4px 0"></div>
+                    <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#4A5266"><i style="font-size:16px">flag</i>Report profile</div>
+                    <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;color:#C81E1E"><i style="font-size:16px">block</i>Block Manoj</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:baseline;gap:10px"><h1 style="margin:0;font-family:'Bricolage Grotesque';font-size:28px;font-weight:600;letter-spacing:-0.02em">Manoj Kumar</h1><span style="font-size:14px;color:#6B7386">@manoj.dev</span></div>
+              <span style="font-size:15px;font-weight:500">Backend developer in training · CS student at TU Berlin</span>
+              <span style="display:flex;align-items:center;gap:12px;font-size:13px;color:#4A5266"><span style="display:flex;align-items:center;gap:4px"><i style="font-size:15px">location_on</i>Berlin, Germany</span><span>312 connections</span><span>Studying with Alex Morgan</span></span>
+            </div>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#4A5266;max-width:640px;text-wrap:pretty">I like building the parts nobody sees: APIs, queues, databases. Right now I'm learning Angular so I can work across the whole stack, and I'm one of two backend devs on a 6-person delivery platform team.</p>
+          </div>
+          <div style="display:flex;gap:24px;padding:0 24px;border-top:1px solid #E2E5EB">
+            <sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.go }}" style="height:44px;border:0;border-bottom:2px solid {{ t.bc }};background:transparent;font-size:13.5px;font-weight:{{ t.fw }};color:{{ t.fg }};cursor:pointer;padding:0;display:flex;align-items:center;gap:6px">{{ t.n }}<span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">{{ t.c }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ tOverview }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center"><span style="font-size:15px;font-weight:600">Skills</span><span style="margin-left:auto;font-size:12px;color:#6B7386">Bars show level. "Proven" means a finished course or project backs it up.</span></div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px">
+                <sc-for list="{{ skills }}" as="s" hint-placeholder-count="8">
+                  <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F2F5">
+                    <span style="font-size:13.5px;font-weight:500;width:110px">{{ s.n }}</span>
+                    <span style="display:flex;gap:2px"><span style="width:14px;height:6px;border-radius:2px;background:#4B4FE0"></span><span style="width:14px;height:6px;border-radius:2px;background:{{ s.b2 }}"></span><span style="width:14px;height:6px;border-radius:2px;background:{{ s.b3 }}"></span></span>
+                    <span style="font-size:12px;color:#4A5266">{{ s.lv }}</span>
+                    <span style="margin-left:auto;font-size:11.5px;color:{{ s.pc }};display:flex;align-items:center;gap:4px"><i style="font-size:14px">{{ s.pi }}</i>{{ s.p }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-size:15px;font-weight:600">Currently learning</span>
+                <sc-for list="{{ currentShown }}" as="c" hint-placeholder-count="2">
+                  <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;font-size:13.5px"><span style="font-weight:500">{{ c.t }}</span><span style="margin-left:8px;color:#6B7386;font-size:12.5px">{{ c.b }}</span><span style="margin-left:auto;font-family:'JetBrains Mono';font-size:12px">{{ c.p }}</span></div><div style="height:5px;border-radius:3px;background:#E8EAF0"><div style="width:{{ c.p }};height:100%;border-radius:3px;background:#4B4FE0"></div></div></div>
+                </sc-for>
+                <span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386;margin-top:6px">COMPLETED</span>
+                <sc-for list="{{ completed }}" as="c" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13.5px"><i style="font-size:17px;color:#15803D">check_circle</i>{{ c.t }}<span style="margin-left:auto;font-size:12px;color:#6B7386">{{ c.d }}</span></div>
+                </sc-for>
+              </div>
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-size:15px;font-weight:600">Project experience</span>
+                <sc-for list="{{ projects }}" as="p" hint-placeholder-count="2">
+                  <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F0F2F5">
+                    <div style="width:36px;height:36px;border-radius:8px;background:#E6F6FA;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="width:11px;height:11px;border-radius:2px;background:#0B8FB0"></span></div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font-size:14px;font-weight:600">{{ p.t }}</span><span style="font-size:12.5px;color:#4A5266">{{ p.r }} · {{ p.d }}</span><span style="font-size:12px;color:#6B7386">{{ p.s }}</span></div>
+                    <span style="font-size:11.5px;font-weight:600;color:{{ p.sc }};white-space:nowrap">{{ p.st }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <span style="font-size:15px;font-weight:600">Achievements</span>
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+                <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="4">
+                  <div style="border:1px solid #E2E5EB;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px"><i style="color:{{ a.c }};font-size:20px">{{ a.i }}</i><span style="font-size:13px;font-weight:600">{{ a.t }}</span><span style="font-size:11.5px;color:#6B7386">{{ a.d }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tLearning }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:minmax(0,1.4fr) 120px 150px 110px 90px;padding:10px 20px;background:#F7F8FA;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.05em;color:#6B7386">COURSE<span>LEVEL</span><span>STUDY BUDDY</span><span>PROGRESS</span><span>STATUS</span></div>
+            <sc-for list="{{ allCourses }}" as="c" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:minmax(0,1.4fr) 120px 150px 110px 90px;padding:14px 20px;border-top:1px solid #E2E5EB;align-items:center;font-size:13.5px">
+                <span style="font-weight:500">{{ c.t }}</span><span style="color:#4A5266">{{ c.l }}</span><span style="color:#4A5266">{{ c.b }}</span>
+                <span style="display:flex;align-items:center;gap:8px"><span style="flex:1;height:5px;border-radius:3px;background:#E8EAF0"><span style="display:block;width:{{ c.p }};height:100%;border-radius:3px;background:{{ c.pc }}"></span></span><span style="font-family:'JetBrains Mono';font-size:11.5px">{{ c.p }}</span></span>
+                <span style="font-size:12px;font-weight:600;color:{{ c.sc }}">{{ c.s }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tProjects }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ projects }}" as="p" hint-placeholder-count="2">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:2px;background:#0B8FB0"></span><span style="font-size:17px;font-weight:600">{{ p.t }}</span><span style="margin-left:auto;font-size:12px;font-weight:600;color:{{ p.sc }}">{{ p.st }}</span></div>
+                <div style="font-size:13.5px;color:#4A5266">{{ p.r }} · {{ p.d }} · team of {{ p.team }}</div>
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+                  <sc-for list="{{ p.stats }}" as="s" hint-placeholder-count="4"><div style="border:1px solid #E2E5EB;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600">{{ s.v }}</span><span style="font-size:12px;color:#4A5266">{{ s.k }}</span></div></sc-for>
+                </div>
+                <div style="font-size:12.5px;color:#4A5266">Skills shown: {{ p.s }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tCerts }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+            <sc-for list="{{ certs }}" as="c" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:8px"><div style="position:relative;width:22px;height:15px"><div style="position:absolute;left:0;top:0;width:15px;height:15px;border-radius:50%;background:#4B4FE0"></div><div style="position:absolute;left:7px;top:0;width:15px;height:15px;border-radius:50%;border:2px solid #0B8FB0;box-sizing:border-box"></div></div><span style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;color:#6B7386">{{ c.k }}</span><span style="margin-left:auto;display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:#15803D"><i style="font-size:15px">verified</i>Verifiable</span></div>
+                <div style="font-family:'Bricolage Grotesque';font-size:22px;font-weight:600;letter-spacing:-0.02em;line-height:1.15">{{ c.t }}</div>
+                <div style="font-size:12.5px;color:#4A5266">{{ c.s }}</div>
+                <div style="display:flex;justify-content:space-between;border-top:1px solid #E2E5EB;padding-top:10px;font-family:'JetBrains Mono';font-size:11px;color:#6B7386"><span>{{ c.d }}</span><span>{{ c.id }}</span></div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tPosts }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ myPosts }}" as="p" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;color:#6B7386">{{ p.m }}</span><span style="font-size:14.5px;line-height:1.55">{{ p.t }}</span><span style="font-size:12.5px;color:#4A5266">{{ p.e }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <aside style="display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:14px;font-weight:600">Who can see this</span>
+            <sc-for list="{{ privacy }}" as="v" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="flex:1">{{ v.n }}</span><button onClick="{{ v.go }}" style="display:flex;align-items:center;gap:4px;height:26px;padding:0 8px;border:1px solid #E2E5EB;border-radius:5px;background:#fff;font-size:12px;font-weight:500;cursor:pointer"><i style="font-size:14px">{{ v.i }}</i>{{ v.v }}</button></div>
+            </sc-for>
+            <span style="font-size:11.5px;color:#6B7386">Click to cycle: Public → Connections → Private</span>
+          </div>
+        </sc-if>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:14px;font-weight:600">Study Buddies</span>
+          <div style="font-size:12px;color:#6B7386;margin-top:-6px">One partner per course. A connection is something different.</div>
+          <sc-for list="{{ buddies }}" as="b" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:50%;background:{{ b.bg }};color:{{ b.fg }};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #4B4FE0;box-sizing:border-box">{{ b.i }}</div><div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px;font-weight:600">{{ b.n }}</span><span style="font-size:11.5px;color:#4A5266">{{ b.c }}</span></div></div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:14px;font-weight:600">Certificates</span>
+          <sc-for list="{{ certs }}" as="c" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px"><i style="font-size:18px;color:#B45309">workspace_premium</i><span style="flex:1">{{ c.short }}</span><span style="font-family:'JetBrains Mono';font-size:11px;color:#6B7386">{{ c.y }}</span></div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:14px;font-weight:600">Open to</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span style="font-size:12px;padding:4px 8px;border-radius:4px;background:#F0F2F5">Backend roles</span><span style="font-size:12px;padding:4px 8px;border-radius:4px;background:#F0F2F5">Working student</span><span style="font-size:12px;padding:4px 8px;border-radius:4px;background:#F0F2F5">Project teams</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { liked: { 1: true }, saved: {}, ptype: 'post', feed: 'For you', view: 'visitor', tab: 'overview', conn: 0, menu: false, sugg: {}, priv: [0, 1, 0, 0, 1] };
+  nav(active) {
+    const items = [['home', 'home', 'Home', 'Network.dc.html'], ['learn', 'school', 'Learn', 'Learning.dc.html'], ['projects', 'deployed_code', 'Projects', 'Projects.dc.html'], ['people', 'group', 'People', 'Network.dc.html'], ['messages', 'forum', 'Messages', '#', '3'], ['jobs', 'work', 'Jobs', '#']];
+    return items.map(([id, icon, label, href, badge]) => { const on = id === active; return { icon, label, href, badge: badge || '', bg: on ? '#EEF0FD' : 'transparent', fg: on ? '#2E31A8' : '#4A5266', ic: on ? '#4B4FE0' : '#6B7386', fw: on ? 600 : 500 }; });
+  }
+  renderVals() {
+    const s = this.state;
+    const ptypes = [{ id: 'post', n: 'Post', i: 'edit_note', h: 'Share what you\'re learning or building…' }, { id: 'ach', n: 'Achievement', i: 'workspace_premium', h: 'Pick an achievement to share: 21-day streak, course completed…' }, { id: 'proj', n: 'Project', i: 'deployed_code', h: 'Post an update from Real-Time Delivery Platform…' }, { id: 'code', n: 'Code', i: 'code', h: 'Paste a snippet and explain what you learned…' }];
+    const cur = ptypes.find(p => p.id === s.ptype);
+    const kw = (t) => ({ t, c: '#C792EA' });
+    const postDefs = [
+      { id: 1, ini: 'EF', abg: '#D7F1F6', afg: '#0B6F88', name: 'Emma Fischer', verb: 'completed a course', meta: 'Frontend Developer · 2h', body: 'Nine weeks, 31 lessons, and about 40 arguments with Jonas about caching. System Design done. Next I want to apply this on a team project.', course: { t: 'System Design · Intermediate', s: 'with Study Buddy Jonas Weber · 9 weeks · 24 exercises' }, likes: 47, comments: 6 },
+      { id: 2, ini: 'JW', abg: '#E3E0FB', afg: '#4B3BB8', name: 'Jonas Weber', verb: 'posted', meta: 'Angular · Advanced · 5h', body: 'Signals finally clicked for me when I stopped treating them as "RxJS lite". A computed signal is simply derived state, with no subscription to manage:', code: [kw('const items = signal<CartItem[]>([]);'), { t: 'const total = computed(() =>', c: '#E6E9F0' }, { t: '  items().reduce((s, i) => s + i.price * i.qty, 0));', c: '#A5E075' }, { t: '// no subscribe, no unsubscribe, no async pipe', c: '#6B7386' }], likes: 128, comments: 23 },
+      { id: 3, ini: 'SC', abg: '#D5F2E8', afg: '#0F6B4F', name: 'Sarah Chen', verb: 'shared a project milestone', meta: 'Backend Developer · Yesterday', body: 'Sprint 1 is shipped. Orders, auth and the driver location stream are running end to end on staging. Thanks for the push, team.', project: true, likes: 64, comments: 11 },
+      { id: 4, ini: 'PN', abg: '#FBE3EC', afg: '#9D2452', name: 'Priya Nair', verb: 'started learning', meta: 'Data Analyst → ML · Yesterday', body: 'Starting AI Engineering from the beginning. Looking for someone in CET who wants to do two evenings a week and actually build the RAG project at the end.', started: true, likes: 19, comments: 4 },
+      { id: 5, ini: 'LB', abg: '#FBEBD0', afg: '#8A5A0B', name: 'Lukas Braun', verb: 'posted', meta: 'DevOps · Mon', body: 'This is how we split staging and prod for the delivery platform. Happy to hear where it breaks.', image: true, likes: 33, comments: 9 },
+    ];
+    const posts = postDefs.map(p => {
+      const L = !!s.liked[p.id], S = !!s.saved[p.id];
+      return { ...p, course: p.course || false, code: p.code || false, project: !!p.project, started: !!p.started, image: !!p.image,
+        likes: p.likes + (L ? 1 : 0), lc: L ? '#C81E1E' : '#4A5266', lf: L ? 1 : 0, sc: S ? '#4B4FE0' : '#4A5266', sf: S ? 1 : 0, sl: S ? 'Saved' : 'Save',
+        like: () => this.setState(st => ({ liked: { ...st.liked, [p.id]: !st.liked[p.id] } })), save: () => this.setState(st => ({ saved: { ...st.saved, [p.id]: !st.saved[p.id] } })) };
+    });
+    const feedFilter = { 'For you': [1, 2, 3, 4, 5], 'Study Buddies': [2], 'Projects': [3, 5], 'Following': [1, 3, 5] };
+    const pill = (on) => ({ b: on ? '#0F1320' : '#E2E5EB', bg: on ? '#0F1320' : '#fff', fg: on ? '#fff' : '#4A5266' });
+    const suggDefs = [{ i: 'TO', n: 'Tomás Ortega', r: 'Learning Angular · Intermediate', bg: '#E0EEFC', fg: '#1F5D99' }, { i: 'AY', n: 'Aiko Yamada', r: 'NestJS · 2 shared skills', bg: '#F1E4FB', fg: '#7A2F9E' }, { i: 'DR', n: 'David Rossi', r: 'System Design · Berlin', bg: '#E2F4E4', fg: '#24733A' }];
+    const connStates = [{ l: 'Connect', i: 'person_add', bg: '#4B4FE0', fg: '#fff', b: '0' }, { l: 'Request sent', i: 'schedule', bg: '#fff', fg: '#4A5266', b: '1px solid #CDD2DB' }, { l: 'Connected', i: 'check', bg: '#E8F6EC', fg: '#15803D', b: '1px solid #BFE3C9' }];
+    const lvl = (n) => ({ b2: n >= 2 ? '#4B4FE0' : '#E2E5EB', b3: n >= 3 ? '#4B4FE0' : '#E2E5EB', lv: ['', 'Beginner', 'Intermediate', 'Advanced'][n] });
+    const proven = (p) => p ? { p, pi: 'verified', pc: '#15803D' } : { p: 'Self-reported', pi: 'person', pc: '#6B7386' };
+    const tabDefs = [['overview', 'Overview', ''], ['learning', 'Learning', '7'], ['projects', 'Projects', '2'], ['certs', 'Certificates', '3'], ['posts', 'Posts', '18']];
+    const privLevels = [{ v: 'Public', i: 'public' }, { v: 'Connections', i: 'group' }, { v: 'Private', i: 'lock' }];
+    const privNames = ['Courses', 'Projects', 'Skills', 'Certificates', 'Posts'];
+    const certs = [
+      { k: 'PROJECT COMPLETION', t: 'Campus Events API — Backend Developer', short: 'Campus Events API · Backend', s: 'NestJS · PostgreSQL · OAuth · API design · team collaboration', d: 'ISSUED 02 SEP 2026', id: 'SWB-P-7Q2K-91XA', y: '2026' },
+      { k: 'COURSE COMPLETION', t: 'Databases · Intermediate', short: 'Databases · Intermediate', s: 'SQL · indexing · transactions · normalization', d: 'ISSUED 14 MAY 2026', id: 'SWB-C-3M8D-22LF', y: '2026' },
+      { k: 'COURSE COMPLETION', t: 'Python Fundamentals', short: 'Python Fundamentals', s: 'Python · data structures · testing', d: 'ISSUED 09 JAN 2026', id: 'SWB-C-1H4T-08QB', y: '2026' },
+    ];
+    return {
+      navHome: this.nav('home'), navPeople: this.nav('people'),
+      composerHint: cur.h,
+      postTypes: ptypes.map(p => ({ ...p, b: p.id === s.ptype ? '#4B4FE0' : '#E2E5EB', bg: p.id === s.ptype ? '#EEF0FD' : '#fff', fg: p.id === s.ptype ? '#2E31A8' : '#4A5266', go: () => this.setState({ ptype: p.id }) })),
+      feedTabs: Object.keys(feedFilter).map(n => ({ n, ...pill(n === s.feed), go: () => this.setState({ feed: n }) })),
+      posts: posts.filter(p => feedFilter[s.feed].includes(p.id)),
+      learning: [{ t: 'Angular', l: 'Intermediate', p: '62%' }, { t: 'German', l: 'A2', p: '41%' }, { t: 'System Design', l: 'Intermediate', p: '78%' }, { t: 'AI Engineering', l: 'Beginner', p: '48%' }],
+      suggested: suggDefs.map((u, k) => { const on = !!s.sugg[k]; return { ...u, l: on ? 'Requested' : 'Connect', c: on ? '#4A5266' : '#4B4FE0', b: on ? '#E2E5EB' : '#D6DAFB', go: () => this.setState(st => ({ sugg: { ...st.sugg, [k]: !st.sugg[k] } })) }; }),
+      viewAs: [['visitor', 'Visitor'], ['owner', 'You']].map(([id, n]) => ({ n, bg: s.view === id ? '#fff' : 'transparent', sh: s.view === id ? '0 1px 2px rgba(15,19,32,.1)' : 'none', fg: s.view === id ? '#0F1320' : '#4A5266', go: () => this.setState({ view: id, menu: false }) })),
+      isVisitor: s.view === 'visitor', isOwner: s.view === 'owner',
+      conn: connStates[s.conn], connect: () => this.setState({ conn: (s.conn + 1) % 3 }),
+      menu: s.menu, toggleMenu: () => this.setState({ menu: !s.menu }),
+      ptabs: tabDefs.map(([id, n, c]) => ({ n, c, bc: s.tab === id ? '#0F1320' : 'transparent', fw: s.tab === id ? 600 : 500, fg: s.tab === id ? '#0F1320' : '#4A5266', go: () => this.setState({ tab: id }) })),
+      tOverview: s.tab === 'overview', tLearning: s.tab === 'learning', tProjects: s.tab === 'projects', tCerts: s.tab === 'certs', tPosts: s.tab === 'posts',
+      skills: [
+        { n: 'TypeScript', ...lvl(3), ...proven('Campus Events API') }, { n: 'NestJS', ...lvl(2), ...proven('Campus Events API') },
+        { n: 'PostgreSQL', ...lvl(3), ...proven('Databases course') }, { n: 'Python', ...lvl(2), ...proven('Python Fundamentals') },
+        { n: 'Angular', ...lvl(2), ...proven(null) }, { n: 'Redis', ...lvl(2), ...proven('Delivery Platform') },
+        { n: 'Docker', ...lvl(1), ...proven(null) }, { n: 'REST API design', ...lvl(3), ...proven('Campus Events API') }],
+      currentShown: [{ t: 'Angular', b: 'with Alex Morgan', p: '62%' }, { t: 'AI Engineering', b: 'with Priya Nair', p: '48%' }],
+      completed: [{ t: 'Python Fundamentals', d: 'Jan 2026' }, { t: 'Databases · Intermediate', d: 'May 2026' }, { t: 'Git & Collaboration', d: 'Feb 2026' }],
+      projects: [
+        { t: 'Real-Time Delivery Platform', r: 'Backend Developer', d: 'Sprint 2 of 3', team: 6, s: 'NestJS, PostgreSQL, Redis, API design', st: 'In progress', sc: '#4B4FE0', stats: [{ v: 9, k: 'tasks' }, { v: 14, k: 'commits' }, { v: 4, k: 'pull requests' }, { v: 6, k: 'reviews' }] },
+        { t: 'Campus Events API', r: 'Backend Developer', d: '4 weeks', team: 5, s: 'NestJS, PostgreSQL, OAuth', st: 'Completed', sc: '#15803D', stats: [{ v: 11, k: 'tasks' }, { v: 18, k: 'commits' }, { v: 6, k: 'pull requests' }, { v: 5, k: 'reviews' }] }],
+      achievements: [{ i: 'local_fire_department', c: '#B45309', t: '21-day streak', d: 'Angular, with Alex' }, { i: 'merge', c: '#0B8FB0', t: 'First merged PR', d: 'Campus Events API' }, { i: 'quiz', c: '#4B4FE0', t: '50 quick checks', d: '86% correct' }, { i: 'handshake', c: '#15803D', t: 'Helpful reviewer', d: '12 reviews thanked' }],
+      allCourses: [
+        { t: 'Angular', l: 'Intermediate', b: 'Alex Morgan', p: '62%', pc: '#4B4FE0', s: 'Active', sc: '#4B4FE0' },
+        { t: 'AI Engineering', l: 'Beginner', b: 'Priya Nair', p: '48%', pc: '#4B4FE0', s: 'Active', sc: '#4B4FE0' },
+        { t: 'System Design', l: 'Intermediate', b: 'David Rossi', p: '78%', pc: '#4B4FE0', s: 'Active', sc: '#4B4FE0' },
+        { t: 'German', l: 'A2', b: 'Lena Vogel', p: '41%', pc: '#4B4FE0', s: 'Active', sc: '#4B4FE0' },
+        { t: 'Databases', l: 'Intermediate', b: 'Tomás Ortega', p: '100%', pc: '#15803D', s: 'Completed', sc: '#15803D' },
+        { t: 'Git & Collaboration', l: 'Beginner', b: 'Solo', p: '100%', pc: '#15803D', s: 'Completed', sc: '#15803D' },
+        { t: 'Python Fundamentals', l: 'Beginner', b: 'Aiko Yamada', p: '100%', pc: '#15803D', s: 'Completed', sc: '#15803D' }],
+      certs,
+      myPosts: [
+        { m: 'Shared an achievement · 2 Sep', t: 'Project completed: Campus Events API. I was backend dev on a 5-person team for 4 weeks, with 11 tasks and 6 PRs. The OAuth redirect bug from week 3 taught me more than any lesson.', e: '92 likes · 14 comments' },
+        { m: 'Posted · 21 Aug', t: 'TIL Postgres advisory locks are a cheap way to keep one worker per order. They aren\'t a distributed lock, though, and our AI review flagged exactly that. Writing up the fix.', e: '41 likes · 8 comments' },
+        { m: 'Started learning · 3 Aug', t: 'Starting Angular Intermediate. Backend dev here, tired of not understanding the other half of our stack.', e: '27 likes · 5 comments' }],
+      privacy: privNames.map((n, k) => { const lv = privLevels[s.priv[k]]; return { n, ...lv, go: () => this.setState(st => { const p = [...st.priv]; p[k] = (p[k] + 1) % 3; return { priv: p }; }) }; }),
+      buddies: [{ i: 'AM', n: 'Alex Morgan', c: 'Angular · since Aug', bg: '#FDE9D6', fg: '#9A4A0A' }, { i: 'PN', n: 'Priya Nair', c: 'AI Engineering · since Sep', bg: '#FBE3EC', fg: '#9D2452' }, { i: 'DR', n: 'David Rossi', c: 'System Design · since Jul', bg: '#E2F4E4', fg: '#24733A' }],
+    };
+  }
+}
+</script>
+</body>
+</html>
