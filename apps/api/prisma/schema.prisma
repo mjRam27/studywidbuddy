@@ -1,0 +1,1323 @@
+// StudywidBuddy relational model.
+// Tables arrive milestone by milestone; see docs/DATABASE.md for the decisions behind them.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [citext, pg_trgm]
+}
+
+// ───────────────────────────── Identity ─────────────────────────────
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+model User {
+  id              String     @id @default(uuid()) @db.Uuid
+  email           String     @unique @db.Citext
+  passwordHash    String
+  role            UserRole   @default(USER)
+  status          UserStatus @default(ACTIVE)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  profile       Profile?
+  refreshTokens RefreshToken[]
+  authTokens    AuthToken[]
+  skills        UserSkill[]
+  enrollments   Enrollment[]
+  applications  ProjectApplication[]
+  teamMembers   TeamMember[]
+  assignedTasks Task[]               @relation("TaskAssignee")
+  taskComments  TaskComment[]
+  activity      ProjectActivity[]
+  lessonNotes   LessonNote[]
+  chatMessages  ChatMessage[]
+  chatReads     ChatReadState[]
+  meetingSeats  MeetingParticipant[]
+  agentRuns     AgentRun[]           @relation("AgentRunRequester")
+  toolDecisions AgentToolCall[]      @relation("ToolCallDecider")
+  githubAccount GithubAccount?
+}
+
+/// One row per issued refresh token. Rotation links tokens in a family; reuse of a
+/// rotated token revokes the whole family (stolen-token detection).
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  familyId  String    @db.Uuid
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  rotatedAt DateTime?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+}
+
+enum AuthTokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+/// Single-use email tokens. Only a hash is stored.
+model AuthToken {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @db.Uuid
+  type      AuthTokenType
+  tokenHash String        @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+enum Visibility {
+  PUBLIC
+  CONNECTIONS
+  PRIVATE
+}
+
+model Profile {
+  userId      String     @id @db.Uuid
+  username    String     @unique @db.Citext
+  displayName String
+  headline    String?
+  bio         String?
+  location    String?
+  /// IANA zone, e.g. "Europe/Berlin".
+  timezone    String?
+  /// Spoken languages as BCP-47 codes or names. A flat list of labels, not relational data.
+  languages   String[]   @default([])
+  avatarUrl   String?
+  visibility  Visibility @default(PUBLIC)
+  onboardedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ───────────────────────────── Skills ─────────────────────────────
+
+enum SkillCategory {
+  LANGUAGE
+  FRONTEND
+  BACKEND
+  DATABASE
+  CLOUD_DEVOPS
+  DATA_AI
+  ARCHITECTURE
+  SPOKEN_LANGUAGE
+  OTHER
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+/// CLAIMED = the user said so. DEMONSTRATED = earned through a completed course or project.
+enum SkillSource {
+  CLAIMED
+  DEMONSTRATED
+}
+
+model Skill {
+  id        String        @id @default(uuid()) @db.Uuid
+  slug      String        @unique
+  name      String
+  category  SkillCategory
+  createdAt DateTime      @default(now())
+
+  users            UserSkill[]
+  courses          CourseSkill[]
+  projectStack     ProjectTechnology[]
+  roleRequirements ProjectRequiredSkill[]
+
+  @@index([name])
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin, map: "Skill_name_trgm")
+}
+
+model UserSkill {
+  userId    String      @db.Uuid
+  skillId   String      @db.Uuid
+  source    SkillSource
+  level     SkillLevel
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([userId, skillId, source])
+  @@index([skillId])
+}
+
+// ───────────────────────────── Learning ─────────────────────────────
+
+model Course {
+  id             String     @id @default(uuid()) @db.Uuid
+  slug           String     @unique
+  title          String
+  summary        String
+  description    String
+  category       String
+  level          SkillLevel
+  estimatedHours Int
+  /// Ordered learning outcomes (display text).
+  outcomes       String[]   @default([])
+  publishedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  skills      CourseSkill[]
+  modules     CourseModule[]
+  enrollments Enrollment[]
+
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "Course_title_trgm")
+}
+
+model CourseSkill {
+  courseId String @db.Uuid
+  skillId  String @db.Uuid
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  skill  Skill  @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([courseId, skillId])
+}
+
+model CourseModule {
+  id       String @id @default(uuid()) @db.Uuid
+  courseId String @db.Uuid
+  position Int
+  title    String
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@unique([courseId, position])
+}
+
+model Lesson {
+  id                 String  @id @default(uuid()) @db.Uuid
+  moduleId           String  @db.Uuid
+  position           Int
+  title              String
+  durationSec        Int
+  videoUrl           String?
+  /// 11-character YouTube video id; the player embeds youtube-nocookie.com. Never a raw URL.
+  youtubeId          String?
+  /// Attribution for the embedded video, from YouTube's oEmbed data.
+  videoTitle         String?
+  videoChannel       String?
+  /// What the lesson covers, written by the course author. Grounds the AI Buddy and voice checks.
+  summary            String?
+  transcript         String?
+  /// Timestamped transcript: [{ start: seconds, text }]. Lets the AI Buddy follow the video.
+  transcriptSegments Json?
+  /// Where the transcript came from: PASTED (admin) or GEMINI (generated from the video).
+  transcriptSource   String?
+
+  module      CourseModule         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+  notes       LessonNote[]
+  tutorTurns  TutorMessage[]
+  assessments AssessmentQuestion[]
+
+  @@unique([moduleId, position])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DEREGISTERED
+}
+
+/// A user's participation in a course. At most four ACTIVE rows per user (enforced in
+/// EnrollmentsService under a row lock) and at most one ACTIVE row per (user, course)
+/// (partial unique index in the migration).
+model Enrollment {
+  id          String           @id @default(uuid()) @db.Uuid
+  userId      String           @db.Uuid
+  courseId    String           @db.Uuid
+  level       SkillLevel
+  status      EnrollmentStatus @default(ACTIVE)
+  startedAt   DateTime         @default(now())
+  completedAt DateTime?
+  leftAt      DateTime?
+  updatedAt   DateTime         @updatedAt
+
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course      Course             @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  progress    LessonProgress[]
+  tutorTurns  TutorMessage[]
+  assessments CourseAssessment[]
+
+  @@index([userId, status])
+  @@index([courseId, status])
+}
+
+model LessonProgress {
+  enrollmentId String   @db.Uuid
+  lessonId     String   @db.Uuid
+  completedAt  DateTime @default(now())
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([enrollmentId, lessonId])
+}
+
+// ───────────────────────────── Study ─────────────────────────────
+
+/// A learner's private note on a lesson. Belongs to the user, so it survives leaving a course.
+model LessonNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  lessonId  String   @db.Uuid
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+enum TutorRole {
+  USER
+  ASSISTANT
+}
+
+/// AI Buddy conversation, one thread per enrollment.
+model TutorMessage {
+  id           String    @id @default(uuid()) @db.Uuid
+  enrollmentId String    @db.Uuid
+  lessonId     String?   @db.Uuid
+  role         TutorRole
+  content      String
+  viaVoice     Boolean   @default(false)
+  /// Video position (seconds) the question was asked at, when watching.
+  atSec        Int?
+  createdAt    DateTime  @default(now())
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson     Lesson?    @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  @@index([enrollmentId, createdAt])
+}
+
+enum AssessmentStatus {
+  GENERATING
+  READY
+  EVALUATING
+  EVALUATED
+  FAILED
+}
+
+/// Voice check: questions about lessons the learner finished, answered aloud (or typed),
+/// evaluated by AI. The report stays under the course.
+model CourseAssessment {
+  id             String           @id @default(uuid()) @db.Uuid
+  enrollmentId   String           @db.Uuid
+  status         AssessmentStatus @default(GENERATING)
+  /// Lessons completed when the check started; questions only cover those.
+  lessonsCovered Int
+  failedStage    String?
+  failureReason  String?
+  overallScore   Int?
+  summary        String?
+  strengths      String[]
+  gaps           String[]
+  /// Lesson labels (e.g. "4.3") the evaluator suggests revisiting.
+  reviewLessons  String[]
+  aiModel        String?
+  createdAt      DateTime         @default(now())
+  submittedAt    DateTime?
+  evaluatedAt    DateTime?
+
+  enrollment Enrollment           @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  questions  AssessmentQuestion[]
+
+  @@index([enrollmentId, createdAt])
+}
+
+model AssessmentQuestion {
+  id           String    @id @default(uuid()) @db.Uuid
+  assessmentId String    @db.Uuid
+  position     Int
+  lessonId     String?   @db.Uuid
+  focus        String
+  prompt       String
+  answer       String?
+  viaVoice     Boolean   @default(false)
+  answeredAt   DateTime?
+  score        Int?
+  feedback     String?
+  modelAnswer  String?
+
+  assessment CourseAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  lesson     Lesson?          @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  @@unique([assessmentId, position])
+}
+
+// ───────────────────────────── Projects ─────────────────────────────
+
+enum ProjectStatus {
+  DRAFT
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+/// A simulated professional project. Created by admins (seeded in dev).
+model Project {
+  id                  String        @id @default(uuid()) @db.Uuid
+  slug                String        @unique
+  title               String
+  /// Display category, e.g. "LOGISTICS · WEB PLATFORM".
+  category            String        @default("GENERAL")
+  summary             String
+  description         String
+  problem             String
+  difficulty          SkillLevel
+  status              ProjectStatus @default(DRAFT)
+  durationWeeks       Int
+  teamSize            Int
+  applicationDeadline DateTime?
+  startsAt            DateTime?
+  /// The AI PM holds a team check-in every N days while the project is in progress.
+  meetingIntervalDays Int           @default(3)
+  aiPmEnabled         Boolean       @default(true)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  roles         ProjectRole[]
+  techStack     ProjectTechnology[]
+  applications  ProjectApplication[]
+  selectionRuns TeamSelectionRun[]
+  team          Team?
+  milestones    Milestone[]
+  sprints       Sprint[]
+  tasks         Task[]
+  activity      ProjectActivity[]
+  plans         ProjectPlanProposal[]
+  chat          ChatMessage[]
+  chatReads     ChatReadState[]
+  memory        ProjectMemory[]
+  agentRuns     AgentRun[]
+  meetings      ProjectMeeting[]
+  repo          ProjectRepo?
+  pullRequests  PullRequest[]
+
+  @@index([status])
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "Project_title_trgm")
+}
+
+model ProjectTechnology {
+  projectId String @db.Uuid
+  skillId   String @db.Uuid
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, skillId])
+}
+
+/// A seat type on a project ("Backend Engineer × 2"). Not a person: see TeamMember (M3).
+model ProjectRole {
+  id          String @id @default(uuid()) @db.Uuid
+  projectId   String @db.Uuid
+  key         String
+  title       String
+  description String
+  seats       Int
+
+  project        Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  requiredSkills ProjectRequiredSkill[]
+  applications   ProjectApplication[]
+  recommendedIn  CandidateEvaluation[]
+  selectionPicks TeamSelectionDecision[]
+  members        TeamMember[]
+  tasks          Task[]
+
+  @@unique([projectId, key])
+}
+
+model ProjectRequiredSkill {
+  roleId   String     @db.Uuid
+  skillId  String     @db.Uuid
+  minLevel SkillLevel
+
+  role  ProjectRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  skill Skill       @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([roleId, skillId])
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  INTERVIEW_PENDING
+  INTERVIEW_IN_PROGRESS
+  UNDER_REVIEW
+  SELECTED
+  REJECTED
+  WITHDRAWN
+}
+
+/// One live (non-withdrawn) application per user per project: partial unique index in the migration.
+model ProjectApplication {
+  id                       String                    @id @default(uuid()) @db.Uuid
+  projectId                String                    @db.Uuid
+  roleId                   String                    @db.Uuid
+  userId                   String                    @db.Uuid
+  status                   ApplicationStatus         @default(SUBMITTED)
+  motivation               String
+  availabilityHoursPerWeek Int
+  relevantExperience       String?
+  /// Why the application ended without a seat, and what the applicant should do next.
+  outcomeReason            ApplicationOutcomeReason?
+  outcomeFeedback          String?
+  submittedAt              DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+
+  project   Project                 @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  role      ProjectRole             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  user      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events    ApplicationEvent[]
+  interview InterviewSession?
+  decisions TeamSelectionDecision[]
+  member    TeamMember?
+  cv        ApplicationCv?
+  screening CvScreening?
+
+  @@index([userId, status])
+  @@index([projectId, status])
+  @@index([roleId, status])
+}
+
+enum ApplicationOutcomeReason {
+  CV_BELOW_THRESHOLD
+  INTERVIEW_BELOW_THRESHOLD
+  ROLE_FILLED
+}
+
+/// The CV uploaded with an application (PDF). Stored in Postgres: small, private, and
+/// deleted with the application. Only the applicant and admins can download it.
+model ApplicationCv {
+  applicationId String   @id @db.Uuid
+  fileName      String
+  mimeType      String
+  sizeBytes     Int
+  sha256        String
+  data          Bytes
+  uploadedAt    DateTime @default(now())
+
+  application ProjectApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+enum CvScreeningStatus {
+  PENDING
+  DONE
+  FAILED
+}
+
+/// AI ATS screening of the CV against the role. Sub-scores come from the model (schema-
+/// checked, 0–100); atsScore is computed by our code from fixed weights.
+model CvScreening {
+  applicationId    String            @id @db.Uuid
+  status           CvScreeningStatus @default(PENDING)
+  atsScore         Int?
+  skillsScore      Int?
+  experienceScore  Int?
+  keywordsScore    Int?
+  projectsScore    Int?
+  clarityScore     Int?
+  matchedSkills    String[]
+  missingSkills    String[]
+  /// Plain-text digest of the CV, used to plan the interview (the PDF isn't re-read).
+  candidateSummary String?
+  feedback         String?
+  failureReason    String?
+  aiModel          String?
+  createdAt        DateTime          @default(now())
+  completedAt      DateTime?
+
+  application ProjectApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+/// Append-only lifecycle history of an application.
+model ApplicationEvent {
+  id            String             @id @default(uuid()) @db.Uuid
+  applicationId String             @db.Uuid
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus
+  actorUserId   String?            @db.Uuid
+  createdAt     DateTime           @default(now())
+
+  application ProjectApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId, createdAt])
+}
+
+// ───────────────────────────── Interviews (M2) ─────────────────────────────
+
+/// GENERATING → READY (candidate answers) → SUBMITTED (evaluation queued) → EVALUATED.
+/// FAILED means an AI step gave up after retries; `failedStage` says which one to retry.
+enum InterviewStatus {
+  GENERATING
+  READY
+  /// CV passed: the candidate picks "now" or a slot.
+  AWAITING_SCHEDULE
+  SCHEDULED
+  /// The voice conversation is under way.
+  LIVE
+  SUBMITTED
+  EVALUATED
+  FAILED
+}
+
+enum InterviewStage {
+  QUESTIONS
+  EVALUATION
+}
+
+enum InterviewQuestionKind {
+  INTRODUCTION
+  TECHNICAL
+  PROBLEM_SOLVING
+  COMMUNICATION
+  PROJECT_FIT
+  FOLLOW_UP
+}
+
+/// One interview per application. The interview is not the evaluation: scores live in
+/// CandidateEvaluation and only exist after submission.
+model InterviewSession {
+  id            String          @id @default(uuid()) @db.Uuid
+  applicationId String          @unique @db.Uuid
+  status        InterviewStatus @default(GENERATING)
+  failedStage   InterviewStage?
+  failureReason String?
+  aiModel       String?
+  readyAt       DateTime?
+  scheduledFor  DateTime?
+  startedAt     DateTime?
+  /// The interviewer's plan (topics and opening), written when the call starts.
+  plan          Json?
+  closingRemark String?
+  /// Times the candidate left the interview tab (integrity signal for reviewers).
+  focusLost     Int             @default(0)
+  submittedAt   DateTime?
+  evaluatedAt   DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  application ProjectApplication   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  questions   InterviewQuestion[]
+  evaluation  CandidateEvaluation?
+
+  @@index([status])
+}
+
+model InterviewQuestion {
+  id        String                @id @default(uuid()) @db.Uuid
+  sessionId String                @db.Uuid
+  position  Int
+  kind      InterviewQuestionKind
+  /// The skill or topic the question probes, e.g. "NestJS · dependency injection".
+  focus     String
+  prompt    String
+  createdAt DateTime              @default(now())
+
+  session  InterviewSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  response InterviewResponse?
+
+  @@unique([sessionId, position])
+}
+
+model InterviewResponse {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @unique @db.Uuid
+  answer     String
+  /// Spoken (speech-to-text) answers only in voice interviews.
+  viaVoice   Boolean  @default(false)
+  /// Seconds from the end of the question to the first spoken word, and speaking time.
+  thinkMs    Int?
+  speakMs    Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+/// Validated, structured evaluation. Sub-scores come from the model (0–100, schema-checked);
+/// overallScore is computed by our code from fixed weights, never taken from the model.
+model CandidateEvaluation {
+  id                  String   @id @default(uuid()) @db.Uuid
+  sessionId           String   @unique @db.Uuid
+  technicalScore      Int
+  problemSolvingScore Int
+  communicationScore  Int
+  projectFitScore     Int
+  overallScore        Int
+  recommendedRoleId   String?  @db.Uuid
+  strengths           String[]
+  areasToImprove      String[]
+  summary             String
+  aiModel             String
+  createdAt           DateTime @default(now())
+
+  session         InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  recommendedRole ProjectRole?     @relation(fields: [recommendedRoleId], references: [id], onDelete: SetNull)
+}
+
+// ───────────────────────────── Teams (M3) ─────────────────────────────
+
+enum SelectionRunStatus {
+  PROPOSED
+  APPLIED
+  DISCARDED
+}
+
+/// One run of the selection algorithm for a project. A run is a *proposal* until an admin
+/// applies it (a high-impact action); its decisions and reasons are kept for audit.
+model TeamSelectionRun {
+  id          String             @id @default(uuid()) @db.Uuid
+  projectId   String             @db.Uuid
+  status      SelectionRunStatus @default(PROPOSED)
+  summary     String
+  createdById String             @db.Uuid
+  appliedById String?            @db.Uuid
+  createdAt   DateTime           @default(now())
+  appliedAt   DateTime?
+
+  project   Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  decisions TeamSelectionDecision[]
+
+  @@index([projectId, createdAt])
+}
+
+model TeamSelectionDecision {
+  id            String   @id @default(uuid()) @db.Uuid
+  runId         String   @db.Uuid
+  applicationId String   @db.Uuid
+  selected      Boolean
+  roleId        String?  @db.Uuid
+  /// Fit for the assigned role (or best fit when not selected), 0–1.
+  fit           Float
+  /// Human-readable reasons produced by the deterministic algorithm.
+  reasons       String[]
+
+  run         TeamSelectionRun   @relation(fields: [runId], references: [id], onDelete: Cascade)
+  application ProjectApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  role        ProjectRole?       @relation(fields: [roleId], references: [id], onDelete: SetNull)
+
+  @@unique([runId, applicationId])
+}
+
+model Team {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @unique @db.Uuid
+  formedAt  DateTime @default(now())
+
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  members TeamMember[]
+}
+
+/// INVITED on selection; ACTIVE once the person accepts; DECLINED/LEFT free the seat.
+enum TeamMemberStatus {
+  INVITED
+  ACTIVE
+  DECLINED
+  LEFT
+}
+
+/// A person on a team in a role. Distinct from ProjectRole (the seat) and from the application.
+model TeamMember {
+  id            String           @id @default(uuid()) @db.Uuid
+  teamId        String           @db.Uuid
+  userId        String           @db.Uuid
+  roleId        String           @db.Uuid
+  applicationId String           @unique @db.Uuid
+  status        TeamMemberStatus @default(INVITED)
+  invitedAt     DateTime         @default(now())
+  respondedAt   DateTime?
+
+  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        ProjectRole        @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  application ProjectApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId, status])
+}
+
+// ───────────────────────────── Project workspace (M4) ─────────────────────────────
+
+model Milestone {
+  id          String    @id @default(uuid()) @db.Uuid
+  projectId   String    @db.Uuid
+  position    Int
+  title       String
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, position])
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+model Sprint {
+  id          String       @id @default(uuid()) @db.Uuid
+  projectId   String       @db.Uuid
+  number      Int
+  goal        String
+  startsAt    DateTime
+  endsAt      DateTime
+  status      SprintStatus @default(PLANNED)
+  completedAt DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   Task[]
+
+  @@unique([projectId, number])
+}
+
+enum TaskStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+/// A unit of work. `number` gives the human id (TASK-18) and is unique per project.
+model Task {
+  id                 String       @id @default(uuid()) @db.Uuid
+  projectId          String       @db.Uuid
+  number             Int
+  sprintId           String?      @db.Uuid
+  title              String
+  description        String       @default("")
+  acceptanceCriteria String[]     @default([])
+  status             TaskStatus   @default(BACKLOG)
+  priority           TaskPriority @default(MEDIUM)
+  /// Story points (Fibonacci: 1, 2, 3, 5, 8, 13).
+  estimate           Int          @default(1)
+  roleId             String?      @db.Uuid
+  assigneeId         String?      @db.Uuid
+  dueDate            DateTime?
+  branch             String?
+  pullRequestUrl     String?
+  /// Created from an AI-proposed plan (shown with the AI SUGGESTED marker).
+  aiSuggested        Boolean      @default(false)
+  /// Ordering within a board column (fractional so a move touches one row).
+  position           Float        @default(0)
+  createdById        String?      @db.Uuid
+  startedAt          DateTime?
+  completedAt        DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  project      Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint       Sprint?           @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  role         ProjectRole?      @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  assignee     User?             @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  dependsOn    TaskDependency[]  @relation("DependentTask")
+  blocks       TaskDependency[]  @relation("PrerequisiteTask")
+  comments     TaskComment[]
+  activity     ProjectActivity[]
+  pullRequests PullRequest[]
+
+  @@unique([projectId, number])
+  @@index([projectId, status, position])
+  @@index([assigneeId, status])
+}
+
+/// taskId depends on dependsOnId. Cycles are rejected in TasksService.
+model TaskDependency {
+  taskId      String @db.Uuid
+  dependsOnId String @db.Uuid
+
+  task      Task @relation("DependentTask", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn Task @relation("PrerequisiteTask", fields: [dependsOnId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, dependsOnId])
+  @@index([dependsOnId])
+}
+
+model TaskComment {
+  id        String   @id @default(uuid()) @db.Uuid
+  taskId    String   @db.Uuid
+  authorId  String   @db.Uuid
+  body      String
+  createdAt DateTime @default(now())
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+enum ActorKind {
+  USER
+  AGENT
+  SYSTEM
+}
+
+enum ActivityType {
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  TASK_COMMENTED
+  TASK_DEPENDENCIES_CHANGED
+  SPRINT_CREATED
+  SPRINT_STARTED
+  SPRINT_COMPLETED
+  PLAN_PROPOSED
+  PLAN_APPLIED
+  PLAN_DISCARDED
+  MEMBER_JOINED
+  MEETING_OPENED
+  MEETING_SUMMARIZED
+  AGENT_ACTION_APPROVED
+  AGENT_ACTION_REJECTED
+  REPO_CREATED
+  CODE_PUSHED
+  PR_OPENED
+  PR_MERGED
+  PR_CLOSED
+  CHECKS_PASSED
+  CHECKS_FAILED
+}
+
+/// Append-only, structured project timeline. `data` carries small event-specific fields
+/// (e.g. from/to status); anything relational is a real column.
+model ProjectActivity {
+  id          String       @id @default(uuid()) @db.Uuid
+  projectId   String       @db.Uuid
+  type        ActivityType
+  actorKind   ActorKind    @default(USER)
+  actorUserId String?      @db.Uuid
+  taskId      String?      @db.Uuid
+  summary     String
+  data        Json?
+  createdAt   DateTime     @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  actor   User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  task    Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, createdAt])
+}
+
+enum PlanStatus {
+  GENERATING
+  PROPOSED
+  APPLIED
+  DISCARDED
+  FAILED
+}
+
+/// An AI-proposed plan. The draft is stored as validated JSON until someone approves it;
+/// applying turns it into real milestones, sprints, tasks and dependencies.
+model ProjectPlanProposal {
+  id            String     @id @default(uuid()) @db.Uuid
+  projectId     String     @db.Uuid
+  status        PlanStatus @default(GENERATING)
+  plan          Json?
+  aiModel       String?
+  failureReason String?
+  createdById   String     @db.Uuid
+  decidedById   String?    @db.Uuid
+  createdAt     DateTime   @default(now())
+  decidedAt     DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+}
+
+// ───────────────────────────── AI usage log ─────────────────────────────
+
+/// One row per LLM request: what it was for, which model, tokens, outcome. Used for cost
+/// tracking and debugging. Never stores prompts or outputs.
+model AiCall {
+  id           String   @id @default(uuid()) @db.Uuid
+  purpose      String
+  provider     String
+  model        String
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  durationMs   Int
+  success      Boolean
+  errorCode    String?
+  userId       String?  @db.Uuid
+  createdAt    DateTime @default(now())
+
+  @@index([purpose, createdAt])
+  @@index([userId, createdAt])
+}
+
+// ───────────────────────────── Team chat ─────────────────────────────
+
+enum ChatAuthorKind {
+  MEMBER
+  AI
+  SYSTEM
+}
+
+/// Project team chat. AI and system posts have no author user.
+model ChatMessage {
+  id         String         @id @default(uuid()) @db.Uuid
+  projectId  String         @db.Uuid
+  authorId   String?        @db.Uuid
+  authorKind ChatAuthorKind @default(MEMBER)
+  body       String
+  /// What an AI/system post refers to, e.g. ("meeting", id), for linking in the UI.
+  refType    String?
+  refId      String?        @db.Uuid
+  createdAt  DateTime       @default(now())
+  editedAt   DateTime?
+  deletedAt  DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author  User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, createdAt])
+}
+
+model ChatReadState {
+  projectId  String   @db.Uuid
+  userId     String   @db.Uuid
+  lastReadAt DateTime
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, userId])
+}
+
+// ───────────────────────────── AI project manager ─────────────────────────────
+
+enum MemoryKind {
+  FACT
+  DECISION
+  RISK
+  MEMBER_NOTE
+  SUMMARY
+}
+
+/// The AI PM's memory. Strictly per project: every read and write is scoped by projectId.
+model ProjectMemory {
+  id            String     @id @default(uuid()) @db.Uuid
+  projectId     String     @db.Uuid
+  kind          MemoryKind
+  content       String
+  /// The team member a MEMBER_NOTE is about.
+  subjectUserId String?    @db.Uuid
+  /// Where it came from: MEETING, RUN or MANUAL.
+  sourceType    String
+  sourceId      String?    @db.Uuid
+  createdAt     DateTime   @default(now())
+  archivedAt    DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, archivedAt, createdAt])
+}
+
+enum AgentRunTrigger {
+  MANUAL
+  MEETING_SUMMARY
+}
+
+enum AgentRunStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+/// One agent episode: model turns (steps), the tool calls it made, and their results.
+model AgentRun {
+  id            String          @id @default(uuid()) @db.Uuid
+  projectId     String          @db.Uuid
+  trigger       AgentRunTrigger
+  status        AgentRunStatus  @default(QUEUED)
+  goal          String
+  requestedById String?         @db.Uuid
+  meetingId     String?         @db.Uuid
+  model         String?
+  summary       String?
+  error         String?
+  inputTokens   Int             @default(0)
+  outputTokens  Int             @default(0)
+  createdAt     DateTime        @default(now())
+  startedAt     DateTime?
+  finishedAt    DateTime?
+
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  requestedBy User?           @relation("AgentRunRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+  steps       AgentStep[]
+  toolCalls   AgentToolCall[]
+
+  @@index([projectId, createdAt])
+}
+
+model AgentStep {
+  id        String   @id @default(uuid()) @db.Uuid
+  runId     String   @db.Uuid
+  index     Int
+  /// The model's visible text for this turn.
+  text      String?
+  createdAt DateTime @default(now())
+
+  run       AgentRun        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  toolCalls AgentToolCall[]
+
+  @@unique([runId, index])
+}
+
+enum ToolRisk {
+  READ
+  WRITE_LOW
+  NEEDS_APPROVAL
+}
+
+enum ToolCallStatus {
+  PROPOSED
+  APPROVED
+  REJECTED
+  EXECUTED
+  FAILED
+}
+
+model AgentToolCall {
+  id          String         @id @default(uuid()) @db.Uuid
+  runId       String         @db.Uuid
+  stepId      String         @db.Uuid
+  /// The provider's tool_use id, to pair results with calls.
+  toolUseId   String
+  tool        String
+  input       Json
+  risk        ToolRisk
+  status      ToolCallStatus
+  decidedById String?        @db.Uuid
+  decidedAt   DateTime?
+  createdAt   DateTime       @default(now())
+
+  run       AgentRun         @relation(fields: [runId], references: [id], onDelete: Cascade)
+  step      AgentStep        @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  decidedBy User?            @relation("ToolCallDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  result    AgentToolResult?
+
+  @@index([runId])
+  @@index([status])
+}
+
+model AgentToolResult {
+  id         String   @id @default(uuid()) @db.Uuid
+  toolCallId String   @unique @db.Uuid
+  ok         Boolean
+  output     Json
+  createdAt  DateTime @default(now())
+
+  toolCall AgentToolCall @relation(fields: [toolCallId], references: [id], onDelete: Cascade)
+}
+
+enum MeetingKind {
+  CHECK_IN
+  FINAL_REVIEW
+}
+
+enum MeetingStatus {
+  PREPARING
+  OPEN
+  SUMMARIZING
+  CLOSED
+  FAILED
+}
+
+/// An AI-led team meeting. Each member answers their own questions (by voice or text)
+/// inside the window; the AI PM then summarizes, updates its memory and proposes actions.
+model ProjectMeeting {
+  id            String        @id @default(uuid()) @db.Uuid
+  projectId     String        @db.Uuid
+  number        Int
+  kind          MeetingKind
+  status        MeetingStatus @default(PREPARING)
+  agenda        String?
+  opensAt       DateTime      @default(now())
+  closesAt      DateTime
+  summary       String?
+  highlights    String[]
+  risks         String[]
+  failureReason String?
+  createdAt     DateTime      @default(now())
+  summarizedAt  DateTime?
+
+  project      Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  participants MeetingParticipant[]
+
+  @@unique([projectId, number])
+  @@index([status, closesAt])
+}
+
+enum ParticipantStatus {
+  PENDING
+  ANSWERED
+  MISSED
+}
+
+model MeetingParticipant {
+  id         String            @id @default(uuid()) @db.Uuid
+  meetingId  String            @db.Uuid
+  userId     String            @db.Uuid
+  status     ParticipantStatus @default(PENDING)
+  answeredAt DateTime?
+  /// The AI PM's note on this person's update, written at summary time.
+  aiNote     String?
+
+  meeting   ProjectMeeting    @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions MeetingQuestion[]
+
+  @@unique([meetingId, userId])
+}
+
+model MeetingQuestion {
+  id            String    @id @default(uuid()) @db.Uuid
+  participantId String    @db.Uuid
+  position      Int
+  prompt        String
+  answer        String?
+  viaVoice      Boolean   @default(false)
+  answeredAt    DateTime?
+
+  participant MeetingParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, position])
+}
+
+// ───────────────────────────── GitHub ─────────────────────────────
+
+/// A learner's linked GitHub identity (from OAuth). Only id and login are kept; the
+/// OAuth token is discarded right after we read the profile.
+model GithubAccount {
+  userId   String   @id @db.Uuid
+  githubId BigInt   @unique
+  login    String
+  linkedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// The team repository in the platform's GitHub organization. Private while the project
+/// runs; the team can choose to publish it afterwards.
+model ProjectRepo {
+  projectId     String   @id @db.Uuid
+  githubRepoId  BigInt   @unique
+  owner         String
+  name          String
+  htmlUrl       String
+  defaultBranch String   @default("main")
+  private       Boolean  @default(true)
+  /// GitHub team slug that holds the members' write access.
+  teamSlug      String
+  createdById   String?  @db.Uuid
+  createdAt     DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum PullRequestState {
+  OPEN
+  CLOSED
+  MERGED
+}
+
+enum ChecksStatus {
+  NONE
+  PENDING
+  SUCCESS
+  FAILURE
+}
+
+model PullRequest {
+  id           String           @id @default(uuid()) @db.Uuid
+  projectId    String           @db.Uuid
+  number       Int
+  title        String
+  state        PullRequestState @default(OPEN)
+  draft        Boolean          @default(false)
+  authorLogin  String
+  /// Set when the author has linked their GitHub account.
+  authorUserId String?          @db.Uuid
+  headBranch   String
+  headSha      String
+  htmlUrl      String
+  /// The task this PR implements (from "TASK-n" in the title or branch).
+  taskId       String?          @db.Uuid
+  checks       ChecksStatus     @default(NONE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  mergedAt     DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@unique([projectId, number])
+  @@index([taskId])
+}
+
+/// Every webhook delivery, for idempotency (GitHub retries) and debugging.
+model GithubDelivery {
+  id          String    @id
+  event       String
+  action      String?
+  repoId      BigInt?
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+  error       String?
+}

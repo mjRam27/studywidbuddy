@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint & format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      # Angular template rules need the web app's own Angular packages for type info.
+      - run: npm ci
+        working-directory: apps/web
+      - run: npx prettier --check .
+      - run: npx eslint .
+
+  api:
+    name: API · typecheck, test, build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: studywidbuddy
+          POSTGRES_PASSWORD: studywidbuddy
+          POSTGRES_DB: studywidbuddy
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U studywidbuddy"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      NODE_ENV: test
+      REDIS_URL: redis://localhost:6379
+      DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy?schema=public
+      TEST_DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy_test?schema=public
+      SHADOW_DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy_shadow?schema=public
+      JWT_ACCESS_SECRET: ci-only-secret-ci-only-secret-ci-only-secret
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/api/package-lock.json
+      - name: Create test and shadow databases
+        run: |
+          PGPASSWORD=studywidbuddy psql -h localhost -U studywidbuddy -d studywidbuddy \
+            -c "CREATE DATABASE studywidbuddy_test" -c "CREATE DATABASE studywidbuddy_shadow"
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Migrations match the schema
+        run: npm run db:check
+      - name: Migrations apply cleanly
+        run: npx prisma migrate deploy
+      - name: Unit + e2e tests (real Postgres)
+        run: npm test
+      - run: npm run build
+
+  web:
+    name: Web · typecheck, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

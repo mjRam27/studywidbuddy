@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "../..",
+    "baseUrl": ".",
+    "incremental": false,
+    "types": ["node", "jest"],
+    "paths": {
+      "@studywidbuddy/shared": ["../../packages/shared/src"]
+    }
+  },
+  "include": ["src", "test", "prisma/seed.ts", "../../packages/shared/src"]
+}
