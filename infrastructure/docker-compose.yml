@@ -1,0 +1,67 @@
+# Local development services. Ports are offset (5433, 6380) so they don't clash
+# with a Postgres or Redis already installed on the host.
+#
+#   npm run infra:up                                   # Postgres + Redis only (normal dev)
+#   docker compose -f infrastructure/docker-compose.yml --profile app up --build
+#                                                      # whole stack in containers on :8080
+name: studywidbuddy
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: studywidbuddy
+      POSTGRES_PASSWORD: studywidbuddy
+      POSTGRES_DB: studywidbuddy
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U studywidbuddy']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6380:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    profiles: [app]
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      WEB_ORIGIN: http://localhost:8080
+      DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@postgres:5432/studywidbuddy?schema=public
+      REDIS_URL: redis://redis:6379
+      # Local-only default. Set a real secret anywhere else.
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-local-compose-secret-change-me-local-compose-secret}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    profiles: [app]
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - '8080:80'
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

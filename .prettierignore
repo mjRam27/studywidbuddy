@@ -1,0 +1,8 @@
+dist
+coverage
+.angular
+node_modules
+project-scope-and-direction
+package-lock.json
+apps/api/prisma/migrations
+.playwright-mcp

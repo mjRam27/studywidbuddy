@@ -1,0 +1,118 @@
+/*
+ * StudywidBuddy design tokens, taken from Foundations.dc.html (02 Color, type, space).
+ * Light is the default (social, discovery, learning). Dark is designed, not inverted, for
+ * long workspace sessions: apply `data-theme="dark"` to a workspace root.
+ */
+:root {
+  /* Surfaces */
+  --canvas: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f7f8fa;
+  --surface-side: #fbfbfc;
+  --subtle: #f0f2f5;
+  --track: #e8eaf0;
+
+  /* Lines */
+  --line: #e2e5eb;
+  --line-soft: #f0f2f5;
+  --line-strong: #cdd2db;
+
+  /* Text */
+  --ink: #0f1320;
+  --ink-2: #4a5266;
+  --ink-3: #6b7386;
+  --ink-4: #9aa1b1;
+  --ink-5: #b4bac6;
+
+  /* Brand: indigo = learning & primary actions */
+  --brand: #4b4fe0;
+  --brand-hover: #3d40c9;
+  --brand-ink: #2e31a8;
+  --brand-ink-2: #3236b3;
+  --brand-soft: #eef0fd;
+  --brand-soft-2: #f7f8ff;
+  --brand-line: #d6dafb;
+  --brand-tint: #a5a8f5;
+  --avatar-me: #dde3ff;
+
+  /* AI = cyan (diamond, dashed frames). Also the "Build" loop colour. */
+  --ai: #0b8fb0;
+  --ai-ink: #0a6e88;
+  --ai-soft: #e6f6fa;
+  --ai-soft-2: #f7fcfd;
+  --ai-line: #9ed8e6;
+
+  /* Grow loop / career = amber */
+  --grow: #d97706;
+  --grow-ink: #8a4308;
+  --grow-soft: #fdf3e3;
+
+  /* Status (always paired with an icon + label) */
+  --success: #15803d;
+  --success-soft: #e8f6ec;
+  --success-line: #bfe3c9;
+  --online: #16a34a;
+  --warn: #b45309;
+  --warn-soft: #fdf3e3;
+  --danger: #c81e1e;
+  --danger-soft: #fffbfb;
+  --danger-line: #f3c4c4;
+
+  /* Type */
+  --f-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --f-ui: 'Instrument Sans', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radius: 4 tag · 6 control · 10/12 card · 14 modal */
+  --r-tag: 4px;
+  --r-control: 6px;
+  --r-card: 12px;
+  --r-card-sm: 10px;
+  --r-modal: 14px;
+
+  /* Elevation (light only; dark uses stepped surfaces) */
+  --shadow-1: 0 1px 2px rgba(15, 19, 32, 0.06);
+  --shadow-2: 0 8px 24px rgba(15, 19, 32, 0.12);
+  --shadow-3: 0 24px 64px rgba(15, 19, 32, 0.25);
+
+  --focus-ring: 0 0 0 3px rgba(75, 79, 224, 0.28);
+  --sidebar-w: 248px;
+  --topbar-h: 56px;
+}
+
+/* Dark workspace palette (Foundations: base/panel/raised/border, accents lifted ~15%). */
+[data-theme='dark'] {
+  --canvas: #0a0c12;
+  --surface: #10131b;
+  --surface-2: #161a24;
+  --surface-side: #10131b;
+  --subtle: #1c2130;
+  --track: #232838;
+  --line: #232838;
+  --line-soft: #1c2130;
+  --line-strong: #2e3446;
+  --ink: #e6e9f0;
+  --ink-2: #a3aabb;
+  --ink-3: #7c8497;
+  --ink-4: #7c8497;
+  --ink-5: #4a5266;
+  --brand: #8186ff;
+  --brand-hover: #9a9eff;
+  --brand-ink: #a5a8ff;
+  --brand-soft: rgba(129, 134, 255, 0.14);
+  --brand-line: rgba(129, 134, 255, 0.4);
+  --ai: #4cc9e6;
+  --ai-ink: #4cc9e6;
+  --ai-soft: rgba(76, 201, 230, 0.12);
+  --ai-line: rgba(76, 201, 230, 0.45);
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.12);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --shadow-1: none;
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 24px 64px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
