@@ -9,6 +9,9 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
+  /// Migrations need a direct (non-pooled) connection. On Supabase DATABASE_URL is the
+  /// transaction pooler and DIRECT_URL the session pooler; locally both are the same.
+  directUrl  = env("DIRECT_URL")
   extensions = [citext, pg_trgm]
 }
 
@@ -929,6 +932,7 @@ enum ActivityType {
   PR_CLOSED
   CHECKS_PASSED
   CHECKS_FAILED
+  PR_REVIEWED
 }
 
 /// Append-only, structured project timeline. `data` carries small event-specific fields
@@ -1304,11 +1308,51 @@ model PullRequest {
   updatedAt    DateTime         @updatedAt
   mergedAt     DateTime?
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  task    Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?        @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  reviews CodeReview[]
 
   @@unique([projectId, number])
   @@index([taskId])
+}
+
+enum CodeReviewStatus {
+  QUEUED
+  RUNNING
+  POSTED
+  SKIPPED
+  FAILED
+}
+
+enum CodeReviewVerdict {
+  LOOKS_GOOD
+  CHANGES_SUGGESTED
+}
+
+/// AI code review of one PR head commit (run by the LangGraph review pipeline in src/review).
+model CodeReview {
+  id             String             @id @default(uuid()) @db.Uuid
+  pullRequestId  String             @db.Uuid
+  headSha        String
+  status         CodeReviewStatus   @default(QUEUED)
+  verdict        CodeReviewVerdict?
+  summary        String?
+  /// Validated findings: [{ path, line, severity, category, title, body, suggestion? }]
+  findings       Json?
+  filesReviewed  Int                @default(0)
+  filesSkipped   Int                @default(0)
+  skippedReason  String?
+  failureReason  String?
+  /// Set once the review is on GitHub, so a retried job never posts twice.
+  githubReviewId BigInt?
+  githubUrl      String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  postedAt       DateTime?
+
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([pullRequestId, headSha])
 }
 
 /// Every webhook delivery, for idempotency (GitHub retries) and debugging.

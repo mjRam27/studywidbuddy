@@ -24,6 +24,8 @@ if (!process.env.SB_E2E_ENV_LOADED) {
     );
   }
   process.env.DATABASE_URL = testUrl;
+  // Migrations use DIRECT_URL; it must follow, or test migrations would hit the real database.
+  process.env.DIRECT_URL = testUrl;
   process.env.SB_E2E_ENV_LOADED = '1';
 }
 process.env.NODE_ENV = 'test';

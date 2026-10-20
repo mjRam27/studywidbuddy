@@ -25,6 +25,8 @@ describe('shared enums mirror Prisma enums', () => {
     ['ParticipantStatus', Shared.ParticipantStatus, Prisma.ParticipantStatus],
     ['PullRequestState', Shared.PullRequestState, Prisma.PullRequestState],
     ['ChecksStatus', Shared.ChecksStatus, Prisma.ChecksStatus],
+    ['CodeReviewStatus', Shared.CodeReviewStatus, Prisma.CodeReviewStatus],
+    ['CodeReviewVerdict', Shared.CodeReviewVerdict, Prisma.CodeReviewVerdict],
     ['ApplicationOutcomeReason', Shared.ApplicationOutcomeReason, Prisma.ApplicationOutcomeReason],
     ['CvScreeningStatus', Shared.CvScreeningStatus, Prisma.CvScreeningStatus],
   ];

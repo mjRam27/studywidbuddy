@@ -88,6 +88,12 @@ export type PullRequestState = keyof typeof PullRequestState;
 export const ChecksStatus = values('NONE', 'PENDING', 'SUCCESS', 'FAILURE');
 export type ChecksStatus = keyof typeof ChecksStatus;
 
+export const CodeReviewStatus = values('QUEUED', 'RUNNING', 'POSTED', 'SKIPPED', 'FAILED');
+export type CodeReviewStatus = keyof typeof CodeReviewStatus;
+
+export const CodeReviewVerdict = values('LOOKS_GOOD', 'CHANGES_SUGGESTED');
+export type CodeReviewVerdict = keyof typeof CodeReviewVerdict;
+
 export const ApplicationOutcomeReason = values('CV_BELOW_THRESHOLD', 'INTERVIEW_BELOW_THRESHOLD', 'ROLE_FILLED');
 export type ApplicationOutcomeReason = keyof typeof ApplicationOutcomeReason;
 

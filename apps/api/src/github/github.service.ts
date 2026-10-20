@@ -168,6 +168,7 @@ export class GithubService {
         htmlUrl: p.htmlUrl,
         task: p.task ? { id: p.task.id, key: taskKey(p.task.number), title: p.task.title } : null,
         checks: p.checks,
+        aiReview: null,
         createdAt: p.createdAt.toISOString(),
         updatedAt: p.updatedAt.toISOString(),
         mergedAt: p.mergedAt?.toISOString() ?? null,

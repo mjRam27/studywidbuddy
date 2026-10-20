@@ -133,7 +133,7 @@ See `docs/GITHUB.md`.
 | Study Workspace (screen 29): outline, lesson player, notes, AI Buddy panel                                                                               | ✅     | Works solo; Study Buddy parts labelled SOON                                                                                                                                 |
 | YouTube lessons (privacy-enhanced embed), one curated video per lesson by topic                                                                          | ✅     | 89/89 lessons, each verified via YouTube oEmbed (exists, embeddable), title and channel credited; `npm run videos:check` re-verifies; admins can replace from Lesson videos |
 | AI Buddy chat on the fast model, grounded in course outline, lesson summary/transcript and the learner's note                                            | ✅     | Hint-first; history per enrollment                                                                                                                                          |
-| AI Buddy follows the video: current minute sent with questions, transcript window around it, "Explain this moment", timed transcript tab (click to seek) | ✅     | Transcripts pasted by admins now; Gemini generation ready, needs `GEMINI_API_KEY`                                                                                           |
+| AI Buddy follows the video: current minute sent with questions, transcript window around it, "Explain this moment", timed transcript tab (click to seek) | ✅     | Paste or generate with Gemini (`GEMINI_API_KEY` configured locally, `gemini-3.8-flash`)                                                                                     |
 | Voice conversation with the AI Buddy (browser speech-to-text + text-to-speech)                                                                           | ✅     | Chrome/Edge/Safari; typing everywhere                                                                                                                                       |
 | Voice check: 5 spoken questions on finished lessons → report under the course                                                                            | ✅     | Questions on the fast model, evaluation on the smart model, score computed by code                                                                                          |
 | Private notes per lesson                                                                                                                                 | ✅     |                                                                                                                                                                             |
@@ -158,12 +158,13 @@ Milestones 6, 7 and 10 follow the product brief. Each is broken into items here 
 
 ## Needs a decision or credentials
 
-| Item           | What's needed                                                                                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| LLM provider   | ✅ Configured locally (`AI_PROVIDER=anthropic`). Without a key, AI features say "AI isn't configured" instead of faking output. |
-| Email delivery | `SMTP_URL` (any SMTP provider). Dev logs verification/reset links to the API console.                                           |
-| GitHub App     | App id, private key, webhook secret.                                                                                            |
-| Object storage | S3-compatible bucket (instructor video uploads). Local dev will use MinIO in Docker.                                            |
-| Payments       | Stripe (or similar) account for paid courses and projects.                                                                      |
-| Sandbox host   | Where untrusted code runs: Docker on our own server vs a hosted sandbox (e.g. E2B). Decision pending.                           |
-| Group video    | SFU choice (LiveKit self-hosted vs cloud). 1:1 calls can work peer-to-peer.                                                     |
+| Item              | What's needed                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| LLM provider      | ✅ Configured locally (`AI_PROVIDER=anthropic`). Without a key, AI features say "AI isn't configured" instead of faking output. |
+| Email delivery    | `SMTP_URL` (any SMTP provider). Dev logs verification/reset links to the API console.                                           |
+| GitHub App        | ✅ Configured locally (app id, private key outside the repo, webhook secret, smee relay in dev).                                |
+| Video transcripts | ✅ Gemini configured locally (`GEMINI_API_KEY`). Without it admins paste transcripts.                                           |
+| Object storage    | S3-compatible bucket (instructor video uploads). Local dev will use MinIO in Docker.                                            |
+| Payments          | Stripe (or similar) account for paid courses and projects.                                                                      |
+| Sandbox host      | Where untrusted code runs: Docker on our own server vs a hosted sandbox (e.g. E2B). Decision pending.                           |
+| Group video       | SFU choice (LiveKit self-hosted vs cloud). 1:1 calls can work peer-to-peer.                                                     |
