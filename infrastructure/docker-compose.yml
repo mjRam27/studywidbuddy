@@ -2,8 +2,8 @@
 # with a Postgres or Redis already installed on the host.
 #
 #   npm run infra:up                                   # Postgres + Redis only (normal dev)
-#   docker compose -f infrastructure/docker-compose.yml --profile app up --build
-#                                                      # whole stack in containers on :8080
+#   npm run app:up                                     # whole stack in containers on :8080
+#   npm run app:logs / npm run app:down                # follow API logs / stop it
 name: studywidbuddy
 
 services:
@@ -39,17 +39,23 @@ services:
     build:
       context: ..
       dockerfile: apps/api/Dockerfile
+    # Database (Supabase or other hosted Postgres), AI keys, SMTP and GitHub settings come from
+    # the API's own .env, so `npm run app:up` runs the same configuration as `npm run dev:api`.
+    # DATABASE_URL/DIRECT_URL there must be reachable from a container (a hosted database, not localhost).
+    env_file:
+      - ../apps/api/.env
     environment:
       NODE_ENV: production
       PORT: 3000
       WEB_ORIGIN: http://localhost:8080
-      DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@postgres:5432/studywidbuddy?schema=public
+      API_PUBLIC_URL: http://localhost:8080
       REDIS_URL: redis://redis:6379
-      # Local-only default. Set a real secret anywhere else.
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-local-compose-secret-change-me-local-compose-secret}
+      # The GitHub App key is mounted below; a Windows path from .env doesn't exist in the container.
+      GITHUB_APP_PRIVATE_KEY_PATH: /secrets/studywidbuddy-github.pem
+    volumes:
+      # Folder holding the GitHub App .pem (outside the repo). Override with GITHUB_PEM_DIR.
+      - ${GITHUB_PEM_DIR:-${USERPROFILE:-~}/.secrets}:/secrets:ro
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
 

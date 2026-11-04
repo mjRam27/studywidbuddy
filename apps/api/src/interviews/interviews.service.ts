@@ -39,6 +39,7 @@ import {
   interviewTurnPrompt,
   InterviewTurnSchema,
 } from './interview-ai';
+import { skillGapsFor } from '../applications/reapply';
 import { type Move, mustClose, nextMove, remainingTopics } from './interview-flow';
 import { canJoin, interviewSlots, isMissed, safeTimezone } from './interview-schedule';
 import { atsScore, clampScore, overallScore } from './scoring';
@@ -508,6 +509,11 @@ export class InterviewsService {
           recommendedRoleId: roleId,
           strengths: v.strengths.map((x) => x.trim()),
           areasToImprove: v.areasToImprove.map((x) => x.trim()),
+          // Only real required-skill names survive; course recommendations use this list.
+          skillGaps: skillGapsFor(
+            ctx.context.role.requiredSkills.map((r) => r.name),
+            v.skillGaps,
+          ),
           summary: v.summary.trim(),
           aiModel: result.model,
         },

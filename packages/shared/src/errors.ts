@@ -19,6 +19,8 @@ export const ErrorCode = {
 
   PROJECT_NOT_OPEN: 'PROJECT_NOT_OPEN',
   ALREADY_APPLIED: 'ALREADY_APPLIED',
+  /** Rejected recently: reapply after the cooldown, or after finishing a recommended course. */
+  REAPPLY_LOCKED: 'REAPPLY_LOCKED',
   INVALID_STATUS_TRANSITION: 'INVALID_STATUS_TRANSITION',
 
   AI_NOT_CONFIGURED: 'AI_NOT_CONFIGURED',

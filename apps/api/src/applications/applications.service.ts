@@ -1,7 +1,14 @@
 import { createHash } from 'node:crypto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { ApplicationOutcomeReason, ApplicationStatus, Prisma, ProjectStatus, TeamMemberStatus } from '@prisma/client';
+import {
+  ApplicationOutcomeReason,
+  ApplicationStatus,
+  EnrollmentStatus,
+  Prisma,
+  ProjectStatus,
+  TeamMemberStatus,
+} from '@prisma/client';
 import { CV_MAX_BYTES, CV_PASS_SCORE, ErrorCode } from '@studywidbuddy/shared';
 import type { ApplicationOutcomeView, ApplicationView, CvScreeningView } from '@studywidbuddy/shared';
 import type { Queue } from 'bullmq';
@@ -12,6 +19,7 @@ import { ATS_WEIGHTS } from '../interviews/scoring';
 import { INTERVIEW_QUEUE } from '../queue/queue.module';
 import { assertTransition } from './application-status';
 import { CreateApplicationDto } from './dto';
+import { reapplyState, skillGapsFor } from './reapply';
 
 /** Queued after an application is created; handled by the interview worker. */
 export const JOB_CV_SCREEN = 'cv.screen';
@@ -30,7 +38,12 @@ const viewInclude = {
   cv: { select: { fileName: true, sizeBytes: true } },
   screening: true,
   interview: {
-    select: { id: true, status: true, scheduledFor: true, evaluation: { select: { overallScore: true } } },
+    select: {
+      id: true,
+      status: true,
+      scheduledFor: true,
+      evaluation: { select: { overallScore: true, skillGaps: true, areasToImprove: true } },
+    },
   },
   member: { select: { status: true } },
 } satisfies Prisma.ProjectApplicationInclude;
@@ -107,11 +120,13 @@ export class ApplicationsService {
         projects: await this.similarProjects(dto.roleId, projectId),
       });
     }
+    await this.assertMayReapply(userId, projectId);
 
     // Entry-level projects skip CV matching: the voice interview alone decides. A CV is
     // optional there (kept for the team, not scored); everywhere else it's required.
     const entryLevel = project.difficulty === 'BEGINNER';
     const file = entryLevel && !cv?.size ? null : this.checkCv(cv);
+    const now = Date.now();
 
     let id: string;
     try {
@@ -129,11 +144,12 @@ export class ApplicationsService {
                   status: ApplicationStatus.INTERVIEW_PENDING,
                   events: {
                     create: [
-                      { toStatus: ApplicationStatus.SUBMITTED, actorUserId: userId },
+                      // Both times from one clock: the database's default can differ from Node's.
+                      { toStatus: ApplicationStatus.SUBMITTED, actorUserId: userId, createdAt: new Date(now) },
                       {
                         fromStatus: ApplicationStatus.SUBMITTED,
                         toStatus: ApplicationStatus.INTERVIEW_PENDING,
-                        createdAt: new Date(Date.now() + 1),
+                        createdAt: new Date(now + 1),
                       },
                     ],
                   },
@@ -332,39 +348,131 @@ export class ApplicationsService {
   }
 
   /** Published courses teaching the role's skills the candidate lacks (missing first). */
-  private async recommendedCourses(roleId: string, missing: string[]) {
+  /**
+   * Catalogue courses that teach the given gaps, and only those: no gaps means no suggestions
+   * (rather than every skill the role needs). `completed` marks courses this user finished
+   * after `since`, which is what unlocks an early reapply.
+   */
+  private async recommendedCourses(roleId: string, gaps: string[], userId: string, since: Date) {
+    if (!gaps.length) return [];
     const required = await this.prisma.projectRequiredSkill.findMany({
       where: { roleId },
       select: { skill: { select: { id: true, name: true } } },
     });
-    const missingIds = required
-      .filter((r) => missing.some((m) => m.toLowerCase() === r.skill.name.toLowerCase()))
-      .map((r) => r.skill.id);
-    const targetIds = missingIds.length ? missingIds : required.map((r) => r.skill.id);
+    const lower = new Set(gaps.map((g) => g.toLowerCase()));
+    const targetIds = required.filter((r) => lower.has(r.skill.name.toLowerCase())).map((r) => r.skill.id);
     if (!targetIds.length) return [];
     const courses = await this.prisma.course.findMany({
       where: { publishedAt: { not: null }, skills: { some: { skillId: { in: targetIds } } } },
-      select: { slug: true, title: true, skills: { select: { skill: { select: { id: true, name: true } } } } },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        skills: { select: { skill: { select: { id: true, name: true } } } },
+        enrollments: {
+          where: { userId, status: EnrollmentStatus.COMPLETED, completedAt: { gte: since } },
+          select: { id: true },
+          take: 1,
+        },
+      },
       take: 8,
     });
     return courses
       .map((c) => {
         const covers = c.skills.filter((s) => targetIds.includes(s.skill.id)).map((s) => s.skill.name);
-        return { slug: c.slug, title: c.title, reason: `Teaches ${covers.join(', ')}`, n: covers.length };
+        return {
+          slug: c.slug,
+          title: c.title,
+          reason: `Teaches ${covers.join(', ')}`,
+          completed: c.enrollments.length > 0,
+          n: covers.length,
+        };
       })
       .sort((a, b) => b.n - a.n)
       .slice(0, 4)
       .map(({ n: _n, ...c }) => c);
   }
 
+  /** The skill gaps behind a rejection: the CV screen's missing skills, or the interview's gaps. */
+  private async gapsOf(r: {
+    roleId: string;
+    outcomeReason: ApplicationOutcomeReason | null;
+    screening: { missingSkills: string[] } | null;
+    interview: { evaluation: { skillGaps: string[]; areasToImprove: string[] } | null } | null;
+  }): Promise<string[]> {
+    if (r.outcomeReason === 'CV_BELOW_THRESHOLD') return r.screening?.missingSkills ?? [];
+    if (r.outcomeReason !== 'INTERVIEW_BELOW_THRESHOLD' || !r.interview?.evaluation) return [];
+    const required = await this.prisma.projectRequiredSkill.findMany({
+      where: { roleId: r.roleId },
+      select: { skill: { select: { name: true } } },
+    });
+    const e = r.interview.evaluation;
+    return skillGapsFor(
+      required.map((x) => x.skill.name),
+      e.skillGaps,
+      e.areasToImprove,
+    );
+  }
+
+  private rejectedAt(events: { toStatus: ApplicationStatus; createdAt: Date }[]): Date | null {
+    return events.filter((e) => e.toStatus === ApplicationStatus.REJECTED).at(-1)?.createdAt ?? null;
+  }
+
+  /**
+   * After a CV or interview rejection, the same project can be applied to again after
+   * REAPPLY_COOLDOWN_DAYS, or once a recommended course has been completed since.
+   */
+  private async assertMayReapply(userId: string, projectId: string) {
+    const last = await this.prisma.projectApplication.findFirst({
+      where: {
+        userId,
+        projectId,
+        status: ApplicationStatus.REJECTED,
+        outcomeReason: { in: ['CV_BELOW_THRESHOLD', 'INTERVIEW_BELOW_THRESHOLD'] },
+      },
+      orderBy: { submittedAt: 'desc' },
+      include: {
+        events: { select: { toStatus: true, createdAt: true } },
+        screening: { select: { missingSkills: true } },
+        interview: { select: { evaluation: { select: { skillGaps: true, areasToImprove: true } } } },
+      },
+    });
+    const rejectedAt = last ? this.rejectedAt(last.events) : null;
+    if (!last || !rejectedAt) return;
+    const courses = await this.recommendedCourses(last.roleId, await this.gapsOf(last), userId, rejectedAt);
+    const state = reapplyState(
+      rejectedAt,
+      new Date(),
+      courses.some((c) => c.completed),
+    );
+    if (state.allowed) return;
+    throw conflict(
+      ErrorCode.REAPPLY_LOCKED,
+      courses.length
+        ? `You can apply to this project again on ${state.availableAt.toDateString()}, or right away after completing one of the recommended courses.`
+        : `You can apply to this project again on ${state.availableAt.toDateString()}.`,
+      { availableAt: state.availableAt.toISOString(), courses: courses.map(({ slug, title }) => ({ slug, title })) },
+    );
+  }
+
   private async outcome(r: ApplicationRow): Promise<ApplicationOutcomeView | null> {
     if (!r.outcomeReason) return null;
-    const missing = r.screening?.missingSkills ?? [];
+    const rejectedAt = this.rejectedAt(r.events) ?? r.updatedAt;
+    const limited = r.outcomeReason !== 'ROLE_FILLED';
+    const courses = limited ? await this.recommendedCourses(r.roleId, await this.gapsOf(r), r.userId, rejectedAt) : [];
+    const state = reapplyState(
+      rejectedAt,
+      new Date(),
+      courses.some((c) => c.completed),
+    );
     return {
       reason: r.outcomeReason,
       feedback: r.outcomeFeedback,
-      courses: r.outcomeReason === 'ROLE_FILLED' ? [] : await this.recommendedCourses(r.roleId, missing),
+      courses,
       projects: await this.similarProjects(r.roleId, r.projectId),
+      reapply: limited
+        ? { allowed: state.allowed, availableAt: state.availableAt.toISOString(), viaCourse: state.viaCourse }
+        : null,
     };
   }
 

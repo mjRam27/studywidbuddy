@@ -693,6 +693,9 @@ model CandidateEvaluation {
   recommendedRoleId   String?  @db.Uuid
   strengths           String[]
   areasToImprove      String[]
+  /// Required skills of the role the interview showed weak or no evidence for (exact skill names).
+  /// Course recommendations after a rejection are based on these only.
+  skillGaps           String[] @default([])
   summary             String
   aiModel             String
   createdAt           DateTime @default(now())

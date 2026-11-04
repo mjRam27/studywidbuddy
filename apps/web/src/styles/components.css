@@ -1035,6 +1035,13 @@
 .banner.danger > .ms {
   color: var(--danger);
 }
+.banner.ok {
+  border-color: var(--success-line, var(--line));
+  background: var(--success-soft);
+}
+.banner.ok > .ms {
+  color: var(--success);
+}
 .banner > .ms {
   color: var(--brand);
 }

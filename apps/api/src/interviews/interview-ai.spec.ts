@@ -64,6 +64,30 @@ describe('interview prompts', () => {
     expect(p.system).toContain('You MUST choose CLOSE now.');
     expect(p.system).toContain('You may NOT follow up now');
   });
+
+  it('pitches questions at the project’s level (difficulty arrives lowercase)', () => {
+    const beginner = { ...ctx, project: { ...ctx.project, difficulty: 'beginner' } };
+    expect(interviewPlanPrompt(beginner).system).toContain('ENTRY-LEVEL project');
+    expect(interviewPlanPrompt(beginner).system).not.toContain('ADVANCED project');
+    expect(interviewPlanPrompt(ctx).system).toContain('INTERMEDIATE project');
+  });
+
+  it('offers one hint when the candidate is stuck, if a follow-up is allowed', () => {
+    const plan = { opening: 'Hi', topics: [{ kind: 'TECHNICAL' as const, focus: 'f', question: 'q?' }] };
+    const opts = { remainingTopics: [0], mustClose: false };
+    expect(interviewTurnPrompt(ctx, plan, [], { ...opts, followUpAllowed: true }).system).toContain(
+      'simpler version of the same question or a small hint',
+    );
+    expect(interviewTurnPrompt(ctx, plan, [], { ...opts, followUpAllowed: false }).system).toContain(
+      'choose NEXT_TOPIC',
+    );
+  });
+
+  it('credits honest partial answers and asks for skill gaps by exact name', () => {
+    const p = evaluationPrompt(ctx, [{ position: 1, kind: 'TECHNICAL', focus: 'x', prompt: 'q', answer: 'a' }]);
+    expect(p.system).toContain('Honest partial answers count');
+    expect(p.system).toContain('skillGaps');
+  });
 });
 
 describe('AI output schemas', () => {
@@ -74,6 +98,7 @@ describe('AI output schemas', () => {
     projectFitScore: 90,
     strengths: ['Clear'],
     areasToImprove: ['Depth'],
+    skillGaps: [],
     recommendedRoleKey: null,
     summary: 'You did well overall on this interview.',
   };

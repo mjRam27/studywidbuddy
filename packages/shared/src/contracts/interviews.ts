@@ -16,6 +16,11 @@ export type InterviewQuestionKind =
 /** ATS thresholds: CV ≥ 80 earns an interview; interview ≥ 60 earns a seat. */
 export const CV_PASS_SCORE = 80;
 export const INTERVIEW_PASS_SCORE = 60;
+/**
+ * After a CV or interview rejection, the same project opens again after this many days, or
+ * sooner once the candidate completes one of the recommended courses.
+ */
+export const REAPPLY_COOLDOWN_DAYS = 7;
 export const CV_MAX_BYTES = 5 * 1024 * 1024;
 /** Entry-level (BEGINNER) projects skip CV matching: apply, then go straight to the voice interview. */
 export const cvRequiredFor = (difficulty: string) => difficulty !== 'BEGINNER';

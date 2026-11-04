@@ -42,13 +42,14 @@ const plan = () => ({
   ],
 });
 
-const evaluation = (score: number) => ({
+const evaluation = (score: number, skillGaps: string[] = []) => ({
   technicalScore: score,
   problemSolvingScore: score,
   communicationScore: score,
   projectFitScore: score,
   strengths: ['Clear explanation of module boundaries'],
   areasToImprove: ['Go deeper on indexing trade-offs'],
+  skillGaps,
   recommendedRoleKey: null,
   summary: 'You explained your design choices clearly and reasoned well about concurrency.',
 });
@@ -60,6 +61,8 @@ describe('CV screening + voice interview (e2e)', () => {
   const ai = new ScriptedAiProvider();
   let project: Awaited<ReturnType<typeof createProject>>;
   let backendRoleId: string;
+  let skills: { pg: string; nest: string };
+  let pgCourseId: string;
   let admin: TestUser;
 
   beforeAll(async () => {
@@ -70,13 +73,14 @@ describe('CV screening + voice interview (e2e)', () => {
     // Give the role required skills, and the catalogue a course that teaches one of them.
     const pg = await h.prisma.skill.create({ data: { slug: uniq('pg-'), name: 'PostgreSQL', category: 'BACKEND' } });
     const nest = await h.prisma.skill.create({ data: { slug: uniq('nest-'), name: 'NestJS', category: 'BACKEND' } });
+    skills = { pg: pg.id, nest: nest.id };
     await h.prisma.projectRequiredSkill.createMany({
       data: [
         { roleId: backendRoleId, skillId: pg.id, minLevel: 'INTERMEDIATE' },
         { roleId: backendRoleId, skillId: nest.id, minLevel: 'INTERMEDIATE' },
       ],
     });
-    await h.prisma.course.create({
+    const pgCourse = await h.prisma.course.create({
       data: {
         slug: uniq('pg-course-'),
         title: 'PostgreSQL for Developers',
@@ -89,6 +93,7 @@ describe('CV screening + voice interview (e2e)', () => {
         skills: { create: [{ skillId: pg.id }] },
       },
     });
+    pgCourseId = pgCourse.id;
     admin = await registerUser(h, { verified: true });
     await h.prisma.user.update({ where: { id: admin.id }, data: { role: 'ADMIN' } });
     admin.token = (
@@ -117,14 +122,14 @@ describe('CV screening + voice interview (e2e)', () => {
   }
 
   /** Books "now", joins, and answers every question; turns fall back to the plan (cheapest path). */
-  async function quickInterview(u: TestUser, applicationId: string, score: number) {
+  async function quickInterview(u: TestUser, applicationId: string, score: number, gaps: string[] = []) {
     const v = (await app(u, applicationId)).body;
     const id = v.interview.id as string;
     await h.http().post(`/api/v1/interviews/${id}/schedule`).set(bearer(u)).send({ at: 'now' }).expect(200);
     ai.push(plan());
     let live = (await h.http().post(`/api/v1/interviews/${id}/start`).set(bearer(u)).expect(200)).body;
     let current = live.current;
-    ai.push(unavailable(), unavailable(), unavailable(), unavailable(), evaluation(score));
+    ai.push(unavailable(), unavailable(), unavailable(), unavailable(), evaluation(score, gaps));
     for (;;) {
       const r = await h
         .http()
@@ -308,6 +313,60 @@ describe('CV screening + voice interview (e2e)', () => {
       availabilityHoursPerWeek: 10,
     }).expect(409);
     expect(refused.body.error.code).toBe(ErrorCode.ROLE_FILLED);
+  }, 60_000);
+
+  it('after an interview rejection: courses for the gaps found only; reapply after 7 days or a finished course', async () => {
+    const beginner = await createProject(h.prisma, { difficulty: 'BEGINNER' });
+    const role = beginner.roles[0];
+    await h.prisma.projectRequiredSkill.createMany({
+      data: [
+        { roleId: role.id, skillId: skills.pg, minLevel: 'BEGINNER' },
+        { roleId: role.id, skillId: skills.nest, minLevel: 'BEGINNER' },
+      ],
+    });
+    const u = await registerUser(h, { verified: true });
+    const body = {
+      roleId: role.id,
+      motivation: 'I am new to backend work and want my first real team project to learn from.',
+      availabilityHoursPerWeek: 6,
+    };
+    const res = await applyWith(h, u, beginner.id, body, null).expect(201);
+    // The evaluator names a real gap (any case) and an invented skill, which is dropped.
+    await quickInterview(u, res.body.id, 30, ['postgresql', 'Kubernetes']);
+    const rejected = await until(u, res.body.id, (b) => b.status === 'REJECTED');
+    const evalRow = await h.prisma.candidateEvaluation.findFirstOrThrow({
+      where: { session: { applicationId: res.body.id } },
+    });
+    expect(evalRow.skillGaps).toEqual(['PostgreSQL']);
+    // Only the gap's course is suggested (NestJS was a required skill but not a gap).
+    expect(rejected.outcome).toMatchObject({
+      reason: 'INTERVIEW_BELOW_THRESHOLD',
+      courses: [{ title: 'PostgreSQL for Developers', reason: 'Teaches PostgreSQL', completed: false }],
+      reapply: { allowed: false, viaCourse: false },
+    });
+    const availableAt = new Date((rejected.outcome as { reapply: { availableAt: string } }).reapply.availableAt);
+    expect(Math.round((availableAt.getTime() - Date.now()) / 86_400_000)).toBe(7);
+
+    // Too soon: refused with when, and which course unlocks it early.
+    const locked = await applyWith(h, u, beginner.id, body, null).expect(409);
+    expect(locked.body.error).toMatchObject({
+      code: ErrorCode.REAPPLY_LOCKED,
+      details: { courses: [expect.objectContaining({ title: 'PostgreSQL for Developers' })] },
+    });
+
+    // Completing the recommended course unlocks it straight away.
+    await h.prisma.enrollment.create({
+      data: { userId: u.id, courseId: pgCourseId, level: 'BEGINNER', status: 'COMPLETED', completedAt: new Date() },
+    });
+    const unlocked = await app(u, res.body.id);
+    expect(unlocked.body.outcome).toMatchObject({
+      courses: [expect.objectContaining({ completed: true })],
+      reapply: { allowed: true, viaCourse: true },
+    });
+    const again = await applyWith(h, u, beginner.id, body, null).expect(201);
+    expect(again.body.status).toBe('INTERVIEW_PENDING');
+    // Still only one live application per project.
+    await applyWith(h, u, beginner.id, body, null).expect(409);
   }, 60_000);
 
   it('lets a failed CV screening be retried', async () => {

@@ -245,14 +245,42 @@ const REASON: Record<string, { title: string; icon: string }> = {
                 @if (o.feedback) {
                   <p class="sm" style="line-height:1.6">{{ o.feedback }}</p>
                 }
+                @if (o.reapply; as r) {
+                  @if (r.allowed) {
+                    <div class="banner ok" role="status">
+                      <i class="ms" aria-hidden="true">lock_open</i>
+                      <span class="grow">{{
+                        r.viaCourse
+                          ? 'You finished a recommended course, so you can apply to this project again now.'
+                          : 'You can apply to this project again.'
+                      }}</span>
+                      <a class="btn btn-primary xs" [routerLink]="['/projects', a.project.slug, 'apply']"
+                        >Apply again</a
+                      >
+                    </div>
+                  } @else {
+                    <div class="banner" role="status">
+                      <i class="ms" aria-hidden="true">schedule</i>
+                      <span
+                        >You can apply to this project again on <b>{{ longDate(r.availableAt) }}</b
+                        >{{
+                          o.courses.length ? ', or right away once you complete one of the courses below.' : '.'
+                        }}</span
+                      >
+                    </div>
+                  }
+                }
                 @if (o.courses.length) {
-                  <span class="section-label">COURSES THAT COVER WHAT WAS MISSING</span>
+                  <span class="section-label">COURSES FOR THE GAPS IN YOUR INTERVIEW</span>
                   @for (c of o.courses; track c.slug) {
                     <a class="next-row" [routerLink]="['/learn/courses', c.slug]">
-                      <i class="ms" aria-hidden="true">school</i>
+                      <i class="ms" aria-hidden="true">{{ c.completed ? 'task_alt' : 'school' }}</i>
                       <span class="grow"
                         ><b>{{ c.title }}</b> <span class="faint">· {{ c.reason }}</span></span
                       >
+                      @if (c.completed) {
+                        <span class="status ok"><i class="ms" aria-hidden="true">check_circle</i>Completed</span>
+                      }
                       <i class="ms" aria-hidden="true">chevron_right</i>
                     </a>
                   }
