@@ -4,13 +4,14 @@ import { Throttle } from '@nestjs/throttler';
 import { IsInt, IsOptional, IsString, Matches, Max, MaxLength, Min } from 'class-validator';
 import { INTERVIEW_ANSWER_MAX } from '@studywidbuddy/shared';
 import type {
+  ApplicationView,
   InterviewSlots,
   InterviewTurnRequest,
   InterviewTurnResponse,
   InterviewView,
   ScheduleInterviewRequest,
 } from '@studywidbuddy/shared';
-import { AuthUser, CurrentUser } from '../common/auth/auth-user';
+import { AuthUser, CurrentUser, Roles } from '../common/auth/auth-user';
 import { InterviewsService } from './interviews.service';
 
 class ScheduleDto implements ScheduleInterviewRequest {
@@ -49,6 +50,14 @@ export class InterviewsController {
     @Param('id', ParseUUIDPipe) applicationId: string,
   ): Promise<InterviewView> {
     return this.interviews.viewByApplication(user, applicationId);
+  }
+
+  @Post('applications/:id/skip-to-team')
+  @HttpCode(200)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Admin testing: skip the CV screen and interview and take a seat (own application)' })
+  skipToTeam(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string): Promise<ApplicationView> {
+    return this.interviews.skipToTeam(user, id);
   }
 
   @Get('interviews/:id')

@@ -14,3 +14,4 @@ export * from './contracts/study';
 export * from './contracts/chat';
 export * from './contracts/pm';
 export * from './contracts/github';
+export * from './contracts/jobs';

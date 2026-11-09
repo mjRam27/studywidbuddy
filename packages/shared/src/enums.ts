@@ -100,6 +100,9 @@ export type ApplicationOutcomeReason = keyof typeof ApplicationOutcomeReason;
 export const CvScreeningStatus = values('PENDING', 'DONE', 'FAILED');
 export type CvScreeningStatus = keyof typeof CvScreeningStatus;
 
+export const JobSource = values('ARBEITNOW', 'REMOTIVE', 'ADZUNA');
+export type JobSource = keyof typeof JobSource;
+
 export const LEVEL_LABEL: Record<SkillLevel, string> = {
   BEGINNER: 'Beginner',
   INTERMEDIATE: 'Intermediate',

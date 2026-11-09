@@ -18,6 +18,7 @@ import {
   type AssessmentView,
 } from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
+import { AuthService } from '../../core/auth.service';
 import { toApiError } from '../../core/api-error';
 import { Speech } from '../../core/speech';
 import { ToastService } from '../../core/toast.service';
@@ -45,17 +46,19 @@ import { StudyStore } from './study.store';
           you’ve finished. The AI reads each question and listens to your answer; you can also type. You get a report
           straight after, and it stays under this course.
         </p>
-        @if (store.doneCount() < minLessons) {
+        @if (store.doneCount() < minLessons()) {
           <div class="banner" style="font-size:12.5px">
-            <i class="ms" aria-hidden="true">info</i>Finish at least {{ minLessons }} lessons first, so there’s
-            something to ask you about.
+            <i class="ms" aria-hidden="true">info</i>Finish at least {{ minLessons() }} lesson{{
+              minLessons() === 1 ? '' : 's'
+            }}
+            first, so there’s something to ask you about.
           </div>
         }
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <button
             type="button"
             class="btn btn-primary"
-            [disabled]="busy() || store.doneCount() < minLessons"
+            [disabled]="busy() || store.doneCount() < minLessons()"
             (click)="start()"
           >
             <i class="ms" aria-hidden="true">record_voice_over</i>Start voice check
@@ -316,7 +319,9 @@ export class VoiceCheckComponent {
   readonly busy = signal(false);
   readonly voiceMode = signal(this.speech.canSpeak);
   readonly count = ASSESSMENT_QUESTION_COUNT;
-  readonly minLessons = ASSESSMENT_MIN_LESSONS;
+  private readonly auth = inject(AuthService);
+  /** Admins (testing) can start after one lesson. */
+  readonly minLessons = computed(() => (this.auth.user()?.role === 'ADMIN' ? 1 : ASSESSMENT_MIN_LESSONS));
   readonly maxAnswer = ASSESSMENT_ANSWER_MAX;
   private draftVoice = false;
   private timer: ReturnType<typeof setTimeout> | undefined;

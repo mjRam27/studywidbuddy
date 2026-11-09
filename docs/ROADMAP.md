@@ -13,7 +13,7 @@ Status key: ✅ done · 🟡 in progress · ⬜ not started · 🔒 needs creden
 | 7   | Sandbox                   | 🔒     |
 | 8   | Learning                  | 🟡     |
 | 9   | Realtime collaboration    | 🟡     |
-| 10  | Social / career           | ⬜     |
+| 10  | Social / career           | 🟡     |
 | —   | Final integration         | ⬜     |
 
 ## Milestone 1 — Foundation ✅
@@ -59,14 +59,16 @@ Exit criteria met: application → interview → answer → submit → evaluatio
 
 ## Milestone 2b — CV screening + voice interview ✅
 
-| Item                                                                                                          | Status | Notes                                                                     |
-| ------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
-| CV upload (PDF) on every application; AI ATS score computed by code; ≥ 80 unlocks the interview               | ✅     | Claude reads the PDF directly                                             |
-| Booking: "Start now" or hourly slots for 5 days in the candidate's timezone (handles +05:30)                  | ✅     | Booking email                                                             |
-| Live voice interview: introduction, planned topics, model-chosen follow-ups bounded by code rules             | ✅     | Voice only (no text box); tab switches and timings recorded for reviewers |
-| Evaluation ≥ 60 → instant seat, first come first served; full role closes, others pointed to similar projects | ✅     | Row lock on the role; project starts when every role is full              |
-| Below threshold → feedback + real catalogue courses for the missing skills                                    | ✅     |                                                                           |
-| Robust structured output (clamp to schema limits, retry real failures)                                        | ✅     | Found by a real-model smoke test                                          |
+| Item                                                                                                            | Status | Notes                                                                     |
+| --------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
+| CV upload (PDF) on every application; AI ATS score computed by code; ≥ 80 unlocks the interview                 | ✅     | Claude reads the PDF directly                                             |
+| Booking: "Start now" or hourly slots for 5 days in the candidate's timezone (handles +05:30)                    | ✅     | Booking email                                                             |
+| Live voice interview: introduction, planned topics, model-chosen follow-ups bounded by code rules               | ✅     | Voice only (no text box); tab switches and timings recorded for reviewers |
+| Evaluation ≥ 60 → instant seat, first come first served; full role closes, others pointed to similar projects   | ✅     | Row lock on the role; project starts when every role is full              |
+| Below threshold → feedback + real catalogue courses for the missing skills                                      | ✅     |                                                                           |
+| Robust structured output (clamp to schema limits, retry real failures)                                          | ✅     | Found by a real-model smoke test                                          |
+| Below threshold → courses only for the gaps found; reapply after 7 days or after finishing one of those courses | ✅     | `applications/reapply.ts`; interview questions matched to project level   |
+| Admin testing bypass (`common/auth/super-user.ts`)                                                              | ✅     | See SECURITY.md                                                           |
 
 ## Milestone 3 — Team selection ✅
 
@@ -122,7 +124,7 @@ See `docs/GITHUB.md`.
 | Signed, idempotent webhooks; PR ↔ task linking from `TASK-n`; In progress → Review on PR; Done on merge with green CI | ✅     | Stale CI results ignored                                           |
 | "Done" blocked while a linked PR's checks fail or run                                                                 | ✅     | `CHECKS_NOT_PASSING`                                               |
 | Workspace GitHub tab: repo, access, PRs with CI status                                                                | ✅     | Live via sockets                                                   |
-| AI code review on pull requests                                                                                       | ⬜     | Next                                                               |
+| AI code review on pull requests (LangGraph pipeline, one COMMENT review per commit, inline findings, re-run)          | ✅     | `src/github/review/`; see GITHUB.md                                |
 | Platform acceptance tests in the sandbox, reported as a check                                                         | ⬜     | Local Docker sandbox first (no cost)                               |
 | Publish repo at project end (with all members' consent)                                                               | ⬜     |                                                                    |
 
@@ -151,6 +153,19 @@ See `docs/REALTIME.md`.
 | Live meeting / AI PM updates over sockets                                     | ✅     | Polling fallback                       |
 | Direct messages, Study Buddy chat                                             | ⬜     | Need connections (M10) / matching (M8) |
 | Live video calls (group)                                                      | 🔒     | Needs an SFU choice (LiveKit)          |
+
+## Milestone 10 — Jobs for your skills 🟡
+
+| Item                                                                                                           | Status | Notes                                                                                         |
+| -------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------- |
+| Listings from official public job-board APIs, refreshed every `JOBS_SYNC_HOURS` (BullMQ scheduler)             | ✅     | Arbeitnow (no key); Adzuna when `ADZUNA_APP_ID/KEY` are set (India via `ADZUNA_COUNTRIES=in`) |
+| No scraping; Remotive not used (its terms forbid showing jobs behind a signup)                                 | ✅     | See `src/jobs/job-feeds.ts`                                                                   |
+| Skills tagged by code from title, tags and description (aliases, whole words, careful "Go"/languages)          | ✅     | No model cost; non-tech listings skipped                                                      |
+| Cross-source dedupe; stale listings hidden; a failing source never hides its listings                          | ✅     |                                                                                               |
+| Match per viewer: proven skills count fully, claimed 60%; gaps named; courses for the gaps                     | ✅     | `job-skills.ts` (unit tested)                                                                 |
+| Jobs page (matched / all / remote / search) and job detail with match explanation; Apply links to the original | ✅     | Source credited on every listing                                                              |
+| Admin "Sync now"                                                                                               | ✅     | `POST /admin/jobs/sync`                                                                       |
+| Learning → project → job recommendations on Home                                                               | ⬜     |                                                                                               |
 
 ## Later milestones
 

@@ -13,6 +13,7 @@ import { CV_MAX_BYTES, CV_PASS_SCORE, ErrorCode } from '@studywidbuddy/shared';
 import type { ApplicationOutcomeView, ApplicationView, CvScreeningView } from '@studywidbuddy/shared';
 import type { Queue } from 'bullmq';
 import { AuthUser } from '../common/auth/auth-user';
+import { isSuperUser } from '../common/auth/super-user';
 import { conflict, DomainError, forbidden, notFound } from '../common/errors/domain-error';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { ATS_WEIGHTS } from '../interviews/scoring';
@@ -46,6 +47,7 @@ const viewInclude = {
     },
   },
   member: { select: { status: true } },
+  user: { select: { role: true } },
 } satisfies Prisma.ProjectApplicationInclude;
 
 type ApplicationRow = Prisma.ProjectApplicationGetPayload<{ include: typeof viewInclude }>;
@@ -69,7 +71,8 @@ export class ApplicationsService {
 
   /**
    * Apply with a CV. The CV is screened by the AI ATS in the background: ≥ 80 earns a voice
-   * interview, anything lower ends with feedback and course suggestions.
+   * interview, anything lower ends with feedback and course suggestions. Admins skip the entry
+   * gates (deadline, full roles, reapply cooldown, CV) to test every flow.
    */
   async apply(
     userId: string,
@@ -77,9 +80,13 @@ export class ApplicationsService {
     dto: CreateApplicationDto,
     cv: UploadedCv | undefined,
   ): Promise<ApplicationView> {
-    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { emailVerifiedAt: true } });
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { emailVerifiedAt: true, role: true },
+    });
+    const su = isSuperUser(user);
     // Applications start paid AI work, so we want a reachable, verified address first.
-    if (!user.emailVerifiedAt) {
+    if (!user.emailVerifiedAt && !su) {
       throw new DomainError(ErrorCode.FORBIDDEN, 'Confirm your email address before applying.', HttpStatus.FORBIDDEN);
     }
     const project = await this.prisma.project.findUnique({
@@ -93,14 +100,15 @@ export class ApplicationsService {
       },
     });
     if (!project) throw notFound('Project');
-    if (project.status !== ProjectStatus.OPEN) {
+    const recruiting: ProjectStatus[] = su ? [ProjectStatus.OPEN, ProjectStatus.IN_PROGRESS] : [ProjectStatus.OPEN];
+    if (!recruiting.includes(project.status)) {
       throw new DomainError(
         ErrorCode.PROJECT_NOT_OPEN,
         'This project isn’t accepting applications.',
         HttpStatus.CONFLICT,
       );
     }
-    if (project.applicationDeadline && project.applicationDeadline <= new Date()) {
+    if (!su && project.applicationDeadline && project.applicationDeadline <= new Date()) {
       throw new DomainError(
         ErrorCode.PROJECT_NOT_OPEN,
         'Applications for this project have closed.',
@@ -115,16 +123,17 @@ export class ApplicationsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if ((await this.seatsTaken(this.prisma, role.id)) >= role.seats) {
+    if (!su && (await this.seatsTaken(this.prisma, role.id)) >= role.seats) {
       throw new DomainError(ErrorCode.ROLE_FILLED, 'This role is already filled.', HttpStatus.CONFLICT, {
         projects: await this.similarProjects(dto.roleId, projectId),
       });
     }
-    await this.assertMayReapply(userId, projectId);
+    if (!su) await this.assertMayReapply(userId, projectId);
 
     // Entry-level projects skip CV matching: the voice interview alone decides. A CV is
-    // optional there (kept for the team, not scored); everywhere else it's required.
-    const entryLevel = project.difficulty === 'BEGINNER';
+    // optional there (kept for the team, not scored); everywhere else it's required, except
+    // for admins, who go straight to the interview when they attach none.
+    const entryLevel = project.difficulty === 'BEGINNER' || (su && !cv?.size);
     const file = entryLevel && !cv?.size ? null : this.checkCv(cv);
     const now = Date.now();
 
@@ -471,7 +480,11 @@ export class ApplicationsService {
       courses,
       projects: await this.similarProjects(r.roleId, r.projectId),
       reapply: limited
-        ? { allowed: state.allowed, availableAt: state.availableAt.toISOString(), viaCourse: state.viaCourse }
+        ? {
+            allowed: state.allowed || isSuperUser(r.user),
+            availableAt: state.availableAt.toISOString(),
+            viaCourse: state.viaCourse,
+          }
         : null,
     };
   }

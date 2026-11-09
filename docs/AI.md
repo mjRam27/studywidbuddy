@@ -24,10 +24,10 @@ Configuration (`apps/api/.env`): `AI_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=…
 
 Each request names a tier (`AiRequest.tier`):
 
-| Tier              | Model (default)                      | Used for                                                                                                                       |
-| ----------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `fast`            | `claude-haiku-5-5` (`AI_MODEL_FAST`) | AI Buddy chat and voice answers, voice-check questions, check-in questions                                                     |
-| `smart` (default) | `claude-opus-5-5` (`AI_MODEL`)       | Interview questions and evaluation, voice-check reports, meeting summaries, final-review questions, agent runs, plan proposals |
+| Tier              | Model (default)                      | Used for                                                                                                                                                   |
+| ----------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fast`            | `claude-haiku-5-5` (`AI_MODEL_FAST`) | AI Buddy chat and voice answers, voice-check questions, check-in questions                                                                                 |
+| `smart` (default) | `claude-opus-5-5` (`AI_MODEL`)       | Interview questions and evaluation, voice-check reports, meeting summaries, final-review questions, agent runs, plan proposals, PR code review (per chunk) |
 
 The rule: high volume and conversational goes to `fast`; anything that judges a person or changes project state goes to `smart`. `effort` only applies to the smart tier.
 

@@ -411,4 +411,67 @@ describe('CV screening + voice interview (e2e)', () => {
     await new Promise((r) => setTimeout(r, 300));
     expect(ai.calls.length).toBe(callsBefore);
   });
+  it('admins (testing) skip the entry gates but are still scored honestly', async () => {
+    // A closed project whose backend role is already full.
+    const closed = await createProject(h.prisma, {
+      difficulty: 'INTERMEDIATE',
+      deadline: new Date(Date.now() - 86_400_000),
+    });
+    const roleId = closed.roles.find((r) => r.key === 'backend')!.id;
+    const team = await h.prisma.team.create({ data: { projectId: closed.id } });
+    for (let i = 0; i < 2; i++) {
+      const other = await registerUser(h, { verified: true });
+      const seat = await h.prisma.projectApplication.create({
+        data: {
+          projectId: closed.id,
+          roleId,
+          userId: other.id,
+          motivation: 'Already on the team.',
+          availabilityHoursPerWeek: 5,
+          status: 'SELECTED',
+        },
+      });
+      await h.prisma.teamMember.create({
+        data: { teamId: team.id, userId: other.id, roleId, applicationId: seat.id, status: 'ACTIVE' },
+      });
+    }
+    const body = {
+      roleId,
+      motivation: 'Testing every flow of the platform as an administrator, end to end.',
+      availabilityHoursPerWeek: 5,
+    };
+    // A normal user is turned away; the admin gets in without a CV, straight to the interview.
+    const user = await registerUser(h, { verified: true });
+    await applyWith(h, user, closed.id, body).expect(409);
+    const first = (await applyWith(h, admin, closed.id, body, null).expect(201)).body;
+    expect(first).toMatchObject({ status: 'INTERVIEW_PENDING', cv: null, screening: null });
+
+    // Failing the interview is real; reapplying right away is allowed.
+    await quickInterview(admin, first.id, 30, ['PostgreSQL']);
+    const rejected = (await app(admin, first.id)).body;
+    expect(rejected).toMatchObject({ status: 'REJECTED', outcome: { reason: 'INTERVIEW_BELOW_THRESHOLD' } });
+    expect(rejected.outcome.reapply.allowed).toBe(true);
+
+    // With a weak CV the admin is still invited, and the email says why.
+    ai.push(cvScreen(40));
+    const second = (await applyWith(h, admin, closed.id, body).expect(201)).body;
+    const invited = await until(admin, second.id, (b) => (b.screening as { status: string }).status === 'DONE');
+    expect(invited).toMatchObject({ status: 'INTERVIEW_PENDING', screening: { atsScore: 40 } });
+    expect(h.mailer.sent.at(-1)!.text).toContain('Admin bypass');
+
+    // Skip to team takes a seat even though the role is full; others can't use it.
+    await h.http().post(`/api/v1/applications/${second.id}/skip-to-team`).set(bearer(user)).expect(403);
+    const seated = (
+      await h.http().post(`/api/v1/applications/${second.id}/skip-to-team`).set(bearer(admin)).expect(200)
+    ).body;
+    expect(seated).toMatchObject({ status: 'SELECTED', seat: { roleTitle: 'Backend Developer' } });
+    expect(await h.prisma.teamMember.count({ where: { roleId, status: 'ACTIVE' } })).toBe(3);
+    expect(seated.history.map((x: { status: string }) => x.status)).toEqual([
+      'SUBMITTED',
+      'INTERVIEW_PENDING',
+      'INTERVIEW_IN_PROGRESS',
+      'UNDER_REVIEW',
+      'SELECTED',
+    ]);
+  });
 });

@@ -155,7 +155,7 @@ import { projectStatus, seatArray } from './project-status';
                 >{{ statusOf(a.status).label }}
               </span>
               <a class="btn btn-primary lg block" [routerLink]="['/applications', a.id]">View application</a>
-            } @else if (p.status !== 'OPEN') {
+            } @else if (p.status !== 'OPEN' && !(isAdmin() && p.status === 'IN_PROGRESS')) {
               <span class="panel-title" id="apply-h">Not recruiting</span>
               <p class="muted sm">
                 This team is already {{ p.status === 'IN_PROGRESS' ? 'building' : 'finished' }}. Browse projects that
@@ -181,7 +181,7 @@ import { projectStatus, seatArray } from './project-status';
                   </div>
                 }
               </div>
-              @if (!auth.user()?.emailVerified) {
+              @if (!canApply()) {
                 <div class="banner warn" style="font-size:12.5px;flex-wrap:wrap">
                   <i class="ms" aria-hidden="true">mark_email_unread</i>
                   <span class="grow">Confirm your email before applying. Interviews are limited per person.</span>
@@ -192,9 +192,9 @@ import { projectStatus, seatArray } from './project-status';
               }
               <a
                 class="btn btn-primary lg block"
-                [class.disabled]="!auth.user()?.emailVerified"
-                [attr.aria-disabled]="!auth.user()?.emailVerified"
-                [routerLink]="auth.user()?.emailVerified ? ['/projects', p.slug, 'apply'] : null"
+                [class.disabled]="!canApply()"
+                [attr.aria-disabled]="!canApply()"
+                [routerLink]="canApply() ? ['/projects', p.slug, 'apply'] : null"
               >
                 Apply<i class="ms" aria-hidden="true">arrow_forward</i>
               </a>
@@ -208,6 +208,9 @@ import { projectStatus, seatArray } from './project-status';
 })
 export class ProjectDetailPage {
   readonly auth = inject(AuthService);
+  readonly isAdmin = computed(() => this.auth.user()?.role === 'ADMIN');
+  /** Admins (testing) skip email verification, deadlines and full roles. */
+  readonly canApply = computed(() => !!this.auth.user()?.emailVerified || this.isAdmin());
   private readonly api = inject(Api);
   private readonly toast = inject(ToastService);
 

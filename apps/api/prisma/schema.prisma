@@ -158,6 +158,7 @@ model Skill {
   courses          CourseSkill[]
   projectStack     ProjectTechnology[]
   roleRequirements ProjectRequiredSkill[]
+  jobs             JobSkill[]
 
   @@index([name])
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin, map: "Skill_name_trgm")
@@ -1367,4 +1368,55 @@ model GithubDelivery {
   receivedAt  DateTime  @default(now())
   processedAt DateTime?
   error       String?
+}
+
+// ───────── Jobs (M10) ─────────
+
+/// Where a job listing came from. Only official, public job-board APIs (no scraping).
+enum JobSource {
+  ARBEITNOW
+  REMOTIVE
+  ADZUNA
+}
+
+/// A job listing fetched from a public job-board API. Apply always links to the original posting.
+model JobPosting {
+  id          String    @id @default(uuid()) @db.Uuid
+  source      JobSource
+  externalId  String
+  /// Same company + title + location across sources: the first source wins.
+  dedupeKey   String
+  url         String
+  title       String
+  company     String
+  location    String
+  remote      Boolean   @default(false)
+  employment  String?
+  /// Plain text (HTML stripped), truncated.
+  description String
+  tags        String[]  @default([])
+  postedAt    DateTime
+  fetchedAt   DateTime  @default(now())
+  /// Listings that drop out of the feed are kept for a while but hidden.
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  skills JobSkill[]
+
+  @@unique([source, externalId])
+  @@index([dedupeKey])
+  @@index([active, postedAt])
+}
+
+/// Catalogue skills detected in a listing (by code, from the title, tags and description).
+model JobSkill {
+  jobId   String @db.Uuid
+  skillId String @db.Uuid
+
+  job   JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill      @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([jobId, skillId])
+  @@index([skillId])
 }

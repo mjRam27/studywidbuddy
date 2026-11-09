@@ -10,6 +10,7 @@ import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { checksGate, positionBetween, TASK_TRANSITIONS } from '../tasks/task-rules';
 import { taskKey } from '../tasks/tasks.service';
 import { GITHUB_UPDATED } from './github.service';
+import { ReviewService } from './review/review.service';
 
 /** Verifies X-Hub-Signature-256 against the exact raw body GitHub sent. */
 export function verifySignature(secret: string, rawBody: Buffer, header: string | undefined): boolean {
@@ -41,6 +42,8 @@ export function checksFrom(status: string | null, conclusion: string | null): Ch
       return null;
   }
 }
+
+const REVIEW_ACTIONS = ['opened', 'reopened', 'synchronize', 'ready_for_review'];
 
 interface PrPayload {
   number: number;
@@ -93,6 +96,7 @@ export class WebhookService {
     private readonly activity: ActivityService,
     private readonly chat: ChatService,
     private readonly realtime: RealtimeGateway,
+    private readonly reviews: ReviewService,
     @Inject(ENV) private readonly env: Env,
   ) {}
 
@@ -178,7 +182,7 @@ export class WebhookService {
       where: { projectId_number: { projectId, number: pr.number } },
     });
     const newCommits = action === 'synchronize' || (before && before.headSha !== pr.head.sha);
-    await this.prisma.pullRequest.upsert({
+    const saved = await this.prisma.pullRequest.upsert({
       where: { projectId_number: { projectId, number: pr.number } },
       create: {
         projectId,
@@ -234,6 +238,11 @@ export class WebhookService {
     // A ready (non-draft) PR means the work is up for review.
     if (task && state === 'OPEN' && !pr.draft && task.status === 'IN_PROGRESS') {
       await this.systemMove(projectId, task.id, 'REVIEW', `PR #${pr.number} is ready for review`);
+    }
+    // AI review: once per head commit, when a ready PR opens, gets new commits or leaves draft.
+    if (state === 'OPEN' && !pr.draft && REVIEW_ACTIONS.includes(action)) {
+      // Best effort: a queue hiccup must not lose the PR update itself (it can be re-run).
+      await this.reviews.request(saved.id).catch((e: Error) => this.logger.warn(`AI review not queued: ${e.message}`));
     }
     if (action === 'closed' && state === 'MERGED') {
       await this.activity.record({

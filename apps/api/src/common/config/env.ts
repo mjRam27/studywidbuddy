@@ -57,6 +57,23 @@ const EnvSchema = z.object({
   GITHUB_WEBHOOK_PROXY_URL: optional,
   /** Where GitHub's OAuth callback lands; used to send people back to the web app afterwards. */
   API_PUBLIC_URL: z.string().url().default('http://localhost:3000'),
+
+  // Job listings from public job-board APIs (Arbeitnow always; Adzuna when a key is set).
+  /** Hours between refreshes; 0 turns the schedule off (admins can still sync by hand). Off in tests. */
+  JOBS_SYNC_HOURS: z.coerce.number().min(0).max(168).default(6),
+  /** Adzuna (covers India, UK, US …): free keys at developer.adzuna.com. */
+  ADZUNA_APP_ID: optional,
+  ADZUNA_APP_KEY: optional,
+  /** Comma-separated Adzuna country codes, e.g. "in,gb". */
+  ADZUNA_COUNTRIES: z
+    .string()
+    .default('in')
+    .transform((v) =>
+      v
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter((s) => /^[a-z]{2}$/.test(s)),
+    ),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

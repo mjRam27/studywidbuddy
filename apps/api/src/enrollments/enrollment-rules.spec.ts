@@ -1,7 +1,7 @@
 import { EnrollmentStatus } from '@prisma/client';
 import { ErrorCode, MAX_ACTIVE_COURSES } from '@studywidbuddy/shared';
 import { DomainError } from '../common/errors/domain-error';
-import { assertCanComplete, assertCanEnroll, progressPercent } from './enrollment-rules';
+import { assertCanComplete, assertCanEnroll, maxActiveFor, progressPercent } from './enrollment-rules';
 
 const codeOf = (fn: () => void) => {
   try {
@@ -24,6 +24,15 @@ describe('enrollment rules', () => {
       expect(codeOf(() => assertCanEnroll({ activeCount: 4, alreadyActiveInCourse: false }))).toBe(
         ErrorCode.ACTIVE_COURSE_LIMIT_REACHED,
       );
+    });
+
+    it('lets admins (testing) past the limit, always showing one free slot', () => {
+      expect(
+        codeOf(() => assertCanEnroll({ activeCount: 6, alreadyActiveInCourse: false, superUser: true })),
+      ).toBeNull();
+      expect(maxActiveFor(true, 6)).toBe(7);
+      expect(maxActiveFor(true, 1)).toBe(MAX_ACTIVE_COURSES);
+      expect(maxActiveFor(false, 6)).toBe(MAX_ACTIVE_COURSES);
     });
 
     it('reports a duplicate enrollment before the limit', () => {

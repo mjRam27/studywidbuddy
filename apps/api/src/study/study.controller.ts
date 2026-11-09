@@ -39,6 +39,7 @@ import type {
   TutorMessageView,
 } from '@studywidbuddy/shared';
 import { AuthUser, CurrentUser, Roles } from '../common/auth/auth-user';
+import { isSuperUser } from '../common/auth/super-user';
 import { AssessmentsService } from './assessments.service';
 import { StudyService } from './study.service';
 import { TranscriptsService } from './transcripts.service';
@@ -173,7 +174,7 @@ export class StudyController {
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @ApiOperation({ summary: 'Start a voice check on finished lessons (or return the open one)' })
   startAssessment(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string): Promise<AssessmentView> {
-    return this.assessments.start(user.id, id);
+    return this.assessments.start(user.id, id, isSuperUser(user));
   }
 
   @Get('assessments/:id')

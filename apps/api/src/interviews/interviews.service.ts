@@ -11,6 +11,7 @@ import {
 } from '@prisma/client';
 import { CV_PASS_SCORE, ErrorCode, INTERVIEW_PASS_SCORE } from '@studywidbuddy/shared';
 import type {
+  ApplicationView,
   InterviewSlots,
   InterviewTurnRequest,
   InterviewTurnResponse,
@@ -22,8 +23,9 @@ import { ActivityService } from '../activity/activity.service';
 import { AiError, AiProvider } from '../ai/ai-provider';
 import { ApplicationsService, LIVE_STATUSES } from '../applications/applications.service';
 import type { AuthUser } from '../common/auth/auth-user';
+import { isSuperUser } from '../common/auth/super-user';
 import { ENV, type Env } from '../common/config/env';
-import { DomainError, notFound } from '../common/errors/domain-error';
+import { conflict, DomainError, notFound } from '../common/errors/domain-error';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { Mailer } from '../mail/mailer';
 import { INTERVIEW_QUEUE } from '../queue/queue.module';
@@ -100,7 +102,10 @@ export class InterviewsService {
   async screenCv(applicationId: string): Promise<void> {
     const s = await this.prisma.cvScreening.findUnique({
       where: { applicationId },
-      select: { status: true, application: { select: { status: true, roleId: true } } },
+      select: {
+        status: true,
+        application: { select: { status: true, roleId: true, user: { select: { role: true } } } },
+      },
     });
     // Idempotency: a duplicate or late job for a finished screening does nothing.
     if (!s || s.status !== CvScreeningStatus.PENDING || s.application.status !== ApplicationStatus.SUBMITTED) return;
@@ -145,7 +150,9 @@ export class InterviewsService {
       clarityScore: clampScore(v.clarityScore),
     };
     const ats = atsScore(sub);
-    const passed = ats >= CV_PASS_SCORE;
+    // Admins are scored honestly but always invited, so the interview can be tested.
+    const bypassed = ats < CV_PASS_SCORE && isSuperUser(s.application.user);
+    const passed = ats >= CV_PASS_SCORE || bypassed;
 
     const done = await this.prisma.$transaction(async (tx) => {
       const claimed = await tx.cvScreening.updateMany({
@@ -184,9 +191,11 @@ export class InterviewsService {
     await this.notify(
       applicationId,
       passed ? 'You’re invited to a voice interview' : 'Your CV feedback',
-      passed
-        ? `Your CV scored ${ats}/100 for ${ctx.context.role.title} on ${ctx.context.project.title}, above the ${CV_PASS_SCORE} needed. Book your voice interview (start now, or pick a time in the next 5 days):`
-        : `Your CV scored ${ats}/100 for ${ctx.context.role.title} on ${ctx.context.project.title}. ${CV_PASS_SCORE} is needed for an interview. We've written feedback and picked courses that cover what's missing:`,
+      bypassed
+        ? `Your CV scored ${ats}/100 for ${ctx.context.role.title} on ${ctx.context.project.title} (${CV_PASS_SCORE} is needed). Admin bypass: you're invited to the voice interview anyway. Book it here:`
+        : passed
+          ? `Your CV scored ${ats}/100 for ${ctx.context.role.title} on ${ctx.context.project.title}, above the ${CV_PASS_SCORE} needed. Book your voice interview (start now, or pick a time in the next 5 days):`
+          : `Your CV scored ${ats}/100 for ${ctx.context.role.title} on ${ctx.context.project.title}. ${CV_PASS_SCORE} is needed for an interview. We've written feedback and picked courses that cover what's missing:`,
     );
   }
 
@@ -264,7 +273,8 @@ export class InterviewsService {
   async start(user: AuthUser, sessionId: string): Promise<InterviewView> {
     const s = await this.owned(user, sessionId);
     if (s.status === InterviewStatus.LIVE) return this.view(user, sessionId); // reload / second tab
-    if (s.status !== InterviewStatus.SCHEDULED || !canJoin(s.scheduledFor, new Date())) {
+    const joinable = isSuperUser(user) || canJoin(s.scheduledFor, new Date());
+    if (s.status !== InterviewStatus.SCHEDULED || !joinable) {
       throw new DomainError(
         ErrorCode.INTERVIEW_NOT_JOINABLE,
         isMissed(s.scheduledFor, new Date())
@@ -560,11 +570,13 @@ export class InterviewsService {
           roleId: true,
           projectId: true,
           role: { select: { title: true, seats: true } },
+          user: { select: { role: true } },
         },
       });
       await tx.$queryRaw`SELECT 1 FROM "ProjectRole" WHERE "id" = ${app.roleId}::uuid FOR UPDATE`;
       const taken = await this.applications.seatsTaken(tx, app.roleId);
-      if (taken >= app.role.seats) {
+      // Admins (testing) get an extra seat rather than ROLE_FILLED.
+      if (taken >= app.role.seats && !isSuperUser(app.user)) {
         await this.applications.transitionIn(tx, applicationId, ApplicationStatus.REJECTED, null, () => undefined, {
           reason: 'ROLE_FILLED',
           feedback: `You passed, but every ${app.role.title} seat on this project was taken before your interview finished.`,
@@ -597,10 +609,40 @@ export class InterviewsService {
         tx,
       );
 
-      if (taken + 1 >= app.role.seats) await this.closeRole(tx, app.roleId, app.role.title, applicationId);
+      if (taken + 1 === app.role.seats) await this.closeRole(tx, app.roleId, app.role.title, applicationId);
       await this.startProjectIfFull(tx, app.projectId);
       return true;
     });
+  }
+
+  /**
+   * Admin testing shortcut: skip the rest of the pipeline (CV screen, interview) and take a
+   * seat on the team. Only for the admin's own application that is still in progress; the
+   * history records each step with the admin as actor.
+   */
+  async skipToTeam(user: AuthUser, applicationId: string): Promise<ApplicationView> {
+    if (!isSuperUser(user)) throw notFound('Application');
+    const app = await this.prisma.projectApplication.findUnique({
+      where: { id: applicationId },
+      select: { userId: true, status: true },
+    });
+    if (!app || app.userId !== user.id) throw notFound('Application');
+    if (!LIVE_STATUSES.includes(app.status)) {
+      throw conflict(ErrorCode.INVALID_STATUS_TRANSITION, 'Only an application in progress can skip to the team.');
+    }
+    const path: ApplicationStatus[] = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.INTERVIEW_PENDING,
+      ApplicationStatus.INTERVIEW_IN_PROGRESS,
+      ApplicationStatus.UNDER_REVIEW,
+    ];
+    await this.prisma.$transaction(async (tx) => {
+      for (const to of path.slice(path.indexOf(app.status) + 1)) {
+        await this.applications.transitionIn(tx, applicationId, to, user.id, () => undefined);
+      }
+    });
+    await this.assignSeat(applicationId);
+    return this.applications.view(applicationId);
   }
 
   /** The role is full: applications that haven't started their call end as ROLE_FILLED. */
@@ -665,7 +707,7 @@ export class InterviewsService {
   async view(viewer: AuthUser, sessionId: string): Promise<InterviewView> {
     const s = await this.prisma.interviewSession.findUnique({ where: { id: sessionId }, include: viewInclude });
     if (!s || (s.application.userId !== viewer.id && viewer.role !== 'ADMIN')) throw notFound('Interview');
-    return this.toView(s, viewer.role === 'ADMIN');
+    return this.toView(s, viewer.role === 'ADMIN', isSuperUser(viewer) && s.application.userId === viewer.id);
   }
 
   async viewByApplication(viewer: AuthUser, applicationId: string): Promise<InterviewView> {
@@ -681,7 +723,7 @@ export class InterviewsService {
     return { position: q.position, kind: q.kind, focus: q.focus, prompt: q.prompt, answer };
   }
 
-  private toView(s: SessionRow, admin: boolean): InterviewView {
+  private toView(s: SessionRow, admin: boolean, joinAnytime = false): InterviewView {
     const answered = s.questions.filter((q) => q.response);
     const current =
       s.status === InterviewStatus.LIVE ? ([...s.questions].reverse().find((q) => !q.response) ?? null) : null;
@@ -700,7 +742,7 @@ export class InterviewsService {
       scheduledFor: s.scheduledFor?.toISOString() ?? null,
       canJoin:
         s.status === InterviewStatus.LIVE ||
-        (s.status === InterviewStatus.SCHEDULED && canJoin(s.scheduledFor, new Date())),
+        (s.status === InterviewStatus.SCHEDULED && (joinAnytime || canJoin(s.scheduledFor, new Date()))),
       turns: answered.map((q) => this.toTurn(q, q.response!.answer)),
       current: current ? this.toTurn(current, null) : null,
       closingRemark: s.closingRemark,

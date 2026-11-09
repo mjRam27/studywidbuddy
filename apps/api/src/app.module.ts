@@ -18,6 +18,7 @@ import { InterviewsModule } from './interviews/interviews.module';
 import { MailModule } from './mail/mail.module';
 import { PlanningModule } from './planning/planning.module';
 import { GithubModule } from './github/github.module';
+import { JobsModule } from './jobs/jobs.module';
 import { PmModule } from './pm/pm.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { StudyModule } from './study/study.module';
@@ -58,6 +59,7 @@ import { TeamsModule } from './teams/teams.module';
     RealtimeModule,
     PmModule,
     GithubModule,
+    JobsModule,
   ],
   controllers: [HealthController],
   providers: [

@@ -23,6 +23,7 @@ What is in place now, and the rule each piece enforces. Later milestones add the
 ## Input and output
 
 - Global `ValidationPipe` with `whitelist` and `forbidNonWhitelisted`: unknown fields are rejected, which blocks mass assignment (e.g. sending `role: "ADMIN"`).
+- **Admins skip entry gates for testing** (`common/auth/super-user.ts`): application deadlines, full roles, email verification, the CV requirement and the 80 CV bar, the reapply cooldown, the four-course limit, the voice-check minimum (one lesson instead of three), interview join windows and the AI PM's daily run limit. Scores are still computed honestly. `POST /applications/:id/skip-to-team` (admin, own application only) walks the status machine and takes a seat even when the role is full. Admin is a database role only (`User.role`), never settable through the API; grant it only to real operators and test accounts.
 - Prisma parameterises every query; the only raw SQL uses tagged templates.
 - Responses are mapped DTOs; password hashes and token hashes never leave the service layer.
 - One exception filter shapes every error as `{ error: { code, message, details? } }` and logs 5xx stack traces server-side only.
