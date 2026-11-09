@@ -12,6 +12,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { INTERVIEW_PASS_SCORE, type ApplicationStatus, type ApplicationView } from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
+import { AuthService } from '../../core/auth.service';
 import { type ApiError, toApiError } from '../../core/api-error';
 import { APPLICATION_STATUS, longDate } from '../../core/format';
 import { ToastService } from '../../core/toast.service';
@@ -29,6 +30,7 @@ const STAGES: { id: Stage; t: string }[] = [
   { id: 'seat', t: 'Team seat' },
 ];
 const WITHDRAWABLE: ApplicationStatus[] = ['SUBMITTED', 'INTERVIEW_PENDING', 'UNDER_REVIEW'];
+const SKIPPABLE: ApplicationStatus[] = ['SUBMITTED', 'INTERVIEW_PENDING', 'INTERVIEW_IN_PROGRESS', 'UNDER_REVIEW'];
 const REASON: Record<string, { title: string; icon: string }> = {
   CV_BELOW_THRESHOLD: { title: 'Your CV didn’t reach the interview bar this time', icon: 'description' },
   INTERVIEW_BELOW_THRESHOLD: { title: 'Not a seat this time, but here’s how to get there', icon: 'record_voice_over' },
@@ -245,14 +247,42 @@ const REASON: Record<string, { title: string; icon: string }> = {
                 @if (o.feedback) {
                   <p class="sm" style="line-height:1.6">{{ o.feedback }}</p>
                 }
+                @if (o.reapply; as r) {
+                  @if (r.allowed) {
+                    <div class="banner ok" role="status">
+                      <i class="ms" aria-hidden="true">lock_open</i>
+                      <span class="grow">{{
+                        r.viaCourse
+                          ? 'You finished a recommended course, so you can apply to this project again now.'
+                          : 'You can apply to this project again.'
+                      }}</span>
+                      <a class="btn btn-primary xs" [routerLink]="['/projects', a.project.slug, 'apply']"
+                        >Apply again</a
+                      >
+                    </div>
+                  } @else {
+                    <div class="banner" role="status">
+                      <i class="ms" aria-hidden="true">schedule</i>
+                      <span
+                        >You can apply to this project again on <b>{{ longDate(r.availableAt) }}</b
+                        >{{
+                          o.courses.length ? ', or right away once you complete one of the courses below.' : '.'
+                        }}</span
+                      >
+                    </div>
+                  }
+                }
                 @if (o.courses.length) {
-                  <span class="section-label">COURSES THAT COVER WHAT WAS MISSING</span>
+                  <span class="section-label">COURSES FOR THE GAPS IN YOUR INTERVIEW</span>
                   @for (c of o.courses; track c.slug) {
                     <a class="next-row" [routerLink]="['/learn/courses', c.slug]">
-                      <i class="ms" aria-hidden="true">school</i>
+                      <i class="ms" aria-hidden="true">{{ c.completed ? 'task_alt' : 'school' }}</i>
                       <span class="grow"
                         ><b>{{ c.title }}</b> <span class="faint">· {{ c.reason }}</span></span
                       >
+                      @if (c.completed) {
+                        <span class="status ok"><i class="ms" aria-hidden="true">check_circle</i>Completed</span>
+                      }
                       <i class="ms" aria-hidden="true">chevron_right</i>
                     </a>
                   }
@@ -312,6 +342,17 @@ const REASON: Record<string, { title: string; icon: string }> = {
                 ><span class="faint mono" style="font-size:11px">{{ longDate(h.at) }}</span>
               </div>
             }
+            @if (canSkip()) {
+              <button
+                type="button"
+                class="btn btn-secondary block"
+                style="margin-top:8px"
+                [disabled]="busy()"
+                (click)="skipToTeam()"
+              >
+                <i class="ms" aria-hidden="true">admin_panel_settings</i>Skip to team (admin)
+              </button>
+            }
             @if (canWithdraw()) {
               <button
                 type="button"
@@ -332,6 +373,7 @@ const REASON: Record<string, { title: string; icon: string }> = {
 export class ApplicationDetailPage {
   private readonly api = inject(Api);
   private readonly toast = inject(ToastService);
+  private readonly auth = inject(AuthService);
 
   readonly id = input.required<string>();
   readonly app = signal<ApplicationView | null>(null);
@@ -345,6 +387,10 @@ export class ApplicationDetailPage {
 
   readonly view = computed(() => APPLICATION_STATUS[this.app()!.status]);
   readonly canWithdraw = computed(() => WITHDRAWABLE.includes(this.app()!.status));
+  /** Admin testing shortcut, for an application still in progress. */
+  readonly canSkip = computed(
+    () => this.auth.user()?.role === 'ADMIN' && SKIPPABLE.includes(this.app()!.status) && !this.app()!.seat,
+  );
   readonly statusLabel = (s: ApplicationStatus) => APPLICATION_STATUS[s].label;
   readonly reason = (r: string) => REASON[r] ?? { title: 'Next steps', icon: 'info' };
 
@@ -423,6 +469,19 @@ export class ApplicationDetailPage {
     try {
       await this.api.retryInterview(interviewId);
       void this.load();
+    } catch (e) {
+      this.toast.error(toApiError(e).message);
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  async skipToTeam() {
+    if (!confirm('Admin testing: skip the rest of the selection and take a seat on this team?')) return;
+    this.busy.set(true);
+    try {
+      this.app.set(await this.api.skipToTeam(this.id()));
+      this.toast.ok('You’re on the team.');
     } catch (e) {
       this.toast.error(toApiError(e).message);
     } finally {

@@ -15,6 +15,7 @@ import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { WorkspaceAccess } from '../tasks/workspace-access.service';
 import { MemoryService } from './memory.service';
 import { agentSystemPrompt, MAX_AGENT_STEPS, MAX_PROPOSALS, MAX_TOOL_CALLS } from './pm-ai';
+import { isSuperUser } from '../common/auth/super-user';
 import { ProjectSnapshotService } from './project-snapshot.service';
 import { ToolInputError, ToolRegistry } from './tool-registry';
 
@@ -71,7 +72,7 @@ export class AgentService {
     const today = await this.prisma.agentRun.count({
       where: { projectId: ctx.projectId, trigger: 'MANUAL', createdAt: { gte: since } },
     });
-    if (today >= MANUAL_RUNS_PER_DAY) {
+    if (today >= MANUAL_RUNS_PER_DAY && !isSuperUser(user)) {
       throw new DomainError(
         ErrorCode.AGENT_LIMIT_REACHED,
         `The AI PM has already run ${MANUAL_RUNS_PER_DAY} times today for this project. Try again tomorrow.`,

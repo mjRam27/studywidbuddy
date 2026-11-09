@@ -7,7 +7,7 @@ export default async function globalSetup() {
   require('./env');
   execSync('npx prisma migrate deploy', {
     cwd: join(__dirname, '..'),
-    env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
+    env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL, DIRECT_URL: process.env.TEST_DATABASE_URL },
     stdio: 'pipe',
   });
 }

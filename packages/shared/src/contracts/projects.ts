@@ -101,8 +101,18 @@ export interface CvScreeningView {
 export interface ApplicationOutcomeView {
   reason: ApplicationOutcomeReason;
   feedback: string | null;
-  /** Real catalogue courses that teach what was missing. */
-  courses: { slug: string; title: string; reason: string }[];
+  /** Real catalogue courses that teach the skill gaps found (only those). */
+  courses: { slug: string; title: string; reason: string; completed: boolean }[];
   /** Open projects with a free seat in a similar role. */
   projects: { slug: string; title: string; roleTitle: string; open: number }[];
+  /** When this project can be applied to again (null when the outcome doesn't limit it, e.g. ROLE_FILLED). */
+  reapply: ReapplyView | null;
+}
+
+export interface ReapplyView {
+  allowed: boolean;
+  /** End of the cooldown. */
+  availableAt: string;
+  /** Unlocked early by completing a recommended course. */
+  viaCourse: boolean;
 }

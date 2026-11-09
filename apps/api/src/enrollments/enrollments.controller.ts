@@ -10,6 +10,7 @@ import type {
   MyLearningResponse,
 } from '@studywidbuddy/shared';
 import { AuthUser, CurrentUser } from '../common/auth/auth-user';
+import { isSuperUser } from '../common/auth/super-user';
 import { EnrollmentsService } from './enrollments.service';
 import { LearningInsightsService } from './learning-insights.service';
 
@@ -35,7 +36,7 @@ export class EnrollmentsController {
   @Get('me/learning')
   @ApiOperation({ summary: 'Active course slots and completion count for the dashboard' })
   myLearning(@CurrentUser() user: AuthUser): Promise<MyLearningResponse> {
-    return this.enrollments.myLearning(user.id);
+    return this.enrollments.myLearning(user.id, isSuperUser(user));
   }
 
   @Get('me/learning/stats')
@@ -54,7 +55,7 @@ export class EnrollmentsController {
   @ApiOperation({ summary: 'Start a course (max four active)' })
   @ApiConflictResponse({ description: 'ACTIVE_COURSE_LIMIT_REACHED or ALREADY_ENROLLED' })
   enroll(@CurrentUser() user: AuthUser, @Body() dto: EnrollDto): Promise<EnrollmentView> {
-    return this.enrollments.enroll(user.id, dto.courseId, dto.level);
+    return this.enrollments.enroll(user.id, dto.courseId, dto.level, isSuperUser(user));
   }
 
   @Get('enrollments/:id')

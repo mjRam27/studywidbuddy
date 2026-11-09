@@ -9,7 +9,13 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { ChecksStatus, ProjectRepoView, PullRequestView } from '@studywidbuddy/shared';
+import type {
+  ChecksStatus,
+  CodeReviewView,
+  ProjectRepoView,
+  PullRequestView,
+  ReviewSeverity,
+} from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
 import { toApiError } from '../../core/api-error';
 import { AuthService } from '../../core/auth.service';
@@ -26,7 +32,31 @@ const CHECKS: Record<ChecksStatus, { icon: string; label: string; cls: string }>
   FAILURE: { icon: 'cancel', label: 'CI failed', cls: 'danger' },
 };
 
-/** GitHub tab: the team repository, who has access, and pull requests linked to tasks. */
+const SEVERITY: Record<ReviewSeverity, { icon: string; cls: string }> = {
+  BLOCKER: { icon: 'block', cls: 'danger' },
+  MAJOR: { icon: 'warning', cls: 'warn' },
+  MINOR: { icon: 'build', cls: 'info' },
+  NIT: { icon: 'edit', cls: 'neutral' },
+};
+
+/** The AI review of a PR as one status chip (icon + label, never colour alone). */
+export function reviewChip(r: CodeReviewView): { icon: string; label: string; cls: string } {
+  switch (r.status) {
+    case 'QUEUED':
+    case 'RUNNING':
+      return { icon: 'pending', label: 'AI reviewing', cls: 'info' };
+    case 'SKIPPED':
+      return { icon: 'do_not_disturb_on', label: 'AI skipped', cls: 'neutral' };
+    case 'FAILED':
+      return { icon: 'error', label: 'AI review failed', cls: 'danger' };
+    default:
+      return r.verdict === 'LOOKS_GOOD'
+        ? { icon: 'check_circle', label: 'AI: looks good', cls: 'ok' }
+        : { icon: 'rate_review', label: 'AI: changes suggested', cls: 'warn' };
+  }
+}
+
+/** GitHub tab: the team repository, who has access, pull requests linked to tasks and their AI reviews. */
 @Component({
   selector: 'sb-ws-github',
   imports: [RouterLink, AvatarComponent, SkeletonComponent],
@@ -159,10 +189,19 @@ const CHECKS: Record<ChecksStatus, { icon: string; label: string; cls: string }>
                       }
                     </span>
                   </div>
-                  <span class="status" [class]="'status ' + checks[p.checks].cls"
-                    ><i class="ms" aria-hidden="true">{{ checks[p.checks].icon }}</i
-                    >{{ checks[p.checks].label }}</span
-                  >
+                  <div class="gh-pr-status">
+                    <span class="status" [class]="'status ' + checks[p.checks].cls"
+                      ><i class="ms" aria-hidden="true">{{ checks[p.checks].icon }}</i
+                      >{{ checks[p.checks].label }}</span
+                    >
+                    @if (p.aiReview; as r) {
+                      @let c = chip(r);
+                      <span class="status" [class]="'status ' + c.cls" [title]="r.skippedReason ?? ''"
+                        ><i class="ms" aria-hidden="true">{{ c.icon }}</i
+                        >{{ c.label }}</span
+                      >
+                    }
+                  </div>
                 </div>
               } @empty {
                 <span class="faint sm">No pull requests yet. Open one titled “TASK-n: …” and it shows up here.</span>
@@ -170,16 +209,79 @@ const CHECKS: Record<ChecksStatus, { icon: string; label: string; cls: string }>
             </section>
           }
 
-          <section class="ws-card wide" aria-labelledby="ai-rev-h">
-            <span class="ws-card-title" id="ai-rev-h"
-              >AI code review &amp; acceptance tests
-              <span class="status neutral" style="margin-left:6px">SOON</span></span
-            >
-            <span class="faint sm"
-              >Next: the AI PM reviews each pull request, and the platform’s own tests run in a sandbox. Both must pass
-              before a task can be done.</span
-            >
-          </section>
+          @if (d.repo) {
+            <section class="ws-card wide" aria-labelledby="ai-rev-h">
+              <span class="ws-card-title" id="ai-rev-h">AI code review</span>
+              <span class="faint sm"
+                >Every ready pull request gets one review per commit, posted on GitHub as comments. It’s advice: it
+                never approves or blocks a merge.</span
+              >
+              @for (p of reviewed(); track p.number) {
+                @let r = p.aiReview!;
+                @let c = chip(r);
+                <article class="ai-frame gh-review" [attr.aria-label]="'AI review of PR #' + p.number">
+                  <div class="gh-review-head">
+                    <span class="ai-label"><span class="ai-diamond" aria-hidden="true"></span>AI REVIEWER</span>
+                    <span class="sm" style="font-weight:600">#{{ p.number }} {{ p.title }}</span>
+                    <span class="status" [class]="'status ' + c.cls"
+                      ><i class="ms" aria-hidden="true">{{ c.icon }}</i
+                      >{{ c.label }}</span
+                    >
+                    <span class="mono faint" style="font-size:11px">{{ r.headSha.slice(0, 7) }}</span>
+                    <span class="gh-review-actions">
+                      @if (r.githubUrl) {
+                        <a class="btn btn-secondary xs" [href]="r.githubUrl" target="_blank" rel="noopener"
+                          ><i class="ms" aria-hidden="true">open_in_new</i>On GitHub</a
+                        >
+                      }
+                      @if (p.state === 'OPEN' && r.status !== 'QUEUED' && r.status !== 'RUNNING') {
+                        <button type="button" class="btn btn-ghost xs" [disabled]="busy()" (click)="rerun(p.number)">
+                          <i class="ms" aria-hidden="true">refresh</i>Run again
+                        </button>
+                      }
+                    </span>
+                  </div>
+                  @if (r.summary) {
+                    <p class="sm" style="line-height:1.6;margin:0">{{ r.summary }}</p>
+                  } @else if (r.failureReason || r.skippedReason) {
+                    <p class="sm muted" style="margin:0">{{ r.failureReason ?? r.skippedReason }}</p>
+                  }
+                  @if (r.findings.length) {
+                    <ul class="gh-findings">
+                      @for (f of r.findings; track f.path + f.line + f.title) {
+                        <li>
+                          <span class="status" [class]="'status ' + severity[f.severity].cls"
+                            ><i class="ms" aria-hidden="true">{{ severity[f.severity].icon }}</i
+                            >{{ f.severity.toLowerCase() }}</span
+                          >
+                          <div class="gh-finding">
+                            <span class="sm" style="font-weight:600">{{ f.title }}</span>
+                            <span class="mono faint" style="font-size:11px"
+                              >{{ f.path }}:{{ f.line }} · {{ f.category.toLowerCase().replace('_', ' ') }}</span
+                            >
+                            <span class="sm muted">{{ f.body }}</span>
+                          </div>
+                        </li>
+                      }
+                    </ul>
+                  }
+                  @if (r.status === 'POSTED') {
+                    <span class="faint" style="font-size:11.5px"
+                      >Reviewed {{ r.filesReviewed }} file{{ r.filesReviewed === 1 ? '' : 's' }}
+                      @if (r.filesSkipped) {
+                        · skipped {{ r.filesSkipped }} (lockfiles, generated or binary)
+                      }
+                    </span>
+                  }
+                </article>
+              } @empty {
+                <span class="faint sm">No reviews yet. Open a pull request (not a draft) to get one.</span>
+              }
+              <span class="faint sm"
+                >Acceptance tests in a sandbox <span class="status neutral" style="margin-left:4px">SOON</span></span
+              >
+            </section>
+          }
         </div>
       }
     </div>
@@ -231,6 +333,15 @@ export class GithubTabComponent implements OnInit {
   readonly v = signal<ProjectRepoView | null>(null);
   readonly busy = signal(false);
   readonly checks = CHECKS;
+  readonly severity = SEVERITY;
+  readonly chip = reviewChip;
+  /** PRs with an AI review, open ones first. */
+  readonly reviewed = computed(() =>
+    (this.v()?.pullRequests ?? [])
+      .filter((p) => p.aiReview)
+      .sort((a, b) => Number(b.state === 'OPEN') - Number(a.state === 'OPEN'))
+      .slice(0, 10),
+  );
   readonly meUnlinked = computed(() => {
     const me = this.auth.user()?.id;
     return !!this.v()?.members.find((m) => m.user.id === me && !m.githubLogin);
@@ -283,6 +394,19 @@ export class GithubTabComponent implements OnInit {
           ? `${r.added} with access, ${r.pending} invited (they accept the GitHub email).`
           : 'Access is up to date.',
       );
+      await this.load();
+    } catch (e) {
+      this.toast.error(toApiError(e).message);
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  async rerun(number: number) {
+    this.busy.set(true);
+    try {
+      await this.api.rerunReview(this.store.slug(), number);
+      this.toast.ok('AI review queued. It shows here and on GitHub in a minute or two.');
       await this.load();
     } catch (e) {
       this.toast.error(toApiError(e).message);

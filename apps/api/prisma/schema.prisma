@@ -9,6 +9,9 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
+  /// Migrations need a direct (non-pooled) connection. On Supabase DATABASE_URL is the
+  /// transaction pooler and DIRECT_URL the session pooler; locally both are the same.
+  directUrl  = env("DIRECT_URL")
   extensions = [citext, pg_trgm]
 }
 
@@ -155,6 +158,7 @@ model Skill {
   courses          CourseSkill[]
   projectStack     ProjectTechnology[]
   roleRequirements ProjectRequiredSkill[]
+  jobs             JobSkill[]
 
   @@index([name])
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin, map: "Skill_name_trgm")
@@ -690,6 +694,9 @@ model CandidateEvaluation {
   recommendedRoleId   String?  @db.Uuid
   strengths           String[]
   areasToImprove      String[]
+  /// Required skills of the role the interview showed weak or no evidence for (exact skill names).
+  /// Course recommendations after a rejection are based on these only.
+  skillGaps           String[] @default([])
   summary             String
   aiModel             String
   createdAt           DateTime @default(now())
@@ -929,6 +936,7 @@ enum ActivityType {
   PR_CLOSED
   CHECKS_PASSED
   CHECKS_FAILED
+  PR_REVIEWED
 }
 
 /// Append-only, structured project timeline. `data` carries small event-specific fields
@@ -1304,11 +1312,51 @@ model PullRequest {
   updatedAt    DateTime         @updatedAt
   mergedAt     DateTime?
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  task    Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?        @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  reviews CodeReview[]
 
   @@unique([projectId, number])
   @@index([taskId])
+}
+
+enum CodeReviewStatus {
+  QUEUED
+  RUNNING
+  POSTED
+  SKIPPED
+  FAILED
+}
+
+enum CodeReviewVerdict {
+  LOOKS_GOOD
+  CHANGES_SUGGESTED
+}
+
+/// AI code review of one PR head commit (run by the LangGraph review pipeline in src/review).
+model CodeReview {
+  id             String             @id @default(uuid()) @db.Uuid
+  pullRequestId  String             @db.Uuid
+  headSha        String
+  status         CodeReviewStatus   @default(QUEUED)
+  verdict        CodeReviewVerdict?
+  summary        String?
+  /// Validated findings: [{ path, line, severity, category, title, body, suggestion? }]
+  findings       Json?
+  filesReviewed  Int                @default(0)
+  filesSkipped   Int                @default(0)
+  skippedReason  String?
+  failureReason  String?
+  /// Set once the review is on GitHub, so a retried job never posts twice.
+  githubReviewId BigInt?
+  githubUrl      String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  postedAt       DateTime?
+
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([pullRequestId, headSha])
 }
 
 /// Every webhook delivery, for idempotency (GitHub retries) and debugging.
@@ -1320,4 +1368,55 @@ model GithubDelivery {
   receivedAt  DateTime  @default(now())
   processedAt DateTime?
   error       String?
+}
+
+// ───────── Jobs (M10) ─────────
+
+/// Where a job listing came from. Only official, public job-board APIs (no scraping).
+enum JobSource {
+  ARBEITNOW
+  REMOTIVE
+  ADZUNA
+}
+
+/// A job listing fetched from a public job-board API. Apply always links to the original posting.
+model JobPosting {
+  id          String    @id @default(uuid()) @db.Uuid
+  source      JobSource
+  externalId  String
+  /// Same company + title + location across sources: the first source wins.
+  dedupeKey   String
+  url         String
+  title       String
+  company     String
+  location    String
+  remote      Boolean   @default(false)
+  employment  String?
+  /// Plain text (HTML stripped), truncated.
+  description String
+  tags        String[]  @default([])
+  postedAt    DateTime
+  fetchedAt   DateTime  @default(now())
+  /// Listings that drop out of the feed are kept for a while but hidden.
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  skills JobSkill[]
+
+  @@unique([source, externalId])
+  @@index([dedupeKey])
+  @@index([active, postedAt])
+}
+
+/// Catalogue skills detected in a listing (by code, from the title, tags and description).
+model JobSkill {
+  jobId   String @db.Uuid
+  skillId String @db.Uuid
+
+  job   JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill      @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@id([jobId, skillId])
+  @@index([skillId])
 }

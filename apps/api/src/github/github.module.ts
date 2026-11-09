@@ -4,10 +4,12 @@ import { TasksModule } from '../tasks/tasks.module';
 import { GithubClient, HttpGithubClient } from './github-client';
 import { GithubController } from './github.controller';
 import { GithubService } from './github.service';
+import { ReviewProcessor } from './review/review.processor';
+import { ReviewService } from './review/review.service';
 import { SmeeRelay } from './smee-relay';
 import { WebhookService } from './webhook.service';
 
-/** GitHub App integration: linked accounts, team repos, webhooks (PR ↔ task, CI status). */
+/** GitHub App integration: linked accounts, team repos, webhooks (PR ↔ task, CI status), AI code review. */
 @Global()
 @Module({
   imports: [TasksModule],
@@ -17,7 +19,9 @@ import { WebhookService } from './webhook.service';
     GithubService,
     WebhookService,
     SmeeRelay,
+    ReviewService,
+    ReviewProcessor,
   ],
-  exports: [GithubService],
+  exports: [GithubService, ReviewService],
 })
 export class GithubModule {}

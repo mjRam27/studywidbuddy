@@ -8,11 +8,19 @@ import { conflict, DomainError } from '../common/errors/domain-error';
  * EnrollmentsService gathers the facts (under a row lock) and asks these functions.
  */
 
-export function assertCanEnroll(facts: { activeCount: number; alreadyActiveInCourse: boolean }): void {
+/** Admins (testing) have no active-course limit; the UI always shows them one free slot. */
+export const maxActiveFor = (superUser: boolean, activeCount: number) =>
+  superUser ? Math.max(MAX_ACTIVE_COURSES, activeCount + 1) : MAX_ACTIVE_COURSES;
+
+export function assertCanEnroll(facts: {
+  activeCount: number;
+  alreadyActiveInCourse: boolean;
+  superUser?: boolean;
+}): void {
   if (facts.alreadyActiveInCourse) {
     throw conflict(ErrorCode.ALREADY_ENROLLED, "You're already taking this course.");
   }
-  if (facts.activeCount >= MAX_ACTIVE_COURSES) {
+  if (!facts.superUser && facts.activeCount >= MAX_ACTIVE_COURSES) {
     throw conflict(
       ErrorCode.ACTIVE_COURSE_LIMIT_REACHED,
       `You can have up to ${MAX_ACTIVE_COURSES} active courses. Complete or leave a course to start another.`,

@@ -64,7 +64,7 @@ export class AssessmentsService {
   }
 
   /** Starts a voice check, or returns the one already in progress. */
-  async start(userId: string, enrollmentId: string): Promise<AssessmentView> {
+  async start(userId: string, enrollmentId: string, superUser = false): Promise<AssessmentView> {
     const e = await this.study.enrollment(userId, enrollmentId);
     const open = await this.prisma.courseAssessment.findFirst({
       where: { enrollmentId: e.id, status: { in: OPEN } },
@@ -79,12 +79,14 @@ export class AssessmentsService {
       );
     }
     const done = (await this.study.completedIds(e.id)).size;
-    if (done < ASSESSMENT_MIN_LESSONS) {
+    // Admins (testing) need just one finished lesson: the questions come from what was studied.
+    const required = superUser ? 1 : ASSESSMENT_MIN_LESSONS;
+    if (done < required) {
       throw new DomainError(
         ErrorCode.NOT_ENOUGH_PROGRESS,
-        `Finish at least ${ASSESSMENT_MIN_LESSONS} lessons first, so there’s something to ask you about.`,
+        `Finish at least ${required} lesson${required === 1 ? '' : 's'} first, so there’s something to ask you about.`,
         HttpStatus.CONFLICT,
-        { completed: done, required: ASSESSMENT_MIN_LESSONS },
+        { completed: done, required },
       );
     }
     let id: string;

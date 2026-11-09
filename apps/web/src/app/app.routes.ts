@@ -157,14 +157,13 @@ export const routes: Routes = [
       },
       {
         path: 'jobs',
-        loadComponent: () => import('./features/coming-soon.page').then((m) => m.ComingSoonPage),
-        data: {
-          title: 'Jobs for your skills',
-          icon: 'work',
-          milestone: 'Social & career (M10)',
-          text: 'Jobs matched to the skills your courses and projects prove, with an explanation for every match.',
-        },
+        loadComponent: () => import('./features/jobs/jobs.page').then((m) => m.JobsPage),
         title: 'Jobs · StudywidBuddy',
+      },
+      {
+        path: 'jobs/:id',
+        loadComponent: () => import('./features/jobs/job-detail.page').then((m) => m.JobDetailPage),
+        title: 'Job · StudywidBuddy',
       },
     ],
   },

@@ -54,6 +54,7 @@ jobs:
       NODE_ENV: test
       REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy?schema=public
+      DIRECT_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy?schema=public
       TEST_DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy_test?schema=public
       SHADOW_DATABASE_URL: postgresql://studywidbuddy:studywidbuddy@localhost:5432/studywidbuddy_shadow?schema=public
       JWT_ACCESS_SECRET: ci-only-secret-ci-only-secret-ci-only-secret

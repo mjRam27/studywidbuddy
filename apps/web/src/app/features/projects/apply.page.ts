@@ -10,6 +10,7 @@ import {
   type ProjectDetail,
 } from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
+import { AuthService } from '../../core/auth.service';
 import { type ApiError, toApiError } from '../../core/api-error';
 import { levelLabel } from '../../core/format';
 import { ToastService } from '../../core/toast.service';
@@ -55,6 +56,15 @@ import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.componen
         </div>
 
         <form class="form-stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          @if (isAdmin()) {
+            <div class="banner">
+              <i class="ms" aria-hidden="true">admin_panel_settings</i>
+              <span
+                ><b>Admin testing.</b> Deadlines, full roles, the reapply wait and the CV bar don’t apply to you. Leave
+                the CV out to go straight to the voice interview. Scores are still honest.</span
+              >
+            </div>
+          }
           @if (error(); as e) {
             <div class="banner danger" role="alert">
               <i class="ms" aria-hidden="true">error</i><span>{{ e }}</span>
@@ -75,7 +85,7 @@ import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.componen
                   class="role-card pick"
                   [class.on]="form.controls.roleId.value === r.id"
                   [attr.aria-checked]="form.controls.roleId.value === r.id"
-                  [disabled]="r.open === 0"
+                  [disabled]="r.open === 0 && !isAdmin()"
                   (click)="form.controls.roleId.setValue(r.id)"
                 >
                   <div class="head">
@@ -97,14 +107,14 @@ import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.componen
           <section class="panel pad-lg" aria-labelledby="cv-h">
             <span class="panel-title" id="cv-h"
               >Your CV
-              @if (!cvNeeded()) {
+              @if (!cvRequired()) {
                 <span class="opt">optional</span>
-              }</span
-            >
+              }
+            </span>
             <label
               class="cv-drop"
               [class.has]="!!cv()"
-              [class.invalid]="submitted() && cvNeeded() && !cv()"
+              [class.invalid]="submitted() && cvRequired() && !cv()"
               for="cv-file"
             >
               <i class="ms" aria-hidden="true">{{ cv() ? 'description' : 'upload_file' }}</i>
@@ -125,7 +135,7 @@ import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.componen
             </label>
             @if (cvError(); as e) {
               <span class="field-error"><i class="ms" aria-hidden="true">error</i>{{ e }}</span>
-            } @else if (submitted() && cvNeeded() && !cv()) {
+            } @else if (submitted() && cvRequired() && !cv()) {
               <span class="field-error"><i class="ms" aria-hidden="true">error</i>Attach your CV to apply.</span>
             }
           </section>
@@ -228,6 +238,7 @@ export class ApplyPage {
   private readonly api = inject(Api);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly auth = inject(AuthService);
 
   readonly slug = input.required<string>();
   readonly project = signal<ProjectDetail | null>(null);
@@ -242,6 +253,9 @@ export class ApplyPage {
   readonly cvError = signal<string | null>(null);
   /** Entry-level projects skip CV matching. */
   readonly cvNeeded = computed(() => cvRequiredFor(this.project()?.difficulty ?? 'INTERMEDIATE'));
+  /** Admins (testing) may skip the CV everywhere and go straight to the interview. */
+  readonly isAdmin = computed(() => this.auth.user()?.role === 'ADMIN');
+  readonly cvRequired = computed(() => this.cvNeeded() && !this.isAdmin());
 
   readonly form = inject(NonNullableFormBuilder).group({
     roleId: ['', Validators.required],
@@ -291,7 +305,7 @@ export class ApplyPage {
       }
       this.project.set(p);
       this.profile.set(me);
-      const firstOpen = p.roles.find((r) => r.open > 0);
+      const firstOpen = p.roles.find((r) => r.open > 0) ?? (this.isAdmin() ? p.roles[0] : undefined);
       if (firstOpen && !this.form.controls.roleId.value) this.form.controls.roleId.setValue(firstOpen.id);
     } catch (e) {
       this.loadError.set(toApiError(e));
@@ -300,7 +314,7 @@ export class ApplyPage {
 
   async submit() {
     this.submitted.set(true);
-    if (this.form.invalid || !this.project() || (this.cvNeeded() && !this.cv())) return;
+    if (this.form.invalid || !this.project() || (this.cvRequired() && !this.cv())) return;
     this.busy.set(true);
     this.error.set(null);
     const v = this.form.getRawValue();
@@ -316,7 +330,9 @@ export class ApplyPage {
         this.cv(),
       );
       this.toast.ok(
-        this.cvNeeded() ? 'Application submitted. Your CV is being screened.' : 'Application submitted. Book your voice interview.',
+        this.cvNeeded() && this.cv()
+          ? 'Application submitted. Your CV is being screened.'
+          : 'Application submitted. Book your voice interview.',
       );
       await this.router.navigate(['/applications', app.id]);
     } catch (e) {

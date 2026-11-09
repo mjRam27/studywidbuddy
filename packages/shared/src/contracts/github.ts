@@ -1,4 +1,4 @@
-import type { ChecksStatus, PullRequestState } from '../enums';
+import type { ChecksStatus, CodeReviewStatus, CodeReviewVerdict, PullRequestState } from '../enums';
 import type { PersonRef } from './teams';
 
 /** Branch and PR title conventions that link code to tasks (also written into each team README). */
@@ -34,6 +34,8 @@ export interface PullRequestView {
   htmlUrl: string;
   task: { id: string; key: string; title: string } | null;
   checks: ChecksStatus;
+  /** The AI review of the latest reviewed commit, if any. */
+  aiReview: CodeReviewView | null;
   createdAt: string;
   updatedAt: string;
   mergedAt: string | null;
@@ -55,4 +57,37 @@ export interface ProjectRepoView {
   pullRequests: PullRequestView[];
   /** Admins create the repo; members see it once it exists. */
   canCreate: boolean;
+}
+
+export type ReviewSeverity = 'BLOCKER' | 'MAJOR' | 'MINOR' | 'NIT';
+export const REVIEW_SEVERITIES: ReviewSeverity[] = ['BLOCKER', 'MAJOR', 'MINOR', 'NIT'];
+
+export type ReviewCategory = 'BUG' | 'SECURITY' | 'PERFORMANCE' | 'TESTS' | 'READABILITY' | 'DESIGN' | 'TASK_FIT';
+
+/** One inline comment from the AI reviewer, anchored to a line the PR adds or changes. */
+export interface ReviewFinding {
+  path: string;
+  line: number;
+  severity: ReviewSeverity;
+  category: ReviewCategory;
+  title: string;
+  body: string;
+  /** Replacement code for the line(s), when the fix is small and certain. */
+  suggestion?: string;
+}
+
+export interface CodeReviewView {
+  id: string;
+  headSha: string;
+  status: CodeReviewStatus;
+  verdict: CodeReviewVerdict | null;
+  summary: string | null;
+  findings: ReviewFinding[];
+  filesReviewed: number;
+  filesSkipped: number;
+  skippedReason: string | null;
+  failureReason: string | null;
+  githubUrl: string | null;
+  createdAt: string;
+  postedAt: string | null;
 }

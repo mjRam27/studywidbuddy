@@ -21,6 +21,33 @@ export interface GithubRepo {
   private: boolean;
 }
 
+export interface GithubPullRequest {
+  number: number;
+  title: string;
+  body: string;
+  state: 'open' | 'closed';
+  draft: boolean;
+  merged: boolean;
+  headSha: string;
+  baseRef: string;
+}
+
+export interface GithubPrFile {
+  filename: string;
+  status: string;
+  additions: number;
+  deletions: number;
+  /** Unified diff hunk text; absent for binary or very large files. */
+  patch?: string;
+}
+
+export interface GithubReviewComment {
+  path: string;
+  /** Line number in the new version of the file (RIGHT side of the diff). */
+  line: number;
+  body: string;
+}
+
 /**
  * The GitHub operations the platform uses. Domain code depends on this abstract class;
  * tests replace it with a fake, so the suite never calls GitHub.
@@ -36,6 +63,15 @@ export abstract class GithubClient {
   /** OAuth: exchanges the callback code for the user's identity. The user token is not kept. */
   abstract identify(code: string): Promise<{ id: number; login: string }>;
   abstract authorizeUrl(state: string): string;
+  abstract pullRequest(repo: string, number: number): Promise<GithubPullRequest>;
+  /** Changed files with their diffs (first 300 files, which is GitHub's own limit). */
+  abstract pullRequestFiles(repo: string, number: number): Promise<GithubPrFile[]>;
+  /** Posts a review. Always a COMMENT review: the AI never approves or blocks a merge on GitHub. */
+  abstract createReview(
+    repo: string,
+    number: number,
+    review: { commitId: string; body: string; comments: GithubReviewComment[] },
+  ): Promise<{ id: number; htmlUrl: string }>;
 }
 
 const API = 'https://api.github.com';
@@ -211,6 +247,68 @@ export class HttpGithubClient extends GithubClient {
     } catch (e) {
       if (!(e instanceof GithubApiError && e.status === 404)) throw e;
     }
+  }
+
+  async pullRequest(repo: string, number: number): Promise<GithubPullRequest> {
+    const p = await this.call<{
+      number: number;
+      title: string;
+      body: string | null;
+      state: 'open' | 'closed';
+      draft?: boolean;
+      merged?: boolean;
+      head: { sha: string };
+      base: { ref: string };
+    }>('GET', `/repos/${this.org}/${repo}/pulls/${number}`);
+    return {
+      number: p.number,
+      title: p.title,
+      body: p.body ?? '',
+      state: p.state,
+      draft: !!p.draft,
+      merged: !!p.merged,
+      headSha: p.head.sha,
+      baseRef: p.base.ref,
+    };
+  }
+
+  async pullRequestFiles(repo: string, number: number): Promise<GithubPrFile[]> {
+    const out: GithubPrFile[] = [];
+    for (let page = 1; page <= 3; page++) {
+      const batch = await this.call<GithubPrFile[]>(
+        'GET',
+        `/repos/${this.org}/${repo}/pulls/${number}/files?per_page=100&page=${page}`,
+      );
+      out.push(
+        ...batch.map((f) => ({
+          filename: f.filename,
+          status: f.status,
+          additions: f.additions,
+          deletions: f.deletions,
+          patch: f.patch,
+        })),
+      );
+      if (batch.length < 100) break;
+    }
+    return out;
+  }
+
+  async createReview(
+    repo: string,
+    number: number,
+    review: { commitId: string; body: string; comments: GithubReviewComment[] },
+  ) {
+    const r = await this.call<{ id: number; html_url: string }>(
+      'POST',
+      `/repos/${this.org}/${repo}/pulls/${number}/reviews`,
+      {
+        commit_id: review.commitId,
+        body: review.body,
+        event: 'COMMENT',
+        comments: review.comments.map((c) => ({ path: c.path, line: c.line, side: 'RIGHT', body: c.body })),
+      },
+    );
+    return { id: r.id, htmlUrl: r.html_url };
   }
 
   authorizeUrl(state: string) {

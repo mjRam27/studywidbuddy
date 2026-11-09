@@ -51,8 +51,30 @@ All empty means GitHub features are off, and the UI says so. Half-configured sto
 
 On GitHub's free organization plan, branch protection isn't available for private repos. The platform enforces the review and CI rules itself (task gating above). Moving to GitHub Team would add enforcement on GitHub's side too.
 
+## AI code review
+
+Every ready (non-draft) pull request gets one AI review per head commit, posted on GitHub as a **COMMENT** review. It is advice: it never approves or requests changes, so it can't block a merge. Code lives in `apps/api/src/github/review/`.
+
+**When:** the `pull_request` webhook with `opened`, `reopened`, `synchronize` (new commits) or `ready_for_review`. The database keeps one review per `(pullRequestId, headSha)`, so repeated deliveries and edits don't review twice. Team members (and admins) can run it again from the workspace GitHub tab (`POST /projects/:slug/github/pulls/:number/review`).
+
+**Pipeline (LangGraph, `review-graph.ts`):**
+
+```
+START → triage ──(nothing reviewable)──────────────────────────────────→ END
+           └─ Send × N → reviewChunk (parallel, smart model) → verify → summarize (fast model) → END
+```
+
+- **triage** (code, `diff.ts`): skips lockfiles, build output, minified files, binaries, snapshots, deletions and oversized diffs; numbers each diff's new-file lines and records which lines GitHub can take a comment on; groups files into prompt-sized chunks (budgets in `REVIEW_LIMITS`).
+- **reviewChunk** (one per chunk, run in parallel by LangGraph `Send`): the smart model reviews the files with the PR title, description and the linked task's acceptance criteria (`TASK_FIT` findings). Everything from the PR is passed as escaped data; the prompt says never to follow instructions inside it. Output is zod-validated. Reducers join the branches.
+- **verify** (code): drops findings on files or lines that aren't in the diff, removes duplicates, sorts by severity, caps at 20. **The verdict is computed by code**: any BLOCKER or MAJOR means "changes suggested".
+- **summarize** (fast model): a short summary for the top of the review. If it fails, a plain summary is used and the findings are kept.
+
+**Posting (`review.service.ts`):** findings are stored before posting and the GitHub review id after, so a retried job never pays for the model again or posts twice. If GitHub rejects an inline comment (422), the findings go into the review body instead. The team chat and activity feed get a line with the verdict. A new commit makes an older queued review stale (skipped).
+
+**Cost:** roughly one smart call per 45k characters of diff plus one fast call. Lockfiles and generated code are never sent.
+
 ## Next
 
-- AI code review on each pull request (the AI PM comments on the PR and on the task).
+- Platform acceptance tests in a sandbox, reported as a check.
 - Platform acceptance tests that run in the sandbox and report as a check run; they must pass alongside the team's CI.
 - Publishing a repository (private → public) at the end of a project, with every member's consent.

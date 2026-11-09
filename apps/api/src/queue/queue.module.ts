@@ -6,6 +6,8 @@ export const INTERVIEW_QUEUE = 'interviews';
 export const PLANNING_QUEUE = 'planning';
 export const ASSESSMENT_QUEUE = 'assessments';
 export const PM_QUEUE = 'pm';
+export const REVIEW_QUEUE = 'reviews';
+export const JOBS_QUEUE = 'job-listings';
 
 /** Translates REDIS_URL into ioredis options. `maxRetriesPerRequest: null` is required by BullMQ workers. */
 export function redisConnection(url: string) {
@@ -47,6 +49,8 @@ export function redisConnection(url: string) {
       { name: PLANNING_QUEUE },
       { name: ASSESSMENT_QUEUE },
       { name: PM_QUEUE },
+      { name: REVIEW_QUEUE },
+      { name: JOBS_QUEUE },
     ),
   ],
   exports: [BullModule],

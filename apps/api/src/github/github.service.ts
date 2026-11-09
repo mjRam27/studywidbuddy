@@ -14,6 +14,7 @@ import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { taskKey } from '../tasks/tasks.service';
 import { WorkspaceAccess } from '../tasks/workspace-access.service';
 import { GithubApiError, GithubClient } from './github-client';
+import { ReviewService } from './review/review.service';
 import { CI_WORKFLOW, GITIGNORE, PR_TEMPLATE, readme } from './repo-template';
 
 export const GITHUB_UPDATED = 'github:updated';
@@ -43,6 +44,7 @@ export class GithubService {
     private readonly activity: ActivityService,
     private readonly chat: ChatService,
     private readonly realtime: RealtimeGateway,
+    private readonly reviews: ReviewService,
     @Inject(ENV) private readonly env: Env,
   ) {}
 
@@ -134,7 +136,10 @@ export class GithubService {
         where: { projectId: ctx.projectId },
         orderBy: { updatedAt: 'desc' },
         take: 50,
-        include: { task: { select: { id: true, number: true, title: true } } },
+        include: {
+          task: { select: { id: true, number: true, title: true } },
+          reviews: { orderBy: { createdAt: 'desc' }, take: 1 },
+        },
       }),
     ]);
     const people = await this.peopleByLogin(prs.map((p) => p.authorLogin));
@@ -168,6 +173,7 @@ export class GithubService {
         htmlUrl: p.htmlUrl,
         task: p.task ? { id: p.task.id, key: taskKey(p.task.number), title: p.task.title } : null,
         checks: p.checks,
+        aiReview: p.reviews[0] ? this.reviews.toView(p.reviews[0]) : null,
         createdAt: p.createdAt.toISOString(),
         updatedAt: p.updatedAt.toISOString(),
         mergedAt: p.mergedAt?.toISOString() ?? null,

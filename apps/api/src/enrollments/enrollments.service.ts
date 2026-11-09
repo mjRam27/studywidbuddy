@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { EnrollmentStatus, Prisma, SkillLevel, SkillSource } from '@prisma/client';
-import { MAX_ACTIVE_COURSES } from '@studywidbuddy/shared';
 import type { EnrollmentView, MyLearningResponse } from '@studywidbuddy/shared';
 import { notFound } from '../common/errors/domain-error';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { assertActive, assertCanComplete, assertCanEnroll, progressPercent } from './enrollment-rules';
+import { assertActive, assertCanComplete, assertCanEnroll, maxActiveFor, progressPercent } from './enrollment-rules';
 
 const LEVEL_RANK: Record<SkillLevel, number> = { BEGINNER: 1, INTERMEDIATE: 2, ADVANCED: 3 };
 
@@ -23,7 +22,7 @@ export class EnrollmentsService {
    * Start a course. The four-active-course rule is checked inside a transaction that first
    * locks the user's row, so two simultaneous requests can't both pass the count check.
    */
-  async enroll(userId: string, courseId: string, level: SkillLevel): Promise<EnrollmentView> {
+  async enroll(userId: string, courseId: string, level: SkillLevel, superUser = false): Promise<EnrollmentView> {
     const id = await this.prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT 1 FROM "User" WHERE "id" = ${userId}::uuid FOR UPDATE`;
 
@@ -40,6 +39,7 @@ export class EnrollmentsService {
       assertCanEnroll({
         activeCount: active.length,
         alreadyActiveInCourse: active.some((e) => e.courseId === courseId),
+        superUser,
       });
 
       const created = await tx.enrollment.create({ data: { userId, courseId, level }, select: { id: true } });
@@ -107,7 +107,7 @@ export class EnrollmentsService {
     return this.view(userId, enrollmentId);
   }
 
-  async myLearning(userId: string): Promise<MyLearningResponse> {
+  async myLearning(userId: string, superUser = false): Promise<MyLearningResponse> {
     const [active, completedCount] = await Promise.all([
       this.prisma.enrollment.findMany({
         where: { userId, status: EnrollmentStatus.ACTIVE },
@@ -116,7 +116,11 @@ export class EnrollmentsService {
       }),
       this.prisma.enrollment.count({ where: { userId, status: EnrollmentStatus.COMPLETED } }),
     ]);
-    return { maxActive: MAX_ACTIVE_COURSES, active: active.map((e) => this.toView(e)), completedCount };
+    return {
+      maxActive: maxActiveFor(superUser, active.length),
+      active: active.map((e) => this.toView(e)),
+      completedCount,
+    };
   }
 
   async view(userId: string, enrollmentId: string): Promise<EnrollmentView> {

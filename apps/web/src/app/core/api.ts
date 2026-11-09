@@ -1,59 +1,63 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type {
-  ConnectGithubResponse,
-  GithubStatus,
-  ProjectRepoView,
+  ActivityItem,
   AgentRunSummary,
   AgentRunView,
   AgentToolCallView,
-  ChatMessageView,
-  ChatPage,
-  MeetingKind,
-  MeetingView,
-  PmOverview,
+  AiStatus,
+  ApplicationView,
   AssessmentSummary,
   AssessmentView,
+  ChatMessageView,
+  ChatPage,
+  CodeReviewView,
+  ConnectGithubResponse,
   CourseContentView,
-  LessonContentUpdate,
-  StudyLessonView,
-  TutorAskRequest,
-  TutorAskResponse,
-  TutorMessageView,
-  ActivityItem,
-  CreateTaskRequest,
-  PlanProposalView,
-  SprintView,
-  TaskCard,
-  TaskDetail,
-  TaskStatus,
-  UpdateTaskRequest,
-  WorkspaceOverview,
-  MyMembershipView,
-  SelectionRunView,
-  TeamView,
-  AiStatus,
-  InterviewView,
-  InterviewSlots,
-  InterviewTurnRequest,
-  InterviewTurnResponse,
-  ApplicationView,
   CourseDetail,
   CourseRecommendation,
   CourseSummary,
   CreateApplicationRequest,
+  CreateTaskRequest,
   EnrollmentView,
+  GithubStatus,
+  InterviewSlots,
+  InterviewTurnRequest,
+  InterviewTurnResponse,
+  InterviewView,
+  JobDetail,
+  JobListQuery,
+  JobListResponse,
   LearningStats,
+  LessonContentUpdate,
+  MeetingKind,
+  MeetingView,
   MyLearningResponse,
+  MyMembershipView,
   Page,
+  PlanProposalView,
+  PmOverview,
   Profile,
   ProfileSkill,
   ProjectDetail,
   ProjectListQuery,
+  ProjectRepoView,
   ProjectSummary,
+  SelectionRunView,
   Skill,
   SkillLevel,
+  SprintView,
+  StudyLessonView,
+  TaskCard,
+  TaskDetail,
+  TaskStatus,
+  TeamView,
+  TutorAskRequest,
+  TutorAskResponse,
+  TutorMessageView,
   UpdateProfileRequest,
+  UpdateTaskRequest,
+  WorkspaceOverview,
 } from '@studywidbuddy/shared';
 import { firstValueFrom } from 'rxjs';
 import { API } from './api-error';
@@ -130,6 +134,8 @@ export class Api {
   myApplications = () => this.get<ApplicationView[]>('/me/applications');
   application = (id: string) => this.get<ApplicationView>(`/applications/${id}`);
   withdrawApplication = (id: string) => this.post<ApplicationView>(`/applications/${id}/withdraw`);
+  /** Admin testing: skip the CV screen and interview and take a seat. */
+  skipToTeam = (id: string) => this.post<ApplicationView>(`/applications/${id}/skip-to-team`);
 
   // AI interview
   aiStatus = () => this.get<AiStatus>('/ai/status');
@@ -230,6 +236,11 @@ export class Api {
   connectGithub = () => this.post<ConnectGithubResponse>('/github/connect');
   unlinkGithub = () => this.delete<void>('/github/account');
   projectGithub = (slug: string) => this.get<ProjectRepoView>(`/projects/${encodeURIComponent(slug)}/github`);
+  jobs = (q: JobListQuery = {}) => this.get<JobListResponse>('/jobs', q);
+  job = (id: string) => this.get<JobDetail>(`/jobs/${id}`);
+  syncJobs = () => this.post<{ queued: true }>('/admin/jobs/sync');
+  rerunReview = (slug: string, number: number) =>
+    this.post<CodeReviewView>(`/projects/${encodeURIComponent(slug)}/github/pulls/${number}/review`);
   createProjectRepo = (slug: string) => this.post<ProjectRepoView>(`/projects/${encodeURIComponent(slug)}/github/repo`);
   syncProjectRepo = (slug: string) =>
     this.post<{ added: number; pending: number }>(`/projects/${encodeURIComponent(slug)}/github/sync`);

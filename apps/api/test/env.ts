@@ -24,12 +24,17 @@ if (!process.env.SB_E2E_ENV_LOADED) {
     );
   }
   process.env.DATABASE_URL = testUrl;
+  // Migrations use DIRECT_URL; it must follow, or test migrations would hit the real database.
+  process.env.DIRECT_URL = testUrl;
   process.env.SB_E2E_ENV_LOADED = '1';
 }
 process.env.NODE_ENV = 'test';
 process.env.SMTP_URL = '';
 // Separate queue namespace so a running dev API never picks up test jobs (and vice versa).
 process.env.QUEUE_PREFIX = 'sb-test';
+process.env.JOBS_SYNC_HOURS = '0';
+process.env.ADZUNA_APP_ID = '';
+process.env.ADZUNA_APP_KEY = '';
 process.env.AI_PROVIDER = 'none';
 process.env.JWT_ACCESS_SECRET ??= 'test-secret-test-secret-test-secret-123456';
 // GitHub: fake app settings. The GitHub client is replaced by a fake in tests; nothing calls GitHub.

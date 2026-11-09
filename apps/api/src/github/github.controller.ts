@@ -5,6 +5,7 @@ import {
   Headers,
   HttpCode,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   type RawBodyRequest,
@@ -14,10 +15,11 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
-import type { ConnectGithubResponse, GithubStatus, ProjectRepoView } from '@studywidbuddy/shared';
+import type { CodeReviewView, ConnectGithubResponse, GithubStatus, ProjectRepoView } from '@studywidbuddy/shared';
 import type { Request, Response } from 'express';
 import { AuthUser, CurrentUser, Public } from '../common/auth/auth-user';
 import { GithubService } from './github.service';
+import { ReviewService } from './review/review.service';
 import { WebhookService } from './webhook.service';
 
 @ApiTags('github')
@@ -27,6 +29,7 @@ export class GithubController {
   constructor(
     private readonly github: GithubService,
     private readonly webhooks: WebhookService,
+    private readonly reviews: ReviewService,
   ) {}
 
   @Get('github/status')
@@ -78,6 +81,18 @@ export class GithubController {
   @ApiOperation({ summary: 'Give every linked team member access to the repo again' })
   sync(@CurrentUser() user: AuthUser, @Param('slug') slug: string) {
     return this.github.sync(user, slug);
+  }
+
+  @Post('projects/:slug/github/pulls/:number/review')
+  @HttpCode(202)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @ApiOperation({ summary: 'Run the AI code review again on the PR’s latest commit (team members)' })
+  rerunReview(
+    @CurrentUser() user: AuthUser,
+    @Param('slug') slug: string,
+    @Param('number', ParseIntPipe) number: number,
+  ): Promise<CodeReviewView> {
+    return this.reviews.rerun(user, slug, number);
   }
 
   /** GitHub webhooks. Authenticated by HMAC signature, not by a user token. */

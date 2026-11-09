@@ -13,7 +13,7 @@ Status key: ✅ done · 🟡 in progress · ⬜ not started · 🔒 needs creden
 | 7   | Sandbox                   | 🔒     |
 | 8   | Learning                  | 🟡     |
 | 9   | Realtime collaboration    | 🟡     |
-| 10  | Social / career           | ⬜     |
+| 10  | Social / career           | 🟡     |
 | —   | Final integration         | ⬜     |
 
 ## Milestone 1 — Foundation ✅
@@ -59,14 +59,16 @@ Exit criteria met: application → interview → answer → submit → evaluatio
 
 ## Milestone 2b — CV screening + voice interview ✅
 
-| Item                                                                                                          | Status | Notes                                                                     |
-| ------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
-| CV upload (PDF) on every application; AI ATS score computed by code; ≥ 80 unlocks the interview               | ✅     | Claude reads the PDF directly                                             |
-| Booking: "Start now" or hourly slots for 5 days in the candidate's timezone (handles +05:30)                  | ✅     | Booking email                                                             |
-| Live voice interview: introduction, planned topics, model-chosen follow-ups bounded by code rules             | ✅     | Voice only (no text box); tab switches and timings recorded for reviewers |
-| Evaluation ≥ 60 → instant seat, first come first served; full role closes, others pointed to similar projects | ✅     | Row lock on the role; project starts when every role is full              |
-| Below threshold → feedback + real catalogue courses for the missing skills                                    | ✅     |                                                                           |
-| Robust structured output (clamp to schema limits, retry real failures)                                        | ✅     | Found by a real-model smoke test                                          |
+| Item                                                                                                            | Status | Notes                                                                     |
+| --------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
+| CV upload (PDF) on every application; AI ATS score computed by code; ≥ 80 unlocks the interview                 | ✅     | Claude reads the PDF directly                                             |
+| Booking: "Start now" or hourly slots for 5 days in the candidate's timezone (handles +05:30)                    | ✅     | Booking email                                                             |
+| Live voice interview: introduction, planned topics, model-chosen follow-ups bounded by code rules               | ✅     | Voice only (no text box); tab switches and timings recorded for reviewers |
+| Evaluation ≥ 60 → instant seat, first come first served; full role closes, others pointed to similar projects   | ✅     | Row lock on the role; project starts when every role is full              |
+| Below threshold → feedback + real catalogue courses for the missing skills                                      | ✅     |                                                                           |
+| Robust structured output (clamp to schema limits, retry real failures)                                          | ✅     | Found by a real-model smoke test                                          |
+| Below threshold → courses only for the gaps found; reapply after 7 days or after finishing one of those courses | ✅     | `applications/reapply.ts`; interview questions matched to project level   |
+| Admin testing bypass (`common/auth/super-user.ts`)                                                              | ✅     | See SECURITY.md                                                           |
 
 ## Milestone 3 — Team selection ✅
 
@@ -122,7 +124,7 @@ See `docs/GITHUB.md`.
 | Signed, idempotent webhooks; PR ↔ task linking from `TASK-n`; In progress → Review on PR; Done on merge with green CI | ✅     | Stale CI results ignored                                           |
 | "Done" blocked while a linked PR's checks fail or run                                                                 | ✅     | `CHECKS_NOT_PASSING`                                               |
 | Workspace GitHub tab: repo, access, PRs with CI status                                                                | ✅     | Live via sockets                                                   |
-| AI code review on pull requests                                                                                       | ⬜     | Next                                                               |
+| AI code review on pull requests (LangGraph pipeline, one COMMENT review per commit, inline findings, re-run)          | ✅     | `src/github/review/`; see GITHUB.md                                |
 | Platform acceptance tests in the sandbox, reported as a check                                                         | ⬜     | Local Docker sandbox first (no cost)                               |
 | Publish repo at project end (with all members' consent)                                                               | ⬜     |                                                                    |
 
@@ -133,7 +135,7 @@ See `docs/GITHUB.md`.
 | Study Workspace (screen 29): outline, lesson player, notes, AI Buddy panel                                                                               | ✅     | Works solo; Study Buddy parts labelled SOON                                                                                                                                 |
 | YouTube lessons (privacy-enhanced embed), one curated video per lesson by topic                                                                          | ✅     | 89/89 lessons, each verified via YouTube oEmbed (exists, embeddable), title and channel credited; `npm run videos:check` re-verifies; admins can replace from Lesson videos |
 | AI Buddy chat on the fast model, grounded in course outline, lesson summary/transcript and the learner's note                                            | ✅     | Hint-first; history per enrollment                                                                                                                                          |
-| AI Buddy follows the video: current minute sent with questions, transcript window around it, "Explain this moment", timed transcript tab (click to seek) | ✅     | Transcripts pasted by admins now; Gemini generation ready, needs `GEMINI_API_KEY`                                                                                           |
+| AI Buddy follows the video: current minute sent with questions, transcript window around it, "Explain this moment", timed transcript tab (click to seek) | ✅     | Paste or generate with Gemini (`GEMINI_API_KEY` configured locally, `gemini-3.8-flash`)                                                                                     |
 | Voice conversation with the AI Buddy (browser speech-to-text + text-to-speech)                                                                           | ✅     | Chrome/Edge/Safari; typing everywhere                                                                                                                                       |
 | Voice check: 5 spoken questions on finished lessons → report under the course                                                                            | ✅     | Questions on the fast model, evaluation on the smart model, score computed by code                                                                                          |
 | Private notes per lesson                                                                                                                                 | ✅     |                                                                                                                                                                             |
@@ -152,18 +154,32 @@ See `docs/REALTIME.md`.
 | Direct messages, Study Buddy chat                                             | ⬜     | Need connections (M10) / matching (M8) |
 | Live video calls (group)                                                      | 🔒     | Needs an SFU choice (LiveKit)          |
 
+## Milestone 10 — Jobs for your skills 🟡
+
+| Item                                                                                                           | Status | Notes                                                                                         |
+| -------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------- |
+| Listings from official public job-board APIs, refreshed every `JOBS_SYNC_HOURS` (BullMQ scheduler)             | ✅     | Arbeitnow (no key); Adzuna when `ADZUNA_APP_ID/KEY` are set (India via `ADZUNA_COUNTRIES=in`) |
+| No scraping; Remotive not used (its terms forbid showing jobs behind a signup)                                 | ✅     | See `src/jobs/job-feeds.ts`                                                                   |
+| Skills tagged by code from title, tags and description (aliases, whole words, careful "Go"/languages)          | ✅     | No model cost; non-tech listings skipped                                                      |
+| Cross-source dedupe; stale listings hidden; a failing source never hides its listings                          | ✅     |                                                                                               |
+| Match per viewer: proven skills count fully, claimed 60%; gaps named; courses for the gaps                     | ✅     | `job-skills.ts` (unit tested)                                                                 |
+| Jobs page (matched / all / remote / search) and job detail with match explanation; Apply links to the original | ✅     | Source credited on every listing                                                              |
+| Admin "Sync now"                                                                                               | ✅     | `POST /admin/jobs/sync`                                                                       |
+| Learning → project → job recommendations on Home                                                               | ⬜     |                                                                                               |
+
 ## Later milestones
 
 Milestones 6, 7 and 10 follow the product brief. Each is broken into items here when it starts, so this file shows real status rather than a wish list.
 
 ## Needs a decision or credentials
 
-| Item           | What's needed                                                                                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| LLM provider   | ✅ Configured locally (`AI_PROVIDER=anthropic`). Without a key, AI features say "AI isn't configured" instead of faking output. |
-| Email delivery | `SMTP_URL` (any SMTP provider). Dev logs verification/reset links to the API console.                                           |
-| GitHub App     | App id, private key, webhook secret.                                                                                            |
-| Object storage | S3-compatible bucket (instructor video uploads). Local dev will use MinIO in Docker.                                            |
-| Payments       | Stripe (or similar) account for paid courses and projects.                                                                      |
-| Sandbox host   | Where untrusted code runs: Docker on our own server vs a hosted sandbox (e.g. E2B). Decision pending.                           |
-| Group video    | SFU choice (LiveKit self-hosted vs cloud). 1:1 calls can work peer-to-peer.                                                     |
+| Item              | What's needed                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| LLM provider      | ✅ Configured locally (`AI_PROVIDER=anthropic`). Without a key, AI features say "AI isn't configured" instead of faking output. |
+| Email delivery    | `SMTP_URL` (any SMTP provider). Dev logs verification/reset links to the API console.                                           |
+| GitHub App        | ✅ Configured locally (app id, private key outside the repo, webhook secret, smee relay in dev).                                |
+| Video transcripts | ✅ Gemini configured locally (`GEMINI_API_KEY`). Without it admins paste transcripts.                                           |
+| Object storage    | S3-compatible bucket (instructor video uploads). Local dev will use MinIO in Docker.                                            |
+| Payments          | Stripe (or similar) account for paid courses and projects.                                                                      |
+| Sandbox host      | Where untrusted code runs: Docker on our own server vs a hosted sandbox (e.g. E2B). Decision pending.                           |
+| Group video       | SFU choice (LiveKit self-hosted vs cloud). 1:1 calls can work peer-to-peer.                                                     |

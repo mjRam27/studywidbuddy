@@ -25,7 +25,7 @@ const NAV: NavItem[] = [
   { id: 'projects', icon: 'deployed_code', label: 'Projects', path: '/projects' },
   { id: 'people', icon: 'group', label: 'People', path: '/people', soon: 'SOON' },
   { id: 'messages', icon: 'forum', label: 'Messages', path: '/messages', soon: 'SOON' },
-  { id: 'jobs', icon: 'work', label: 'Jobs', path: '/jobs', soon: 'SOON' },
+  { id: 'jobs', icon: 'work', label: 'Jobs', path: '/jobs' },
 ];
 
 /** Layer 1 navigation: six destinations + AI Buddy. Learn expands to your live course workspaces. */
