@@ -18,8 +18,13 @@ export class FakeGithubClient extends GithubClient {
   private nextId = 1000;
   /** Pull requests on the fake GitHub, keyed "repo#number". */
   readonly pulls = new Map<string, { pr: GithubPullRequest; files: GithubPrFile[] }>();
-  readonly reviews: { repo: string; number: number; commitId: string; body: string; comments: GithubReviewComment[] }[] =
-    [];
+  readonly reviews: {
+    repo: string;
+    number: number;
+    commitId: string;
+    body: string;
+    comments: GithubReviewComment[];
+  }[] = [];
   /** When set, the next createReview with inline comments fails like GitHub's 422 for a bad line. */
   rejectInlineOnce = false;
 
