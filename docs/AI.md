@@ -52,6 +52,15 @@ AI calls that can take more than a moment run in BullMQ jobs (`queue/queue.modul
 
 Every request is recorded in `AiCall` (purpose, model, input/output tokens, duration, success, error kind, user). Prompts and outputs are not stored. AI endpoints are rate-limited to 5 requests/minute per IP, and applying (which leads to an interview) requires a verified email.
 
+## Debug coach (Gemini)
+
+The Debug exercise coach runs on Google Gemini (`GeminiChat`, `src/ai/gemini-chat.ts`), not on `AiProvider`: it only explains and never changes state, so a cheap, fast model fits.
+
+- **Hint mode (default):** the prompt contains the learner's current files, the tests and the last run, but not the bug list, so the model cannot leak the fixes. It explains code, how files connect, and what failures mean.
+- **Solution mode (toggle):** the real bug list (file, buggy line, fix, why) is added, and the model explains the fixes as small snippets. The editor is never changed; the learner types every fix. Using it before solving is recorded on the attempt.
+- Learner text and code are escaped and wrapped in tags as data. Replies are rendered without `innerHTML`.
+- `GEMINI_MODEL` gets 20 s; when it is overloaded ("high demand") or hangs, `GEMINI_FALLBACK_MODEL` (default `gemini-3.5-flash`) answers. Every call is logged in `AiCall` (provider `gemini`). Limit: 150 messages per learner per day (admins exempt), 15 per minute.
+
 ## AI interview flow (milestone 2)
 
 ```

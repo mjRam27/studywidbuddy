@@ -30,12 +30,18 @@ export class ProfilesService {
    * A hidden profile returns 404 rather than 403 so its existence isn't revealed.
    */
   async getByUsername(username: string, viewer: AuthUser | undefined): Promise<Profile> {
+    const row = await this.visibleRow(username, viewer);
+    return this.toView(row, viewer?.id === row.userId);
+  }
+
+  /** The profile row, if the viewer may see it (same rules as above). Used by profile sections. */
+  async visibleRow(username: string, viewer: AuthUser | undefined): Promise<ProfileRow> {
     const row = await this.prisma.profile.findUnique({ where: { username } });
     if (!row) throw notFound('Profile');
     const isSelf = viewer?.id === row.userId;
     const canSee = isSelf || (row.visibility === Visibility.PUBLIC && !!viewer) || viewer?.role === 'ADMIN';
     if (!canSee) throw notFound('Profile');
-    return this.toView(row, isSelf);
+    return row;
   }
 
   async update(userId: string, dto: UpdateProfileDto): Promise<Profile> {

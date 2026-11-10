@@ -7,5 +7,6 @@ import { ProfilesService } from './profiles.service';
   imports: [SkillsModule],
   controllers: [ProfilesController],
   providers: [ProfilesService],
+  exports: [ProfilesService],
 })
 export class ProfilesModule {}

@@ -22,13 +22,14 @@ interface NavItem {
 const NAV: NavItem[] = [
   { id: 'home', icon: 'home', label: 'Home', path: '/home' },
   { id: 'learn', icon: 'school', label: 'Learn', path: '/learn' },
+  { id: 'debug', icon: 'bug_report', label: 'Debug', path: '/debug' },
   { id: 'projects', icon: 'deployed_code', label: 'Projects', path: '/projects' },
   { id: 'people', icon: 'group', label: 'People', path: '/people', soon: 'SOON' },
   { id: 'messages', icon: 'forum', label: 'Messages', path: '/messages', soon: 'SOON' },
   { id: 'jobs', icon: 'work', label: 'Jobs', path: '/jobs' },
 ];
 
-/** Layer 1 navigation: six destinations + AI Buddy. Learn expands to your live course workspaces. */
+/** Layer 1 navigation: the main destinations + AI Buddy. Learn expands to your live course workspaces. */
 @Component({
   selector: 'sb-sidebar',
   imports: [RouterLink, AvatarComponent, BrandComponent, ClickOutsideDirective],

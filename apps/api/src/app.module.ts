@@ -19,6 +19,8 @@ import { MailModule } from './mail/mail.module';
 import { PlanningModule } from './planning/planning.module';
 import { GithubModule } from './github/github.module';
 import { JobsModule } from './jobs/jobs.module';
+import { DebugModule } from './debug/debug.module';
+import { ContributionsModule } from './contributions/contributions.module';
 import { PmModule } from './pm/pm.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { StudyModule } from './study/study.module';
@@ -60,6 +62,8 @@ import { TeamsModule } from './teams/teams.module';
     PmModule,
     GithubModule,
     JobsModule,
+    DebugModule,
+    ContributionsModule,
   ],
   controllers: [HealthController],
   providers: [

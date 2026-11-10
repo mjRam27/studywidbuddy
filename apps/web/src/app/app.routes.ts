@@ -156,6 +156,16 @@ export const routes: Routes = [
         title: 'Messages · StudywidBuddy',
       },
       {
+        path: 'debug',
+        loadComponent: () => import('./features/debug/debug-list.page').then((m) => m.DebugListPage),
+        title: 'Debug · StudywidBuddy',
+      },
+      {
+        path: 'debug/:slug',
+        loadComponent: () => import('./features/debug/debug-exercise.page').then((m) => m.DebugExercisePage),
+        title: 'Debug exercise · StudywidBuddy',
+      },
+      {
         path: 'jobs',
         loadComponent: () => import('./features/jobs/jobs.page').then((m) => m.JobsPage),
         title: 'Jobs · StudywidBuddy',

@@ -154,6 +154,19 @@ See `docs/REALTIME.md`.
 | Direct messages, Study Buddy chat                                             | ⬜     | Need connections (M10) / matching (M8) |
 | Live video calls (group)                                                      | 🔒     | Needs an SFU choice (LiveKit)          |
 
+## Debug exercises + activity graph ✅
+
+| Item                                                                                                                    | Status | Notes                                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| 52 fix-the-bugs exercises (20 Easy ≥3 bugs, 18 Intermediate ≥5, 14 Hard ≥4), 19 bug categories                          | ✅     | `apps/api/src/debug/exercises/`; written as correct code + bug patches                                              |
+| Every exercise proven: correct code passes, each bug alone fails a test, all bugs fail                                  | ✅     | `catalogue.spec.ts` (335 checks)                                                                                    |
+| List with progress per level and filters (level, status, bug type, search)                                              | ✅     | `/debug`                                                                                                            |
+| Workspace: brief, files (tests read-only), CodeMirror editor, terminal (`npm test`, `node`, `ls`, `cat`)                | ✅     | Code runs in a Web Worker in the learner's browser, killed after 6 s; never on our server                           |
+| AI coach on Gemini: explains code, file connections and failures; fixes only with the Solution toggle; never edits code | ✅     | Hint mode never sees the answers; falls back to `GEMINI_FALLBACK_MODEL` when busy; 150 messages/day                 |
+| First green run solves it: time taken, runs, and a review of each bug (where, before/after, why)                        | ✅     |                                                                                                                     |
+| Profile: GitHub-style activity graph (53 weeks) with kind filters and day details; Debugging tab                        | ✅     | A day counts for a solved exercise, 30+ min of study (heartbeats), a finished task, project work or an AI interview |
+| Server-side re-check of solutions                                                                                       | ⬜     | Needs the sandbox (M7); results are trusted for now, fine for learning                                              |
+
 ## Milestone 10 — Jobs for your skills 🟡
 
 | Item                                                                                                           | Status | Notes                                                                                         |

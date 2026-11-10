@@ -8,8 +8,10 @@ import { TopbarComponent } from '../../layout/topbar.component';
 import { AvatarComponent } from '../../ui/avatar.component';
 import { LevelBarsComponent } from '../../ui/level-badge.component';
 import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.component';
+import { ProfileActivityComponent } from './profile-activity.component';
+import { ProfileDebuggingComponent } from './profile-debugging.component';
 
-type Tab = 'overview' | 'learning' | 'projects' | 'certificates';
+type Tab = 'overview' | 'learning' | 'debugging' | 'projects' | 'certificates';
 
 interface SkillLine {
   skillId: string;
@@ -21,7 +23,16 @@ interface SkillLine {
 /** Screen 43 · User profile. Visibility is enforced by the API (a hidden profile is a 404). */
 @Component({
   selector: 'sb-profile-page',
-  imports: [RouterLink, TopbarComponent, AvatarComponent, LevelBarsComponent, ErrorStateComponent, SkeletonComponent],
+  imports: [
+    RouterLink,
+    TopbarComponent,
+    AvatarComponent,
+    LevelBarsComponent,
+    ErrorStateComponent,
+    SkeletonComponent,
+    ProfileActivityComponent,
+    ProfileDebuggingComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <sb-topbar>
@@ -144,6 +155,7 @@ interface SkillLine {
 
             @switch (tab()) {
               @case ('overview') {
+                <sb-profile-activity [username]="p.username" />
                 <section class="panel pad-lg" aria-labelledby="skills-h">
                   <div class="panel-head">
                     <span class="panel-title" id="skills-h">Skills</span>
@@ -245,6 +257,9 @@ interface SkillLine {
                   }
                 </div>
               }
+              @case ('debugging') {
+                <sb-profile-debugging [username]="p.username" />
+              }
               @case ('projects') {
                 <div class="empty dashed">
                   <span class="empty-title">No team projects yet</span
@@ -294,6 +309,7 @@ export class ProfilePage {
   readonly tabs: { id: Tab; label: string }[] = [
     { id: 'overview', label: 'Overview' },
     { id: 'learning', label: 'Learning' },
+    { id: 'debugging', label: 'Debugging' },
     { id: 'projects', label: 'Projects' },
     { id: 'certificates', label: 'Certificates' },
   ];

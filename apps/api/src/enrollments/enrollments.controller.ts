@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiConflictResponse, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { IsEnum, IsUUID } from 'class-validator';
 import { SkillLevel } from '@studywidbuddy/shared';
 import type {
@@ -13,6 +14,7 @@ import { AuthUser, CurrentUser } from '../common/auth/auth-user';
 import { isSuperUser } from '../common/auth/super-user';
 import { EnrollmentsService } from './enrollments.service';
 import { LearningInsightsService } from './learning-insights.service';
+import { StudyTimeService } from './study-time.service';
 
 class EnrollDto implements EnrollRequest {
   @ApiProperty()
@@ -31,6 +33,7 @@ export class EnrollmentsController {
   constructor(
     private readonly enrollments: EnrollmentsService,
     private readonly insights: LearningInsightsService,
+    private readonly studyTime: StudyTimeService,
   ) {}
 
   @Get('me/learning')
@@ -61,6 +64,14 @@ export class EnrollmentsController {
   @Get('enrollments/:id')
   get(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string): Promise<EnrollmentView> {
     return this.enrollments.view(user.id, id);
+  }
+
+  @Post('enrollments/:id/study-time')
+  @HttpCode(204)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @ApiOperation({ summary: 'Heartbeat from the study page, about once a minute while studying' })
+  async studyBeat(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+    await this.studyTime.beat(user.id, id);
   }
 
   @Post('enrollments/:id/deregister')

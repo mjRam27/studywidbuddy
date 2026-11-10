@@ -13,12 +13,24 @@ import type {
   ChatPage,
   CodeReviewView,
   ConnectGithubResponse,
+  ContributionCalendar,
+  ContributionDayDetail,
   CourseContentView,
   CourseDetail,
   CourseRecommendation,
   CourseSummary,
   CreateApplicationRequest,
   CreateTaskRequest,
+  DebugAssistantRequest,
+  DebugAssistantResponse,
+  DebugAttemptView,
+  DebugExerciseView,
+  DebugListQuery,
+  DebugListResponse,
+  DebugProfileStats,
+  DebugReview,
+  DebugRunRequest,
+  DebugRunResponse,
   EnrollmentView,
   GithubStatus,
   InterviewSlots,
@@ -94,6 +106,24 @@ export class Api {
   resendVerification = () => this.post<void>('/auth/resend-verification');
   forgotPassword = (email: string) => this.post<void>('/auth/forgot-password', { email });
   resetPassword = (token: string, password: string) => this.post<void>('/auth/reset-password', { token, password });
+
+  // Debug exercises
+  debugExercises = (q: DebugListQuery = {}) => this.get<DebugListResponse>('/debug/exercises', q);
+  debugExercise = (slug: string) => this.get<DebugExerciseView>(`/debug/exercises/${encodeURIComponent(slug)}`);
+  startDebug = (slug: string) => this.post<DebugAttemptView>(`/debug/exercises/${encodeURIComponent(slug)}/start`);
+  recordDebugRun = (slug: string, body: DebugRunRequest) =>
+    this.post<DebugRunResponse>(`/debug/exercises/${encodeURIComponent(slug)}/runs`, body);
+  debugReview = (slug: string) => this.get<DebugReview>(`/debug/exercises/${encodeURIComponent(slug)}/review`);
+  askDebugAssistant = (slug: string, body: DebugAssistantRequest) =>
+    this.post<DebugAssistantResponse>(`/debug/exercises/${encodeURIComponent(slug)}/assistant`, body);
+
+  // Profile activity graph
+  contributions = (username: string, kinds?: string) =>
+    this.get<ContributionCalendar>(`/profiles/${encodeURIComponent(username)}/contributions`, { kinds });
+  contributionDay = (username: string, date: string, kinds?: string) =>
+    this.get<ContributionDayDetail>(`/profiles/${encodeURIComponent(username)}/contributions/${date}`, { kinds });
+  debugStats = (username: string) => this.get<DebugProfileStats>(`/profiles/${encodeURIComponent(username)}/debugging`);
+  studyBeat = (enrollmentId: string) => this.post<void>(`/enrollments/${enrollmentId}/study-time`);
 
   // Profiles & skills
   myProfile = () => this.get<Profile>('/me/profile');

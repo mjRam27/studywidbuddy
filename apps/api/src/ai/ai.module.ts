@@ -6,6 +6,7 @@ import { AiProvider } from './ai-provider';
 import { AiUsageService } from './ai-usage.service';
 import { AnthropicProvider } from './anthropic.provider';
 import { DisabledAiProvider } from './disabled.provider';
+import { GeminiChat, HttpGeminiChat } from './gemini-chat';
 
 @ApiTags('ai')
 @ApiBearerAuth()
@@ -38,7 +39,8 @@ class AiStatusController {
           ? new AnthropicProvider(env.ANTHROPIC_API_KEY, env.AI_MODEL, env.AI_MODEL_FAST, usage)
           : new DisabledAiProvider(),
     },
+    { provide: GeminiChat, useClass: HttpGeminiChat },
   ],
-  exports: [AiProvider, AiUsageService],
+  exports: [AiProvider, AiUsageService, GeminiChat],
 })
 export class AiModule {}

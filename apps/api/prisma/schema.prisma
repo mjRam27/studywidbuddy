@@ -54,6 +54,8 @@ model User {
   agentRuns     AgentRun[]           @relation("AgentRunRequester")
   toolDecisions AgentToolCall[]      @relation("ToolCallDecider")
   githubAccount GithubAccount?
+  debugAttempts DebugAttempt[]
+  studyTime     StudyTime[]
 }
 
 /// One row per issued refresh token. Rotation links tokens in a family; reuse of a
@@ -279,6 +281,7 @@ model Enrollment {
   progress    LessonProgress[]
   tutorTurns  TutorMessage[]
   assessments CourseAssessment[]
+  studyTime   StudyTime[]
 
   @@index([userId, status])
   @@index([courseId, status])
@@ -1419,4 +1422,45 @@ model JobSkill {
 
   @@id([jobId, skillId])
   @@index([skillId])
+}
+
+// ───────── Debug exercises and study time ─────────
+
+/// One learner's work on one Debug exercise. The exercises themselves live in code (by slug).
+model DebugAttempt {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  exerciseSlug   String
+  startedAt      DateTime  @default(now())
+  /// The first run where every test passed. Later runs never move it.
+  solvedAt       DateTime?
+  durationSec    Int?
+  runs           Int       @default(0)
+  assistantTurns Int       @default(0)
+  /// The learner asked the assistant for the solution before solving.
+  solutionViewed Boolean   @default(false)
+  /// The learner's files at the solving run: [{ path, content }].
+  solvedFiles    Json?
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, exerciseSlug])
+  @@index([userId, solvedAt])
+}
+
+/// Active study time per enrollment and local day, from the study page's heartbeats.
+model StudyTime {
+  userId       String   @db.Uuid
+  enrollmentId String   @db.Uuid
+  /// YYYY-MM-DD in the learner's timezone.
+  day          String
+  seconds      Int      @default(0)
+  lastBeatAt   DateTime
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@id([userId, enrollmentId, day])
+  @@index([userId, day])
 }

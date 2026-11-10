@@ -7,6 +7,7 @@ import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.componen
 import { AiBuddyComponent } from './ai-buddy.component';
 import { LessonPlayerComponent } from './lesson-player.component';
 import { NotesComponent } from './notes.component';
+import { StudyHeartbeat } from './study-heartbeat';
 import { StudyStore } from './study.store';
 import { VoiceCheckComponent } from './voice-check.component';
 
@@ -36,7 +37,7 @@ const TABS: { id: Tab | string; label: string; ai?: boolean; soon?: string }[] =
     VoiceCheckComponent,
     AiBuddyComponent,
   ],
-  providers: [StudyStore],
+  providers: [StudyStore, StudyHeartbeat],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'data-theme': 'dark', style: 'display:block' },
   template: `
@@ -326,6 +327,7 @@ export class StudyPage {
   ];
 
   constructor() {
+    inject(StudyHeartbeat); // counts active study time for the profile's activity graph
     effect(() => {
       const slug = this.slug();
       untracked(() => void this.store.load(slug));

@@ -32,6 +32,8 @@ const EnvSchema = z.object({
   /** Optional: Google Gemini key, used only to transcribe lesson videos (YouTube URL input). */
   GEMINI_API_KEY: optional,
   GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
+  /** Tried when GEMINI_MODEL is overloaded (it happens at busy times). Empty = no fallback. */
+  GEMINI_FALLBACK_MODEL: z.string().default('gemini-3.5-flash'),
   /** Cheaper model for tutoring chat, summaries and quiz questions. */
   AI_MODEL_FAST: z.string().default('claude-haiku-5-5'),
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),

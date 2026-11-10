@@ -15,3 +15,6 @@ export * from './contracts/chat';
 export * from './contracts/pm';
 export * from './contracts/github';
 export * from './contracts/jobs';
+export * from './contracts/debug';
+export * from './contracts/contributions';
+export * from './debug-runner';

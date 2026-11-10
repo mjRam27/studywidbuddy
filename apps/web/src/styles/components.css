@@ -1234,3 +1234,39 @@
     min-height: 40px;
   }
 }
+
+/* Small neutral label (bug types, activity kinds, read-only markers) */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--r-tag);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  color: var(--ink-2);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.tag > .ms {
+  font-size: 14px;
+}
+/* A clickable suggestion chip (quick prompts) */
+.chip-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.chip-btn:hover:not(:disabled) {
+  border-color: var(--brand-line);
+  color: var(--ink);
+}
+.chip-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
