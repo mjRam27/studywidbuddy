@@ -5,18 +5,31 @@ import {
   BUG_CATEGORIES,
   BUG_CATEGORY_LABEL,
   type BugCategory,
+  DEBUG_LANGUAGE_LABEL,
+  DEBUG_LANGUAGES,
   DEBUG_LEVEL_LABEL,
   DEBUG_LEVELS,
   type DebugExerciseSummary,
+  type DebugLanguage,
   type DebugLevel,
-  type DebugProgress,
   type DebugStatus,
 } from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
 import { type ApiError, toApiError } from '../../core/api-error';
 import { TopbarComponent } from '../../layout/topbar.component';
 import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.component';
-import { LEVEL_CLASS, STATUS_VIEW } from './debug-format';
+import { LEVEL_CLASS, progressFor, STATUS_VIEW } from './debug-format';
+
+const LANGUAGE_KEY = 'sb-debug-language';
+
+function savedLanguage(): DebugLanguage {
+  try {
+    const v = localStorage.getItem(LANGUAGE_KEY) as DebugLanguage | null;
+    return v && DEBUG_LANGUAGES.includes(v) ? v : 'javascript';
+  } catch {
+    return 'javascript';
+  }
+}
 
 const STATUSES: { key: DebugStatus | ''; label: string }[] = [
   { key: '', label: 'All' },
@@ -81,6 +94,26 @@ const STATUSES: { key: DebugStatus | ''; label: string }[] = [
       }
 
       <div class="filter-rows">
+        <div class="filter-row" role="group" aria-label="Language">
+          <span class="label">Language</span>
+          @for (l of languages; track l) {
+            <button
+              type="button"
+              class="pill"
+              [class.on]="language() === l"
+              [attr.aria-pressed]="language() === l"
+              (click)="setLanguage(l)"
+            >
+              {{ languageLabel[l] }}
+            </button>
+          }
+          @if (language() !== 'javascript') {
+            <span class="faint" style="font-size:12px"
+              >{{ languageLabel[language()] }} has the Easy exercises; Intermediate and Hard are in JavaScript for
+              now.</span
+            >
+          }
+        </div>
         <div class="filter-row" role="group" aria-label="Level">
           <span class="label">Level</span>
           <button
@@ -190,6 +223,8 @@ export class DebugListPage {
   private readonly api = inject(Api);
 
   readonly levels = DEBUG_LEVELS;
+  readonly languages = DEBUG_LANGUAGES;
+  readonly languageLabel = DEBUG_LANGUAGE_LABEL;
   readonly statuses = STATUSES;
   readonly categories = BUG_CATEGORIES;
   readonly levelLabel = DEBUG_LEVEL_LABEL;
@@ -198,7 +233,10 @@ export class DebugListPage {
   readonly statusView = STATUS_VIEW;
 
   readonly items = signal<DebugExerciseSummary[] | null>(null);
-  readonly progress = signal<DebugProgress | null>(null);
+  /** The learner's language, remembered in this browser. */
+  readonly language = signal<DebugLanguage>(savedLanguage());
+  readonly inLanguage = computed(() => (this.items() ?? []).filter((e) => e.language === this.language()));
+  readonly progress = computed(() => (this.items() ? progressFor(this.inLanguage()) : null));
   readonly error = signal<ApiError | null>(null);
   readonly level = signal<DebugLevel | ''>('');
   readonly status = signal<DebugStatus | ''>('');
@@ -209,7 +247,7 @@ export class DebugListPage {
   /** Filtering happens here: the whole catalogue is small and already loaded. */
   readonly shown = computed(() => {
     const q = this.q().toLowerCase();
-    return (this.items() ?? []).filter(
+    return this.inLanguage().filter(
       (e) =>
         (!this.level() || e.level === this.level()) &&
         (!this.status() || e.status === this.status()) &&
@@ -228,9 +266,17 @@ export class DebugListPage {
     try {
       const res = await this.api.debugExercises();
       this.items.set(res.items);
-      this.progress.set(res.progress);
     } catch (e) {
       this.error.set(toApiError(e));
+    }
+  }
+
+  setLanguage(language: DebugLanguage) {
+    this.language.set(language);
+    try {
+      localStorage.setItem(LANGUAGE_KEY, language);
+    } catch {
+      // Not remembered; still applies now.
     }
   }
 

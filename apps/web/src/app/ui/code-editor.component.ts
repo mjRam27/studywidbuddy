@@ -11,11 +11,17 @@ import {
   viewChild,
 } from '@angular/core';
 import { javascript } from '@codemirror/lang-javascript';
+import { python } from '@codemirror/lang-python';
 import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
 
-/** A CodeMirror 6 JavaScript editor. Two-way via [value] / (valueChange); Ctrl/⌘+Enter emits (run). */
+export type EditorLanguage = 'javascript' | 'typescript' | 'python';
+
+const syntax = (language: EditorLanguage) =>
+  language === 'python' ? python() : javascript({ typescript: language === 'typescript' });
+
+/** A CodeMirror 6 code editor (JavaScript, TypeScript or Python). Two-way via [value] / (valueChange); Ctrl/⌘+Enter emits (run). */
 @Component({
   selector: 'sb-code-editor',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,19 +30,22 @@ import { basicSetup } from 'codemirror';
 export class CodeEditorComponent implements AfterViewInit, OnDestroy {
   readonly value = input.required<string>();
   readonly readOnly = input(false);
+  readonly language = input<EditorLanguage>('javascript');
   readonly label = input('Code editor');
   readonly valueChange = output<string>();
   readonly run = output<void>();
 
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('host');
   private readonly editable = new Compartment();
+  private readonly lang = new Compartment();
   private view: EditorView | null = null;
 
   constructor() {
     effect(() => {
       const value = this.value();
       const readOnly = this.readOnly();
-      untracked(() => this.sync(value, readOnly));
+      const language = this.language();
+      untracked(() => this.sync(value, readOnly, language));
     });
   }
 
@@ -47,7 +56,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
         doc: this.value(),
         extensions: [
           basicSetup,
-          javascript(),
+          this.lang.of(syntax(this.language())),
           Prec.highest(keymap.of([{ key: 'Mod-Enter', run: () => (this.run.emit(), true) }])),
           this.editable.of(this.editableExtensions(this.readOnly())),
           EditorView.contentAttributes.of({ 'aria-label': this.label() }),
@@ -72,10 +81,13 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy {
     view.focus();
   }
 
-  private sync(value: string, readOnly: boolean) {
+  private sync(value: string, readOnly: boolean, language: EditorLanguage) {
     const view = this.view;
     if (!view) return;
-    const effects = this.editable.reconfigure(this.editableExtensions(readOnly));
+    const effects = [
+      this.editable.reconfigure(this.editableExtensions(readOnly)),
+      this.lang.reconfigure(syntax(language)),
+    ];
     const current = view.state.doc.toString();
     view.dispatch(
       current === value ? { effects } : { effects, changes: { from: 0, to: current.length, insert: value } },

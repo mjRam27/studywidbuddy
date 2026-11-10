@@ -34,6 +34,12 @@ export interface FileRunReport {
 type Files = Record<string, string>;
 type Fn = (...args: unknown[]) => unknown;
 
+export interface RunOptions {
+  timeoutMs?: number;
+  /** Turns a source file into CommonJS JavaScript (e.g. TypeScript → JS). Identity when absent. */
+  transform?: (path: string, code: string) => string;
+}
+
 const TEST_TIMEOUT_MS = 2000;
 
 // ───────── formatting and equality ─────────
@@ -41,6 +47,7 @@ const TEST_TIMEOUT_MS = 2000;
 export function formatValue(v: unknown, depth = 0): string {
   if (typeof v === 'string') return depth ? JSON.stringify(v) : JSON.stringify(v);
   if (typeof v === 'number') return Object.is(v, -0) ? '-0' : String(v);
+  if (typeof v === 'boolean') return String(v);
   if (typeof v === 'bigint') return `${v}n`;
   if (v === undefined) return 'undefined';
   if (v === null) return 'null';
@@ -201,7 +208,7 @@ function resolvePath(from: string, spec: string, files: Files): string {
     else if (p !== '.' && p !== '') parts.push(p);
   }
   const base = parts.join('/');
-  for (const candidate of [base, `${base}.js`, `${base}/index.js`]) {
+  for (const candidate of [base, `${base}.js`, `${base}.ts`, `${base}/index.js`, `${base}/index.ts`]) {
     if (candidate in files) return candidate;
   }
   throw new Error(`Cannot find module '${spec}' from '${from}'.`);
@@ -215,7 +222,7 @@ function makeConsole(logs: RunLog[]) {
   return { log: write('log'), info: write('log'), warn: write('error'), error: write('error') };
 }
 
-function makeLoader(files: Files, globals: Record<string, unknown>) {
+function makeLoader(files: Files, globals: Record<string, unknown>, transform?: RunOptions['transform']) {
   const cache = new Map<string, { exports: unknown }>();
   const names = ['require', 'module', 'exports', ...Object.keys(globals)];
   const load = (path: string): unknown => {
@@ -223,7 +230,8 @@ function makeLoader(files: Files, globals: Record<string, unknown>) {
     if (cached) return cached.exports;
     const module = { exports: {} as unknown };
     cache.set(path, module);
-    const fn = new Function(...names, `"use strict";\n${files[path]}\n//# sourceURL=${path}`) as Fn;
+    const code = transform ? transform(path, files[path]) : files[path];
+    const fn = new Function(...names, `"use strict";\n${code}\n//# sourceURL=${path}`) as Fn;
     fn((spec: string) => load(resolvePath(path, spec, files)), module, module.exports, ...Object.values(globals));
     return module.exports;
   };
@@ -250,7 +258,8 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
 // ───────── public API ─────────
 
 /** Runs the test file against the files. Modules load once per run, shared by the tests (like Jest). */
-export async function runTests(files: Files, testPath: string, timeoutMs = TEST_TIMEOUT_MS): Promise<TestReport> {
+export async function runTests(files: Files, testPath: string, options: RunOptions = {}): Promise<TestReport> {
+  const timeoutMs = options.timeoutMs ?? TEST_TIMEOUT_MS;
   const logs: RunLog[] = [];
   const console = makeConsole(logs);
   const tests: { name: string; fn: Fn }[] = [];
@@ -270,7 +279,7 @@ export async function runTests(files: Files, testPath: string, timeoutMs = TEST_
     },
   };
   try {
-    makeLoader(files, collect)(testPath);
+    makeLoader(files, collect, options.transform)(testPath);
   } catch (e) {
     return { results: [], passed: 0, failed: 0, logs, error: describeError(e) };
   }
@@ -291,11 +300,11 @@ export async function runTests(files: Files, testPath: string, timeoutMs = TEST_
 }
 
 /** Runs one file like `node file.js`, capturing console output. */
-export async function runFile(files: Files, path: string): Promise<FileRunReport> {
+export async function runFile(files: Files, path: string, options: RunOptions = {}): Promise<FileRunReport> {
   const logs: RunLog[] = [];
   if (!(path in files)) return { logs, error: `No such file: ${path}` };
   try {
-    const exported = makeLoader(files, { console: makeConsole(logs) })(path);
+    const exported = makeLoader(files, { console: makeConsole(logs) }, options.transform)(path);
     if (exported instanceof Promise) await withTimeout(exported, TEST_TIMEOUT_MS);
     return { logs, error: null };
   } catch (e) {

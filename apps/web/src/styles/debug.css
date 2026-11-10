@@ -99,7 +99,7 @@ a.dbg-card:focus-visible {
 /* Exercise workspace: brief + files | editor + terminal | coach / review */
 .dbg-ws {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 380px;
+  grid-template-columns: var(--dbg-side, 260px) 6px minmax(0, 1fr) 6px var(--dbg-right, 380px);
   height: calc(100vh - var(--topbar-h));
   min-height: 560px;
 }
@@ -169,7 +169,7 @@ a.dbg-card:focus-visible {
 }
 .dbg-main {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) 220px;
+  grid-template-rows: auto minmax(0, 1fr) 6px var(--dbg-term, 220px);
   min-width: 0;
   background: var(--canvas);
 }
@@ -581,11 +581,14 @@ button.cg-cell:focus-visible {
 
 @media (max-width: 1180px) {
   .dbg-ws {
-    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-columns: var(--dbg-side, 220px) 6px minmax(0, 1fr);
     height: auto;
   }
+  .dbg-handle-right {
+    display: none;
+  }
   .dbg-main {
-    grid-template-rows: auto 60vh 240px;
+    grid-template-rows: auto 60vh 6px var(--dbg-term, 240px);
   }
   .dbg-right {
     grid-column: 1 / -1;
@@ -597,8 +600,59 @@ button.cg-cell:focus-visible {
   .dbg-ws {
     grid-template-columns: 1fr;
   }
+  .dbg-handle-side {
+    display: none;
+  }
   .dbg-side {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
+}
+
+/* Drag handles between panes */
+.resize-handle {
+  position: relative;
+  background: var(--line);
+  cursor: col-resize;
+  touch-action: none;
+  transition: background 0.12s;
+}
+.resize-handle.rows {
+  cursor: row-resize;
+}
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 2px;
+  height: 28px;
+  border-radius: 1px;
+  background: var(--ink-4);
+}
+.resize-handle.rows::after {
+  width: 28px;
+  height: 2px;
+}
+.resize-handle:hover,
+.resize-handle:focus-visible {
+  background: var(--brand-line);
+  outline: none;
+}
+body.resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* Language switcher on an exercise */
+.dbg-langs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.dbg-langs .pill {
+  text-decoration: none;
+  font-size: 12px;
+  padding: 3px 10px;
 }

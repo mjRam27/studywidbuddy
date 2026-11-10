@@ -1,10 +1,11 @@
-import type { FileRunReport, TestReport } from '@studywidbuddy/shared';
+import type { DebugLanguage, FileRunReport, TestReport } from '@studywidbuddy/shared';
 
 /** Messages between the Debug page and its Web Worker. */
 export interface RunnerRequest {
   kind: 'test' | 'file';
+  language: DebugLanguage;
   files: Record<string, string>;
-  /** The test file, or the file to run like `node file.js`. */
+  /** The test file, or the file to run like `node file.js` / `python file.py`. */
   entry: string;
 }
 

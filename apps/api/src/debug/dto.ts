@@ -2,8 +2,10 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   BUG_CATEGORIES,
   type BugCategory,
+  DEBUG_LANGUAGES,
   DEBUG_LEVELS,
   type DebugAssistantRequest,
+  type DebugLanguage,
   type DebugLevel,
   type DebugListQuery,
   type DebugRunRequest,
@@ -26,6 +28,10 @@ import {
 } from 'class-validator';
 
 export class DebugListDto implements DebugListQuery {
+  @ApiPropertyOptional({ enum: DEBUG_LANGUAGES })
+  @IsOptional()
+  @IsIn(DEBUG_LANGUAGES)
+  language?: DebugLanguage;
   @ApiPropertyOptional({ enum: DEBUG_LEVELS }) @IsOptional() @IsIn(DEBUG_LEVELS) level?: DebugLevel;
   @ApiPropertyOptional({ enum: BUG_CATEGORIES }) @IsOptional() @IsIn(BUG_CATEGORIES) category?: BugCategory;
   @ApiPropertyOptional({ enum: ['NEW', 'IN_PROGRESS', 'SOLVED'] })

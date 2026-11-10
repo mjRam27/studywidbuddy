@@ -1,6 +1,5 @@
 import {
   DEBUG_LEVELS,
-  DEBUG_TEST_FILE,
   type DebugBugReveal,
   type DebugExerciseSummary,
   type DebugFile,
@@ -8,7 +7,7 @@ import {
   type DebugProgress,
   type DebugStatus,
 } from '@studywidbuddy/shared';
-import { applyBugs, bugLines, categoriesOf, type ExerciseDef } from './exercise';
+import { applyBugs, bugLines, categoriesOf, type ExerciseDef, groupOf, languageOf, testFileOf } from './exercise';
 import { CATALOGUE } from './exercises';
 
 /** Pure helpers over the exercise catalogue; DebugService adds the learner's progress. */
@@ -20,6 +19,8 @@ export const findExercise = (slug: string): ExerciseDef | undefined => BY_SLUG.g
 export function toSummary(ex: ExerciseDef, status: DebugStatus): DebugExerciseSummary {
   return {
     slug: ex.slug,
+    group: groupOf(ex),
+    language: languageOf(ex),
     title: ex.title,
     level: ex.level,
     topic: ex.topic,
@@ -35,7 +36,7 @@ export function learnerFiles(ex: ExerciseDef): DebugFile[] {
   const buggy = applyBugs(ex.files, ex.bugs);
   return [
     ...Object.keys(ex.files).map((path) => ({ path, content: buggy[path], readOnly: false })),
-    { path: DEBUG_TEST_FILE, content: ex.tests, readOnly: true },
+    { path: testFileOf(ex), content: ex.tests, readOnly: true },
   ];
 }
 
@@ -62,6 +63,7 @@ export function filterCatalogue(
     .map((ex) => toSummary(ex, statusOf(ex.slug)))
     .filter(
       (s) =>
+        (!query.language || s.language === query.language) &&
         (!query.level || s.level === query.level) &&
         (!query.category || s.categories.includes(query.category)) &&
         (!query.status || s.status === query.status) &&
@@ -76,6 +78,15 @@ export function progressOf(solved: Set<string>, catalogue: ExerciseDef[] = CATAL
     if (solved.has(ex.slug)) byLevel[ex.level].solved++;
   }
   return { total: catalogue.length, solved: [...solved].filter((s) => BY_SLUG.has(s)).length, byLevel };
+}
+
+/** The same exercise in every language it exists in, in language order. */
+export function variantsOf(ex: ExerciseDef, catalogue: ExerciseDef[] = CATALOGUE) {
+  const order = ['javascript', 'typescript', 'python'];
+  return catalogue
+    .filter((e) => groupOf(e) === groupOf(ex))
+    .map((e) => ({ language: languageOf(e), slug: e.slug }))
+    .sort((a, b) => order.indexOf(a.language) - order.indexOf(b.language));
 }
 
 export function median(values: number[]): number | null {

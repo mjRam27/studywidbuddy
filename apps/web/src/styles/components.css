@@ -242,8 +242,15 @@
   align-items: center;
   gap: 8px;
 }
-.icon-btn.mobile-menu-btn {
-  display: none;
+.icon-btn.menu-btn {
+  margin-left: -8px;
+  flex-shrink: 0;
+}
+/* Wide screens: the burger hides the sidebar entirely. */
+@media (min-width: 1024px) {
+  .app.nav-collapsed .sidebar {
+    display: none;
+  }
 }
 .tabs {
   display: flex;
@@ -1204,10 +1211,6 @@
     inset: 0;
     background: rgba(15, 19, 32, 0.32);
     z-index: 55;
-  }
-  .icon-btn.mobile-menu-btn {
-    display: inline-flex;
-    margin-left: -8px;
   }
   .search-box {
     display: none;

@@ -11,17 +11,19 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { BUG_CATEGORY_LABEL, DEBUG_LEVEL_LABEL } from '@studywidbuddy/shared';
+import { BUG_CATEGORY_LABEL, DEBUG_LANGUAGE_LABEL, DEBUG_LEVEL_LABEL } from '@studywidbuddy/shared';
 import { Api } from '../../core/api';
 import { TopbarComponent } from '../../layout/topbar.component';
 import { CodeEditorComponent } from '../../ui/code-editor.component';
 import { ErrorStateComponent, SkeletonComponent } from '../../ui/states.component';
+import { ResizeHandleDirective } from '../../ui/resize-handle.directive';
 import { TerminalComponent } from '../../ui/terminal.component';
 import { DebugAssistantComponent } from './debug-assistant.component';
 import { DebugExerciseStore } from './debug-exercise.store';
 import { duration, LEVEL_CLASS, STATUS_VIEW } from './debug-format';
 import { DebugReviewComponent } from './debug-review.component';
 import { DebugRunner } from './debug-runner';
+import { PaneSizes } from './pane-sizes';
 
 /** A Debug exercise: the brief and files, a code editor, a terminal, and the AI coach / review. */
 @Component({
@@ -31,6 +33,7 @@ import { DebugRunner } from './debug-runner';
     TopbarComponent,
     CodeEditorComponent,
     TerminalComponent,
+    ResizeHandleDirective,
     DebugAssistantComponent,
     DebugReviewComponent,
     ErrorStateComponent,
@@ -65,7 +68,12 @@ import { DebugRunner } from './debug-runner';
       <div class="page"><sb-skeleton [rows]="10" /></div>
     } @else {
       @let ex = store.exercise()!;
-      <div class="dbg-ws">
+      <div
+        class="dbg-ws"
+        [style.--dbg-side]="panes.get('side') + 'px'"
+        [style.--dbg-right]="panes.get('right') + 'px'"
+        [style.--dbg-term]="panes.get('terminal') + 'px'"
+      >
         <aside class="dbg-side" aria-label="Exercise">
           <div class="dbg-brief">
             <div class="chips">
@@ -74,6 +82,20 @@ import { DebugRunner } from './debug-runner';
               <span class="tag"><i class="ms" aria-hidden="true">schedule</i>~{{ ex.estimatedMinutes }} min</span>
             </div>
             <h1 class="dbg-title">{{ ex.title }}</h1>
+            <nav class="dbg-langs" aria-label="Language">
+              @for (v of ex.variants; track v.slug) {
+                <a
+                  class="pill"
+                  [class.on]="v.slug === ex.slug"
+                  [attr.aria-current]="v.slug === ex.slug ? 'page' : null"
+                  [routerLink]="['/debug', v.slug]"
+                  >{{ languageLabel[v.language] }}</a
+                >
+              }
+              @if (ex.variants.length === 1) {
+                <span class="faint" style="font-size:11.5px">Only in {{ languageLabel[ex.language] }} for now</span>
+              }
+            </nav>
             <p class="sm" style="margin:0;line-height:1.55">{{ ex.brief }}</p>
             <div class="chips">
               @for (c of ex.categories; track c) {
@@ -93,7 +115,7 @@ import { DebugRunner } from './debug-runner';
                 (click)="store.select(f.path)"
                 (keydown.enter)="store.select(f.path)"
               >
-                <i class="ms" aria-hidden="true">{{ f.readOnly ? 'lock' : 'javascript' }}</i>
+                <i class="ms" aria-hidden="true">{{ f.readOnly ? 'lock' : 'code' }}</i>
                 <span class="mono grow">{{ f.path }}</span>
                 @if (store.modified().has(f.path)) {
                   <span class="dbg-dot" title="Changed"><span class="sr-only">changed</span></span>
@@ -114,6 +136,13 @@ import { DebugRunner } from './debug-runner';
             }
           </div>
         </aside>
+        <div
+          sbResizeHandle
+          class="dbg-handle-side"
+          label="Resize the files panel"
+          (resized)="panes.resize('side', $event)"
+          (restore)="panes.reset('side')"
+        ></div>
 
         <section class="dbg-main" aria-label="Code">
           <div class="dbg-toolbar">
@@ -136,10 +165,18 @@ import { DebugRunner } from './debug-runner';
             class="dbg-editor"
             [value]="store.activeContent()"
             [readOnly]="!!store.activeFile()?.readOnly"
+            [language]="store.language()"
             [label]="'Code editor: ' + store.activePath()"
             (valueChange)="store.edit(store.activePath(), $event)"
             (run)="store.runTests()"
           />
+          <div
+            sbResizeHandle
+            orientation="horizontal"
+            label="Resize the terminal"
+            (resized)="panes.resize('terminal', -$event)"
+            (restore)="panes.reset('terminal')"
+          ></div>
           <sb-terminal
             class="dbg-terminal"
             [lines]="store.lines()"
@@ -147,6 +184,13 @@ import { DebugRunner } from './debug-runner';
             (execute)="store.command($event)"
           />
         </section>
+        <div
+          sbResizeHandle
+          class="dbg-handle-right"
+          label="Resize the AI coach panel"
+          (resized)="panes.resize('right', -$event)"
+          (restore)="panes.reset('right')"
+        ></div>
 
         <aside class="dbg-right" aria-label="Help">
           <div class="tabs" role="tablist">
@@ -191,12 +235,19 @@ export class DebugExercisePage {
   readonly slug = input.required<string>();
   readonly tab = signal<'coach' | 'review'>('coach');
   readonly next = signal<string | null>(null);
+  /** Drag the handles (or focus them and use the arrow keys); double-click resets. */
+  readonly panes = new PaneSizes({
+    side: { initial: 260, min: 180, max: 480 },
+    right: { initial: 380, min: 280, max: 720 },
+    terminal: { initial: 220, min: 90, max: 600 },
+  });
   private readonly now = signal(Date.now());
   private readonly editor = viewChild(CodeEditorComponent);
 
   readonly levelLabel = DEBUG_LEVEL_LABEL;
   readonly levelClass = LEVEL_CLASS;
   readonly categoryLabel = BUG_CATEGORY_LABEL;
+  readonly languageLabel = DEBUG_LANGUAGE_LABEL;
   readonly status = computed(() => STATUS_VIEW[this.store.attempt()?.status ?? 'NEW']);
   readonly elapsed = computed(() => {
     const a = this.store.attempt();

@@ -1,4 +1,4 @@
-import type { FileRunReport, TestReport } from '@studywidbuddy/shared';
+import type { DebugLanguage, FileRunReport, TestReport } from '@studywidbuddy/shared';
 import type { TermLine } from '../../ui/terminal.component';
 import type { RunnerResponse } from './runner-protocol';
 
@@ -13,26 +13,43 @@ export type TermCommand =
   | { kind: 'help' }
   | { kind: 'unknown'; input: string };
 
+const RUNNERS = new Set(['node', 'run', 'python', 'python3', 'py', 'ts-node', 'tsx', 'deno']);
+const clean = (file: string) => file.replace(/^\.\//, '');
+
+/** Understands the usual commands of all three languages (npm test, pytest, node, python, tsx …). */
 export function parseCommand(input: string): TermCommand | null {
-  const parts = input.trim().split(/\s+/).filter(Boolean);
+  let parts = input.trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return null;
-  const [cmd, arg] = parts;
-  if (cmd === 'test' || (cmd === 'npm' && (arg === 'test' || arg === 't'))) return { kind: 'test' };
-  if ((cmd === 'node' || cmd === 'run') && arg) return { kind: 'run', file: arg.replace(/^\.\//, '') };
+  if (parts[0] === 'npx' && parts.length > 1) parts = parts.slice(1);
+  const [cmd, arg, third] = parts;
+  if (cmd === 'test' || cmd === 'pytest' || cmd === 'py.test') return { kind: 'test' };
+  if (cmd === 'npm' && (arg === 'test' || arg === 't')) return { kind: 'test' };
+  if (cmd.startsWith('python') && arg === '-m' && third === 'pytest') return { kind: 'test' };
+  if (RUNNERS.has(cmd) && arg) return { kind: 'run', file: clean(arg) };
   if (cmd === 'ls' || cmd === 'dir') return { kind: 'ls' };
-  if (cmd === 'cat' && arg) return { kind: 'cat', file: arg.replace(/^\.\//, '') };
+  if (cmd === 'cat' && arg) return { kind: 'cat', file: clean(arg) };
   if (cmd === 'clear' || cmd === 'cls') return { kind: 'clear' };
   if (cmd === 'help' || cmd === '?') return { kind: 'help' };
   return { kind: 'unknown', input: input.trim() };
 }
 
-export const HELP: TermLine[] = [
-  { tone: 'muted', text: 'Commands:' },
-  { tone: 'plain', text: '  npm test         run the tests (also Ctrl+Enter)' },
-  { tone: 'plain', text: '  node <file>      run one file and show its console output' },
-  { tone: 'plain', text: '  ls / cat <file>  list files / print a file' },
-  { tone: 'plain', text: '  clear            clear the terminal' },
-];
+/** The test and run commands shown to the learner, per language. */
+export const COMMANDS: Record<DebugLanguage, { test: string; run: string }> = {
+  javascript: { test: 'npm test', run: 'node <file>' },
+  typescript: { test: 'npm test', run: 'npx tsx <file>' },
+  python: { test: 'pytest', run: 'python <file>' },
+};
+
+export function help(language: DebugLanguage): TermLine[] {
+  const c = COMMANDS[language];
+  return [
+    { tone: 'muted', text: 'Commands:' },
+    { tone: 'plain', text: `  ${c.test.padEnd(16)} run the tests (also Ctrl+Enter)` },
+    { tone: 'plain', text: `  ${c.run.padEnd(16)} run one file and show what it prints` },
+    { tone: 'plain', text: '  ls / cat <file>  list files / print a file' },
+    { tone: 'plain', text: '  clear            clear the terminal' },
+  ];
+}
 
 const logLines = (logs: { stream: 'log' | 'error'; text: string }[]): TermLine[] =>
   logs.flatMap((l) =>

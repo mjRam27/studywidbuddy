@@ -19,9 +19,19 @@ import { isSuperUser } from '../common/auth/super-user';
 import { conflict, DomainError, notFound } from '../common/errors/domain-error';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { assistantPrompt } from './assistant-prompt';
-import { filterCatalogue, findExercise, learnerFiles, median, progressOf, revealBugs, toSummary } from './catalogue';
+import {
+  filterCatalogue,
+  findExercise,
+  learnerFiles,
+  median,
+  progressOf,
+  revealBugs,
+  toSummary,
+  variantsOf,
+} from './catalogue';
 import type { DebugAssistantDto } from './dto';
-import type { ExerciseDef } from './exercise';
+import { type ExerciseDef, languageOf } from './exercise';
+import { CATALOGUE } from './exercises';
 
 /** Assistant messages per learner per day (the coach runs on Gemini; admins are exempt). */
 export const DAILY_ASSISTANT_LIMIT = 150;
@@ -50,7 +60,10 @@ export class DebugService {
     const status = new Map(attempts.map((a) => [a.exerciseSlug, a.solvedAt ? 'SOLVED' : 'IN_PROGRESS'] as const));
     return {
       items: filterCatalogue(query, (slug) => status.get(slug) ?? 'NEW'),
-      progress: progressOf(new Set(attempts.filter((a) => a.solvedAt).map((a) => a.exerciseSlug))),
+      progress: progressOf(
+        new Set(attempts.filter((a) => a.solvedAt).map((a) => a.exerciseSlug)),
+        query.language ? CATALOGUE.filter((e) => languageOf(e) === query.language) : CATALOGUE,
+      ),
     };
   }
 
@@ -58,7 +71,13 @@ export class DebugService {
     const ex = this.exercise(slug);
     const attempt = await this.find(userId, slug);
     const { status: _status, ...summary } = toSummary(ex, 'NEW');
-    return { ...summary, brief: ex.brief, files: learnerFiles(ex), attempt: attempt ? toAttemptView(attempt) : null };
+    return {
+      ...summary,
+      brief: ex.brief,
+      files: learnerFiles(ex),
+      attempt: attempt ? toAttemptView(attempt) : null,
+      variants: variantsOf(ex),
+    };
   }
 
   /** Opening an exercise starts the clock (once). */

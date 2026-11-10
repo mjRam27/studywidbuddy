@@ -26,7 +26,8 @@
             ],
             "styles": ["src/styles.css"],
             "scripts": [],
-            "webWorkerTsConfig": "tsconfig.worker.json"
+            "webWorkerTsConfig": "tsconfig.worker.json",
+            "allowedCommonJsDependencies": ["ts-interface-checker", "lines-and-columns", "@jridgewell/resolve-uri"]
           },
           "configurations": {
             "production": {

@@ -1,5 +1,19 @@
 /** Debug: fix-the-bugs exercises that run in the learner's browser. */
 
+export type DebugLanguage = 'javascript' | 'typescript' | 'python';
+export const DEBUG_LANGUAGES: DebugLanguage[] = ['javascript', 'typescript', 'python'];
+export const DEBUG_LANGUAGE_LABEL: Record<DebugLanguage, string> = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  python: 'Python',
+};
+/** The read-only test file of an exercise. The runner always uses the original. */
+export const DEBUG_TEST_FILES: Record<DebugLanguage, string> = {
+  javascript: 'exercise.test.js',
+  typescript: 'exercise.test.ts',
+  python: 'test_exercise.py',
+};
+
 export type DebugLevel = 'EASY' | 'INTERMEDIATE' | 'HARD';
 export const DEBUG_LEVELS: DebugLevel[] = ['EASY', 'INTERMEDIATE', 'HARD'];
 export const DEBUG_LEVEL_LABEL: Record<DebugLevel, string> = {
@@ -56,11 +70,11 @@ export const BUG_CATEGORIES = Object.keys(BUG_CATEGORY_LABEL) as BugCategory[];
 
 export type DebugStatus = 'NEW' | 'IN_PROGRESS' | 'SOLVED';
 
-/** The file the tests live in. It is read-only: the runner always uses the original. */
-export const DEBUG_TEST_FILE = 'exercise.test.js';
-
 export interface DebugExerciseSummary {
   slug: string;
+  /** The same exercise in other languages shares a group. */
+  group: string;
+  language: DebugLanguage;
   title: string;
   level: DebugLevel;
   /** One line: what the code is for. */
@@ -93,6 +107,8 @@ export interface DebugExerciseView extends Omit<DebugExerciseSummary, 'status'> 
   brief: string;
   files: DebugFile[];
   attempt: DebugAttemptView | null;
+  /** This exercise in every language it exists in (including this one). */
+  variants: { language: DebugLanguage; slug: string }[];
 }
 
 /** One bug, revealed after solving: where it was, the fix, and why. */
@@ -148,6 +164,7 @@ export interface DebugAssistantResponse {
 }
 
 export interface DebugListQuery {
+  language?: DebugLanguage;
   level?: DebugLevel;
   category?: BugCategory;
   status?: DebugStatus;

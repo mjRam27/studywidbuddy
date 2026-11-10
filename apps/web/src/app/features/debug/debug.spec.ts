@@ -1,7 +1,7 @@
 import type { TestReport } from '@studywidbuddy/shared';
-import { duration } from './debug-format';
+import { duration, progressFor } from './debug-format';
 import { inline, parseReply } from './reply-format';
-import { formatResponse, formatTests, parseCommand } from './terminal';
+import { formatResponse, formatTests, help, parseCommand } from './terminal';
 
 describe('Debug terminal', () => {
   it('parses the commands people type', () => {
@@ -13,6 +13,15 @@ describe('Debug terminal', () => {
     expect(parseCommand('clear')).toEqual({ kind: 'clear' });
     expect(parseCommand('rm -rf /')).toEqual({ kind: 'unknown', input: 'rm -rf /' });
     expect(parseCommand('   ')).toBeNull();
+  });
+
+  it('understands Python and TypeScript commands too', () => {
+    expect(parseCommand('pytest')).toEqual({ kind: 'test' });
+    expect(parseCommand('python -m pytest')).toEqual({ kind: 'test' });
+    expect(parseCommand('python cart.py')).toEqual({ kind: 'run', file: 'cart.py' });
+    expect(parseCommand('npx tsx ./cart.ts')).toEqual({ kind: 'run', file: 'cart.ts' });
+    expect(help('python')[1].text).toContain('pytest');
+    expect(help('typescript')[2].text).toContain('npx tsx <file>');
   });
 
   it('formats test results with ✓/✗, the reason and a summary', () => {
@@ -95,5 +104,20 @@ describe('duration', () => {
       '12 min 34 s',
       '1 h 2 min',
     ]);
+  });
+});
+
+describe('progressFor', () => {
+  it('counts solved exercises per level', () => {
+    const p = progressFor([
+      { level: 'EASY', status: 'SOLVED' },
+      { level: 'EASY', status: 'NEW' },
+      { level: 'HARD', status: 'IN_PROGRESS' },
+    ]);
+    expect(p).toEqual({
+      total: 3,
+      solved: 1,
+      byLevel: { EASY: { total: 2, solved: 1 }, INTERMEDIATE: { total: 0, solved: 0 }, HARD: { total: 1, solved: 0 } },
+    });
   });
 });

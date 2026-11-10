@@ -7,7 +7,13 @@ import { ShellService } from './shell.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="topbar">
-      <button type="button" class="icon-btn mobile-menu-btn" aria-label="Open navigation" (click)="shell.toggle()">
+      <button
+        type="button"
+        class="icon-btn menu-btn"
+        aria-label="Show or hide navigation"
+        [attr.aria-expanded]="shell.expanded()"
+        (click)="shell.toggle()"
+      >
         <i class="ms" aria-hidden="true">menu</i>
       </button>
       <ng-content />

@@ -18,3 +18,4 @@ export * from './contracts/jobs';
 export * from './contracts/debug';
 export * from './contracts/contributions';
 export * from './debug-runner';
+export * from './debug-python';

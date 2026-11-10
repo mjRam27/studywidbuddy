@@ -1,4 +1,10 @@
-import type { DebugLevel, DebugStatus } from '@studywidbuddy/shared';
+import {
+  DEBUG_LEVELS,
+  type DebugExerciseSummary,
+  type DebugLevel,
+  type DebugProgress,
+  type DebugStatus,
+} from '@studywidbuddy/shared';
 
 /** Labels shared by the Debug screens. Status is always icon + words, never colour alone. */
 export const STATUS_VIEW: Record<DebugStatus, { label: string; icon: string; tone: string }> = {
@@ -21,4 +27,14 @@ export function duration(sec: number | null | undefined): string {
   const min = Math.floor(s / 60);
   if (min < 60) return `${min} min ${s % 60} s`;
   return `${Math.floor(min / 60)} h ${min % 60} min`;
+}
+
+/** Progress over the exercises shown (e.g. one language), per level. */
+export function progressFor(items: Pick<DebugExerciseSummary, 'level' | 'status'>[]): DebugProgress {
+  const byLevel = Object.fromEntries(DEBUG_LEVELS.map((l) => [l, { total: 0, solved: 0 }])) as DebugProgress['byLevel'];
+  for (const e of items) {
+    byLevel[e.level].total++;
+    if (e.status === 'SOLVED') byLevel[e.level].solved++;
+  }
+  return { total: items.length, solved: items.filter((e) => e.status === 'SOLVED').length, byLevel };
 }

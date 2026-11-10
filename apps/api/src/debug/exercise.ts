@@ -1,4 +1,4 @@
-import type { BugCategory, DebugLevel } from '@studywidbuddy/shared';
+import { type BugCategory, DEBUG_TEST_FILES, type DebugLanguage, type DebugLevel } from '@studywidbuddy/shared';
 
 /**
  * How Debug exercises are written. Authors write the CORRECT code, then list each bug as a
@@ -18,6 +18,10 @@ export interface BugDef {
 
 export interface ExerciseDef {
   slug: string;
+  /** JavaScript when omitted. */
+  language?: DebugLanguage;
+  /** Shared by the same exercise in other languages; the slug when omitted. */
+  group?: string;
   title: string;
   level: DebugLevel;
   /** One line: what the code is for. */
@@ -27,7 +31,7 @@ export interface ExerciseDef {
   estimatedMinutes: number;
   /** The correct source files, path → content. */
   files: Record<string, string>;
-  /** Tests (CommonJS, `test`/`expect`), served read-only as exercise.test.js. */
+  /** Tests (`test`/`expect`), served read-only under the language's test file name. */
   tests: string;
   bugs: BugDef[];
 }
@@ -67,3 +71,43 @@ export function bugLines(ex: ExerciseDef): number[] {
 }
 
 export const categoriesOf = (ex: ExerciseDef): BugCategory[] => [...new Set(ex.bugs.map((b) => b.category))];
+export const languageOf = (ex: ExerciseDef): DebugLanguage => ex.language ?? 'javascript';
+export const groupOf = (ex: ExerciseDef): string => ex.group ?? ex.slug;
+export const testFileOf = (ex: ExerciseDef): string => DEBUG_TEST_FILES[languageOf(ex)];
+
+/**
+ * Moves top-level declarations (functions, classes, consts) from one file into a new file and
+ * wires them back with require, so exercises span several files the way real code does. The
+ * original file keeps exporting the moved names, so tests don't change; bugs whose code moved
+ * now point at the new file. The catalogue spec runs the result like any other exercise.
+ */
+export function moveToFile(ex: ExerciseDef, from: string, to: string, names: string[]): ExerciseDef {
+  let source = ex.files[from];
+  if (source === undefined || to in ex.files) throw new Error(`${ex.slug}: can't move ${from} → ${to}`);
+  const blocks: string[] = [];
+  for (const name of names) {
+    const start = new RegExp(`^(?:async function|function|class|const) ${name}(?![\\w$])`, 'm').exec(source)?.index;
+    if (start === undefined) throw new Error(`${ex.slug}: ${name} not found in ${from}`);
+    const firstLineEnd = source.indexOf('\n', start);
+    const oneLine = source.slice(start, firstLineEnd).trimEnd().endsWith(';');
+    const end = oneLine ? firstLineEnd + 1 : source.indexOf('\n', source.indexOf('\n}', start) + 1) + 1;
+    blocks.push(source.slice(start, end).trimEnd());
+    source = source.slice(0, start) + source.slice(end);
+  }
+  const module = `./${to.replace(/\.js$/, '')}`;
+  const files = {
+    ...ex.files,
+    [from]: `const { ${names.join(', ')} } = require('${module}');\n\n${source.replace(/\n{3,}/g, '\n\n').trimStart()}`,
+    [to]: `${blocks.join('\n\n')}\n\nmodule.exports = { ${names.join(', ')} };\n`,
+  };
+  const bugs = ex.bugs.map((b) =>
+    b.file === from && !files[from].includes(b.fixed) && files[to].includes(b.fixed) ? { ...b, file: to } : b,
+  );
+  return { ...ex, files, bugs };
+}
+
+/** Adds extra (correct) files, e.g. a demo script learners can run with `node demo.js`. */
+export const withFiles = (ex: ExerciseDef, extra: Record<string, string>): ExerciseDef => ({
+  ...ex,
+  files: { ...ex.files, ...extra },
+});

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ActorKind, TaskStatus } from '@prisma/client';
 import {
+  DEBUG_LANGUAGE_LABEL,
   DEBUG_LEVEL_LABEL,
   type ContributionCalendar,
   type ContributionDayDetail,
@@ -10,6 +11,7 @@ import type { AuthUser } from '../common/auth/auth-user';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { DebugService } from '../debug/debug.service';
 import { findExercise } from '../debug/catalogue';
+import { languageOf } from '../debug/exercise';
 import { dayKey, lastDays, safeTimeZone } from '../enrollments/learning-stats';
 import { ProfilesService } from '../profiles/profiles.service';
 import { taskKey } from '../tasks/tasks.service';
@@ -127,7 +129,12 @@ export class ContributionsService {
             item: {
               kind: 'DEBUG',
               title: `Fixed “${ex.title}”`,
-              detail: [DEBUG_LEVEL_LABEL[ex.level], `${ex.bugs.length} bugs`, formatDuration(s.durationSec)]
+              detail: [
+                languageOf(ex) === 'javascript' ? null : DEBUG_LANGUAGE_LABEL[languageOf(ex)],
+                DEBUG_LEVEL_LABEL[ex.level],
+                `${ex.bugs.length} bugs`,
+                formatDuration(s.durationSec),
+              ]
                 .filter(Boolean)
                 .join(' · '),
               link: `/debug/${ex.slug}`,

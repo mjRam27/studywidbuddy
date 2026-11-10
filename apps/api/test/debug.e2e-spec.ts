@@ -1,4 +1,6 @@
-import { DEBUG_TEST_FILE, ErrorCode } from '@studywidbuddy/shared';
+import { DEBUG_TEST_FILES, ErrorCode } from '@studywidbuddy/shared';
+
+const DEBUG_TEST_FILE = DEBUG_TEST_FILES.javascript;
 import { GeminiChat } from '../src/ai/gemini-chat';
 import { findExercise } from '../src/debug/catalogue';
 import { FakeGeminiChat } from './fakes/fake-gemini-chat';
@@ -36,6 +38,15 @@ describe('Debug exercises and the activity graph (e2e)', () => {
     const security = (await api(ana).get('/debug/exercises?category=SECURITY').expect(200)).body.items;
     expect(security.every((e: { categories: string[] }) => e.categories.includes('SECURITY'))).toBe(true);
     expect((await api(ana).get('/debug/exercises?q=calculator').expect(200)).body.items).toHaveLength(1);
+
+    // Easy exercises also come in TypeScript and Python.
+    const python = (await api(ana).get('/debug/exercises?language=python').expect(200)).body;
+    expect(python.items.length).toBe(20);
+    expect(
+      python.items.every((e: { language: string; level: string }) => e.language === 'python' && e.level === 'EASY'),
+    ).toBe(true);
+    expect(python.progress.total).toBe(20);
+    await api(ana).get('/debug/exercises?language=cobol').expect(400);
     await api(ana).get('/debug/exercises?level=EXPERT').expect(400);
   });
 
@@ -43,9 +54,17 @@ describe('Debug exercises and the activity graph (e2e)', () => {
     const ex = (await api(ana).get('/debug/exercises/cart-total').expect(200)).body;
     expect(ex.files.map((f: { path: string; readOnly: boolean }) => [f.path, f.readOnly])).toEqual([
       ['cart.js', false],
+      ['shipping.js', false],
       [DEBUG_TEST_FILE, true],
     ]);
     expect(JSON.stringify(ex)).not.toContain('i < items.length');
+    expect(ex.variants).toEqual([
+      { language: 'javascript', slug: 'cart-total' },
+      { language: 'typescript', slug: 'cart-total-ts' },
+      { language: 'python', slug: 'cart-total-py' },
+    ]);
+    const pyEx = (await api(ana).get('/debug/exercises/cart-total-py').expect(200)).body;
+    expect(pyEx.files.map((f: { path: string }) => f.path)).toEqual(['cart.py', 'shipping.py', 'test_exercise.py']);
     expect(ex.attempt).toBeNull();
 
     const started = (await api(ana).post('/debug/exercises/cart-total/start').expect(200)).body;
@@ -77,7 +96,7 @@ describe('Debug exercises and the activity graph (e2e)', () => {
     expect(green.attempt).toMatchObject({ status: 'SOLVED', runs: 2, solutionViewed: false });
     expect(green.attempt.durationSec).toBeGreaterThanOrEqual(599);
     expect(green.review.bugs).toHaveLength(3);
-    expect(green.review.bugs[0]).toMatchObject({ file: 'cart.js', line: 3, category: 'OFF_BY_ONE' });
+    expect(green.review.bugs[0]).toMatchObject({ file: 'cart.js', line: 5, category: 'OFF_BY_ONE' });
     expect(green.review.yourFiles).toEqual([{ path: 'cart.js', content: correct }]);
 
     // Later runs never move the solve time.

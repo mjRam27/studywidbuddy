@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import {
-  DEBUG_TEST_FILE,
+  DEBUG_TEST_FILES,
   type DebugAssistantMessage,
   type DebugAttemptView,
   type DebugExerciseView,
@@ -10,7 +10,7 @@ import { Api } from '../../core/api';
 import { type ApiError, toApiError } from '../../core/api-error';
 import type { TermLine } from '../../ui/terminal.component';
 import { DebugRunner } from './debug-runner';
-import { asText, formatResponse, HELP, parseCommand } from './terminal';
+import { asText, COMMANDS, formatResponse, help, parseCommand } from './terminal';
 
 type Files = Record<string, string>;
 
@@ -70,6 +70,8 @@ export class DebugExerciseStore {
     () => new Set(this.editablePaths().filter((p) => this.files()[p] !== this.original()[p])),
   );
   readonly solved = computed(() => this.attempt()?.status === 'SOLVED');
+  readonly language = computed(() => this.exercise()?.language ?? 'javascript');
+  private readonly testFile = computed(() => DEBUG_TEST_FILES[this.language()]);
 
   private slug = '';
 
@@ -91,7 +93,10 @@ export class DebugExerciseStore {
       this.activePath.set(ex.files.find((f) => !f.readOnly)?.path ?? ex.files[0].path);
       this.lines.set([
         { tone: 'muted', text: `${ex.title}: ${ex.bugCount} bugs are hidden in this code.` },
-        { tone: 'muted', text: 'Run the tests with npm test (or Ctrl+Enter). Type help for all commands.' },
+        {
+          tone: 'muted',
+          text: `Run the tests with ${COMMANDS[ex.language].test} (or Ctrl+Enter). Type help for all commands.`,
+        },
       ]);
       const attempt = ex.attempt ?? (await this.api.startDebug(slug));
       this.attempt.set(attempt);
@@ -143,7 +148,7 @@ export class DebugExerciseStore {
         );
       }
       case 'help':
-        return this.print(...HELP);
+        return this.print(...help(this.language()));
       case 'unknown':
         return this.print({ tone: 'err', text: `command not found: ${cmd.input}. Type help.` });
     }
@@ -152,13 +157,16 @@ export class DebugExerciseStore {
   /** Runs the tests against the learner's files (the tests themselves always come from the server). */
   async runTests(echo = true) {
     if (this.running()) return;
-    if (echo) this.print({ tone: 'cmd', text: '$ npm test' });
+    if (echo) this.print({ tone: 'cmd', text: `$ ${COMMANDS[this.language()].test}` });
     this.running.set(true);
     try {
+      this.noteFirstPythonRun();
+      const test = this.testFile();
       const res = await this.runner.run({
         kind: 'test',
-        files: { ...this.files(), [DEBUG_TEST_FILE]: this.original()[DEBUG_TEST_FILE] },
-        entry: DEBUG_TEST_FILE,
+        language: this.language(),
+        files: { ...this.files(), [test]: this.original()[test] },
+        entry: test,
       });
       const output = formatResponse(res);
       this.print(...output);
@@ -185,12 +193,23 @@ export class DebugExerciseStore {
   }
 
   private async runFile(path: string) {
-    if (!(path in this.files())) return this.print({ tone: 'err', text: `node: cannot find ${path}` });
+    if (!(path in this.files())) return this.print({ tone: 'err', text: `cannot find ${path}` });
     this.running.set(true);
     try {
-      this.print(...formatResponse(await this.runner.run({ kind: 'file', files: this.files(), entry: path })));
+      this.noteFirstPythonRun();
+      this.print(
+        ...formatResponse(
+          await this.runner.run({ kind: 'file', language: this.language(), files: this.files(), entry: path }),
+        ),
+      );
     } finally {
       this.running.set(false);
+    }
+  }
+
+  private noteFirstPythonRun() {
+    if (this.language() === 'python' && this.runner.pythonLoading) {
+      this.print({ tone: 'muted', text: 'Starting Python (the first run downloads it, about 10 MB)…' });
     }
   }
 

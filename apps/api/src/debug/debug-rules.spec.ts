@@ -1,4 +1,4 @@
-import { DEBUG_TEST_FILE } from '@studywidbuddy/shared';
+import { DEBUG_TEST_FILES } from '@studywidbuddy/shared';
 import { alternate, assistantPrompt } from './assistant-prompt';
 import { filterCatalogue, findExercise, learnerFiles, median, progressOf, revealBugs } from './catalogue';
 import { CATALOGUE } from './exercises';
@@ -10,7 +10,8 @@ describe('catalogue helpers', () => {
     const files = learnerFiles(cart);
     expect(files.map((f) => [f.path, f.readOnly])).toEqual([
       ['cart.js', false],
-      [DEBUG_TEST_FILE, true],
+      ['shipping.js', false],
+      [DEBUG_TEST_FILES.javascript, true],
     ]);
     expect(files[0].content).toContain('i <= items.length');
     expect(files[0].content).not.toContain('i < items.length');
@@ -18,7 +19,7 @@ describe('catalogue helpers', () => {
 
   it('reveals each bug with its line in the buggy file', () => {
     const [first] = revealBugs(cart);
-    expect(first).toMatchObject({ file: 'cart.js', line: 3, buggy: 'i <= items.length', fixed: 'i < items.length' });
+    expect(first).toMatchObject({ file: 'cart.js', line: 5, buggy: 'i <= items.length', fixed: 'i < items.length' });
   });
 
   it('filters by level, category, status and text', () => {
